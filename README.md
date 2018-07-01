@@ -4,10 +4,13 @@ Modded by jkbuha
 Build instructions
 
 cd
+
 wget http://www.haoyuelectronics.com/service/RK3066/tools/linux/x86_64_arm-eabi-4.6.zip
+
 unzip ./x86_64_arm-eabi-4.6.zip
 
 git clone https://github.com/jkbuha/FiiO_Kernel_Android.git
+
 cd FiiO_Kernel_Android
 
 make clean
