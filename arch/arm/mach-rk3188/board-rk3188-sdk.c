@@ -53,6 +53,10 @@
 #include <linux/spi/spi_gpio.h>
 #include <linux/switch.h>
 
+#define OVERCLOCK_CPU
+#define OVERCLOCK_RAM
+//#define OVERCLOCK_GPU
+
 #ifdef CONFIG_CW2015_BATTERY
 #include <linux/power/cw2015_battery.h>
 #endif
@@ -1860,38 +1864,40 @@ static struct rfkill_rk_platform_data rfkill_rk_platdata = {
     .type               = RFKILL_TYPE_BLUETOOTH,
 
     .poweron_gpio       = { // BT_REG_ON
-        .io             = RK30_PIN3_PC6,//INVALID_GPIO,
+        .io             = RK30_PIN3_PD1,//INVALID_GPIO,
         .enable         = GPIO_HIGH,
         .iomux          = {
             .name       = "bt_poweron",
-            .fgpio      = GPIO3_C6,
+            .fgpio      = GPIO3_D1,
         },
     },
 
     .reset_gpio         = { // BT_RST
-        .io             = RK30_PIN3_PC7, // set io to INVALID_GPIO for disable it
+        .io             = INVALID_GPIO, // set io to INVALID_GPIO for disable it
         .enable         = GPIO_LOW,
         .iomux          = {
-            .name       = "bt_reset",
-            .fgpio      = GPIO3_C7,
+              .name	  = NULL,
+    //        .name       = "bt_reset",
+    //        .fgpio      = GPIO3_C7,
        },
    }, 
 
     .wake_gpio          = { // BT_WAKE, use to control bt's sleep and wakeup
-        .io             = RK30_PIN3_PD1, // set io to INVALID_GPIO for disable it
+        .io             = RK30_PIN3_PC7, // set io to INVALID_GPIO for disable it
         .enable         = GPIO_HIGH,
         .iomux          = {
             .name       = "bt_wake",
-            .fgpio      = GPIO3_D1,
+            .fgpio      = GPIO3_C7,
         },
     },
 
     .wake_host_irq      = { // BT_HOST_WAKE, for bt wakeup host when it is in deep sleep
         .gpio           = {
-            .io         = INVALID_GPIO,//RK30_PIN0_PA5, // set io to INVALID_GPIO for disable it
+            .io         = RK30_PIN3_PC6,//RK30_PIN0_PA5, // set io to INVALID_GPIO for disable it
             .enable     = GPIO_LOW,      // set GPIO_LOW for falling, set 0 for rising
             .iomux      = {
-                .name   = NULL,
+                .name   = "bt_host_wake",
+		.fgpio  = GPIO3_C6,
             },
         },
     },
@@ -2050,6 +2056,41 @@ static struct platform_device device_mt6622 = {
 };	
 #endif
 
+
+#if defined CONFIG_TCC_BT_DEV
+static struct tcc_bt_platform_data tcc_bt_platdata = {
+
+	.power_gpio	  = { // ldoon
+		.io				=  RK30_PIN3_PC7,
+		.enable			= GPIO_HIGH,
+		.iomux			= {
+			.name		= NULL,
+			},
+		},
+		
+		
+		
+		
+		
+	.wake_host_gpio = { // BT_HOST_WAKE, for bt wakeup host when it is in deep sleep
+		.io		   = RK30_PIN3_PD0, // set io to INVALID_GPIO for disable it
+		.enable	   = IRQF_TRIGGER_RISING,// set IRQF_TRIGGER_FALLING for falling, set IRQF_TRIGGER_RISING for rising
+		.iomux	   = {
+			.name	   = NULL,
+		},
+	},
+};
+
+static struct platform_device device_tcc_bt = {
+	.name	= "tcc_bt_dev",
+	.id		= -1,
+	.dev	= {
+		.platform_data = &tcc_bt_platdata,
+		},
+};
+#endif
+
+
 static struct platform_device *devices[] __initdata = {
 #if defined(CONFIG_SWITCH_GPIO) && !defined(CONFIG_LIDA_MACH_X5)
     &device_headset_switch,
@@ -2112,6 +2153,11 @@ static struct platform_device *devices[] __initdata = {
 #ifdef CONFIG_RK30_PWM_LED
     &rk30_device_led,
 #endif
+
+#ifdef CONFIG_TCC_BT_DEV
+	&device_tcc_bt,
+#endif
+
 };
 
 
@@ -3545,36 +3591,47 @@ static void __init rk30_reserve(void)
  */
 
 #if defined(CONFIG_ARCH_RK3188)
-//sdk
+//new_FiiO_tables
 static struct cpufreq_frequency_table dvfs_arm_table_volt_level0[] = {
-	{.frequency = 312 * 1000,       .index = 850 * 1000},
-	{.frequency = 504 * 1000,       .index = 900 * 1000},
-	{.frequency = 816 * 1000,       .index = 950 * 1000},
-	{.frequency = 1008 * 1000,      .index = 1025 * 1000},
-	{.frequency = 1200 * 1000,      .index = 1100 * 1000},
-	{.frequency = 1416 * 1000,      .index = 1200 * 1000},
-	{.frequency = 1608 * 1000,      .index = 1300 * 1000},
+	{.frequency = 312 * 1000,		.index = 850 * 1000},
+	{.frequency = 504 * 1000,		.index = 900 * 1000},
+	{.frequency = 816 * 1000,		.index = 950 * 1000},
+	{.frequency = 1008 * 1000,		.index = 1025 * 1000},
+	{.frequency = 1200 * 1000, 		.index = 1100 * 1000},
+	{.frequency = 1416 * 1000,		.index = 1200 * 1000},
+	{.frequency = 1608 * 1000, 		.index = 1300 * 1000},
+	{.frequency = 1704 * 1000,		.index = 1325 * 1000},
+	{.frequency = 1800 * 1000, 		.index = 1400 * 1000},
+	{.frequency = 1920 * 1000,		.index = 1450 * 1000},
 	{.frequency = CPUFREQ_TABLE_END},
 };
 //default
 static struct cpufreq_frequency_table dvfs_arm_table_volt_level1[] = {
-	{.frequency = 312 * 1000,       .index = 875 * 1000},
-	{.frequency = 504 * 1000,       .index = 925 * 1000},
-	{.frequency = 816 * 1000,       .index = 975 * 1000},
-	{.frequency = 1008 * 1000,      .index = 1075 * 1000},
-	{.frequency = 1200 * 1000,      .index = 1150 * 1000},
-	{.frequency = 1416 * 1000,      .index = 1250 * 1000},
-	{.frequency = 1608 * 1000,      .index = 1350 * 1000},
+        {.frequency = 312 * 1000,       .index = 850 * 1000},
+        {.frequency = 504 * 1000,       .index = 900 * 1000},
+        {.frequency = 816 * 1000,       .index = 950 * 1000},
+        {.frequency = 1008 * 1000,      .index = 1025 * 1000},
+        {.frequency = 1200 * 1000,      .index = 1100 * 1000},
+        {.frequency = 1416 * 1000,      .index = 1200 * 1000},
+        {.frequency = 1608 * 1000,      .index = 1300 * 1000},
+        {.frequency = 1704 * 1000,      .index = 1325 * 1000},
+        {.frequency = 1800 * 1000,      .index = 1350 * 1000},
+        {.frequency = 1920 * 1000,      .index = 1375 * 1000},
 	{.frequency = CPUFREQ_TABLE_END},
 };
 #if defined(CONFIG_LIDA_MACH_X7) || defined(CONFIG_LIDA_MACH_X5)|| defined(CONFIG_LIDA_MACH_X7II)
+//disused now
 static struct cpufreq_frequency_table dvfs_arm_table_volt_level2[] = {
-        {.frequency = 312 * 1000,       .index = 950 * 1000},
-        {.frequency = 504 * 1000,       .index = 975 * 1000},
-        {.frequency = 816 * 1000,       .index = 1050 * 1000},
-        {.frequency = 1008 * 1000,      .index = 1100 * 1000},
-        {.frequency = 1200 * 1000,      .index = 1200 * 1000},
-        {.frequency = 1416 * 1000,      .index = 1250 * 1000},
+        {.frequency = 312 * 1000,       .index = 850 * 1000},
+        {.frequency = 504 * 1000,       .index = 900 * 1000},
+        {.frequency = 816 * 1000,       .index = 950 * 1000},
+        {.frequency = 1008 * 1000,      .index = 1025 * 1000},
+        {.frequency = 1200 * 1000,      .index = 1100 * 1000},
+        {.frequency = 1416 * 1000,      .index = 1200 * 1000},
+        {.frequency = 1608 * 1000,      .index = 1300 * 1000},
+        {.frequency = 1704 * 1000,      .index = 1325 * 1000},
+        {.frequency = 1800 * 1000,      .index = 1350 * 1000},
+        {.frequency = 1920 * 1000,      .index = 1375 * 1000},
         {.frequency = CPUFREQ_TABLE_END},
 };
 
@@ -3595,12 +3652,14 @@ static struct cpufreq_frequency_table dvfs_arm_table_volt_level2[] = {
 /******************************** gpu dvfs frequency volt table **********************************/
 //sdk
 static struct cpufreq_frequency_table dvfs_gpu_table_volt_level0[] = {	
-	{.frequency = 133 * 1000,       .index = 975 * 1000},//the mininum rate is limited 133M for rk3188
-	{.frequency = 200 * 1000,       .index = 975 * 1000},
-	{.frequency = 266 * 1000,       .index = 1000 * 1000},
-	{.frequency = 300 * 1000,       .index = 1050 * 1000},
-	{.frequency = 400 * 1000,       .index = 1100 * 1000},
-	{.frequency = 600 * 1000,       .index = 1200 * 1000},
+	{.frequency = 133 * 1000,       .index = 950 * 1000},//the mininum rate is limited 133M for rk3188
+	{.frequency = 200 * 1000,       .index = 950 * 1000},
+	{.frequency = 266 * 1000,       .index = 975 * 1000},
+	{.frequency = 300 * 1000,       .index = 1025 * 1000},
+	{.frequency = 400 * 1000,       .index = 1075 * 1000},
+	{.frequency = 600 * 1000,       .index = 1125 * 1000},
+        {.frequency = 666 * 1000,       .index = 1175 * 1000},
+        {.frequency = 700 * 1000,       .index = 1225 * 1000},
 	{.frequency = CPUFREQ_TABLE_END},
 };
 //cube 10'
@@ -3620,18 +3679,20 @@ static struct cpufreq_frequency_table dvfs_ddr_table_volt_level0[] = {
 	{.frequency = 300 * 1000 + DDR_FREQ_VIDEO,      .index = 1000 * 1000},
 	{.frequency = 396 * 1000 + DDR_FREQ_NORMAL,     .index = 1100 * 1000},
 	//{.frequency = 528 * 1000 + DDR_FREQ_NORMAL,     .index = 1200 * 1000},
+	{.frequency = 720 * 1000 + DDR_FREQ_NORMAL,     .index = 1200 * 1000},
 	{.frequency = CPUFREQ_TABLE_END},
 };
 
 static struct cpufreq_frequency_table dvfs_ddr_table_t[] = {
 	{.frequency = 200 * 1000 + DDR_FREQ_SUSPEND,    .index = 1025 * 1000},
 	{.frequency = 460 * 1000 + DDR_FREQ_NORMAL,     .index = 1200 * 1000},
+	{.frequency = 720 * 1000 + DDR_FREQ_NORMAL,     .index = 1200 * 1000},
 	{.frequency = CPUFREQ_TABLE_END},
 };
 
-//if you board is good for volt quality,select dvfs_arm_table_volt_level0
-#define dvfs_arm_table dvfs_arm_table_volt_level2
-#define dvfs_gpu_table dvfs_gpu_table_volt_level1
+//all optimised FiiO voltages are now stored in level0
+#define dvfs_arm_table dvfs_arm_table_volt_level0
+#define dvfs_gpu_table dvfs_gpu_table_volt_level0
 #define dvfs_ddr_table dvfs_ddr_table_volt_level0
 
 #else
