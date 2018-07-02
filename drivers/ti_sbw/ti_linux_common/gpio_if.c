@@ -62,7 +62,7 @@ void loop(int n)
 }
 
 #ifdef ROCKCHIP
-extern inline void rk30_gpio_bit_op(void __iomem *regbase, unsigned int offset, u32 bit, unsigned char flag);
+extern void rk30_gpio_bit_op(void __iomem *regbase, unsigned int offset, u32 bit, unsigned char flag);
 
 int pintable[]={RK30_PIN1_PC2,RK30_PIN1_PA5};
 struct gpio_data  iobase[2];
