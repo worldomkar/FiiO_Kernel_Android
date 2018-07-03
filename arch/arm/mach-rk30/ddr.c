@@ -28,7 +28,7 @@
 
 typedef uint32_t uint32;
 
-//#define ENABLE_DDR_CLCOK_GPLL_PATH  //for RK3188
+#define ENABLE_DDR_CLCOK_GPLL_PATH  //for RK3188
 
 #define DDR3_DDR2_ODT_DLL_DISABLE_FREQ    (333)
 #define SR_IDLE                       (0x1)   //unit:32*DDR clk cycle, and 0 for disable auto self-refresh
