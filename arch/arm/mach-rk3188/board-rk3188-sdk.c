@@ -1865,46 +1865,48 @@ static struct rfkill_rk_platform_data rfkill_rk_platdata = {
 
     .poweron_gpio       = { // BT_REG_ON
        // .io             = RK30_PIN3_PD1,//INVALID_GPIO,
-        .io		= RK30_PIN3_PC6,// RK30_PIN3_PD1 // INVALID_GPIO
+       // .io		= RK30_PIN3_PC6,// RK30_PIN3_PD1 // INVALID_GPIO
+       // experimental settings below:
+	.io		= RK30_PIN3_PD1,
 	.enable         = GPIO_HIGH,
         .iomux          = {
             .name       = "bt_poweron",
-        //    .fgpio      = GPIO3_D1,
-	    .fgpio	= GPIO3_C6, // GPIO3_D1
+            .fgpio      = GPIO3_D1,
+	//    .fgpio	= GPIO3_C6, // GPIO3_D1
         },
     },
 
     .reset_gpio         = { // BT_RST
-        // .io             = INVALID_GPIO, // set io to INVALID_GPIO for disable it
-        .io             = RK30_PIN3_PC7, // INVALID_GPIO
+         .io             = INVALID_GPIO, // set io to INVALID_GPIO for disable it
+        //.io             = RK30_PIN3_PC7, // INVALID_GPIO
 	.enable         = GPIO_LOW,
         .iomux          = {
-        //      .name	  = NULL,
-            .name       = "bt_reset",
-            .fgpio      = GPIO3_C7,
+              .name	  = NULL,
+        //    .name       = "bt_reset",
+        //    .fgpio      = GPIO3_C7,
        },
    }, 
 
     .wake_gpio          = { // BT_WAKE, use to control bt's sleep and wakeup
-	.io             = RK30_PIN3_PD1, // RK_30_PIN3_PC7
-        // .io             = RK30_PIN3_PC7, // set io to INVALID_GPIO for disable it
+	//.io             = RK30_PIN3_PD1, // RK_30_PIN3_PC7
+         .io             = RK30_PIN3_PC7, // set io to INVALID_GPIO for disable it
         .enable         = GPIO_HIGH,
         .iomux          = {
             .name       = "bt_wake",
-        //    .fgpio      = GPIO3_C7,
-	    .fgpio	= GPIO3_D1, // GPIO3_C7
+            .fgpio      = GPIO3_C7,
+	//    .fgpio	= GPIO3_D1, // GPIO3_C7
         },
     },
 
     .wake_host_irq      = { // BT_HOST_WAKE, for bt wakeup host when it is in deep sleep
         .gpio           = {
-            .io		= INVALID_GPIO, // RK30_PIN3_PC6
-	    //.io         = RK30_PIN3_PC6,//RK30_PIN0_PA5, // set io to INVALID_GPIO for disable it
+        //    .io		= INVALID_GPIO, // RK30_PIN3_PC6
+	    .io         = RK30_PIN3_PC6,//RK30_PIN0_PA5, // set io to INVALID_GPIO for disable it
             .enable     = GPIO_LOW,      // set GPIO_LOW for falling, set 0 for rising
             .iomux      = {
-                .name   = NULL,
-		//.name   = "bt_host_wake",
-		//.fgpio  = GPIO3_C6,
+             //   .name   = NULL,
+		.name   = "bt_host_wake",
+		.fgpio  = GPIO3_C6,
             },
         },
     },
