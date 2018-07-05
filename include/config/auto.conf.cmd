@@ -314,6 +314,9 @@ deps_config := \
 	drivers/video/omap2/Kconfig \
 	drivers/video/omap/Kconfig \
 	drivers/video/geode/Kconfig \
+	drivers/gpu/mali/ump/Kconfig \
+	drivers/gpu/mali/mali/Kconfig \
+	drivers/gpu/mali/Kconfig \
 	drivers/gpu/ion/Kconfig \
 	drivers/gpu/stub/Kconfig \
 	drivers/gpu/drm/radeon/Kconfig \
