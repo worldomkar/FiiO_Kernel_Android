@@ -3662,11 +3662,11 @@ static struct cpufreq_frequency_table dvfs_arm_table_volt_level2[] = {
 /******************************** gpu dvfs frequency volt table **********************************/
 //FiiO new
 static struct cpufreq_frequency_table dvfs_gpu_table_volt_level0[] = {	
-	{.frequency = 133 * 1000,       .index = 950 * 1000},//the mininum rate is limited 133M for rk3188
-	{.frequency = 200 * 1000,       .index = 950 * 1000},
-	{.frequency = 266 * 1000,       .index = 975 * 1000},
-	{.frequency = 300 * 1000,       .index = 1025 * 1000},
-	{.frequency = 400 * 1000,       .index = 1075 * 1000},
+//	{.frequency = 133 * 1000,       .index = 950 * 1000},//the mininum rate is limited 133M for rk3188
+//	{.frequency = 200 * 1000,       .index = 950 * 1000},
+//	{.frequency = 266 * 1000,       .index = 975 * 1000},
+//	{.frequency = 300 * 1000,       .index = 1025 * 1000},
+//	{.frequency = 400 * 1000,       .index = 1075 * 1000},
 	{.frequency = 600 * 1000,       .index = 1125 * 1000},
         {.frequency = 666 * 1000,       .index = 1175 * 1000},
         {.frequency = 700 * 1000,       .index = 1225 * 1000},
@@ -3748,7 +3748,7 @@ void __init board_clock_init(void)
 	//dvfs_set_arm_logic_volt(dvfs_cpu_logic_table, cpu_dvfs_table, dep_cpu2core_table);	
 	dvfs_set_freq_volt_table(clk_get(NULL, "cpu"), dvfs_arm_table);
 	dvfs_set_freq_volt_table(clk_get(NULL, "gpu"), dvfs_gpu_table);
-	//dvfs_set_freq_volt_table(clk_get(NULL, "ddr"), dvfs_ddr_table);
+	dvfs_set_freq_volt_table(clk_get(NULL, "ddr"), dvfs_ddr_table);
 
 	if (rk_pll_flag() == 0) {
 		dvfs_set_freq_volt_table(clk_get(NULL, "ddr"), dvfs_ddr_table);
