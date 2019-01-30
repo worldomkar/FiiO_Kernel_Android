@@ -3686,11 +3686,15 @@ static struct cpufreq_frequency_table dvfs_gpu_table_volt_level1[] = {
 */
 /******************************** ddr dvfs frequency volt table **********************************/
 static struct cpufreq_frequency_table dvfs_ddr_table_volt_level0[] = {
-	{.frequency = 200 * 1000 + DDR_FREQ_SUSPEND,    .index = 950 * 1000},
-	{.frequency = 300 * 1000 + DDR_FREQ_VIDEO,      .index = 1000 * 1000},
+	{.frequency = 396 * 1000 + DDR_FREQ_IDLE,	.index = 1100 * 1000},
+	{.frequency = 396 * 1000 + DDR_FREQ_SUSPEND,	.index = 1100 * 1000},
+        {.frequency = 396 * 1000 + DDR_FREQ_VIDEO,	.index = 1100 * 1000},
+        {.frequency = 396 * 1000 + DDR_FREQ_NORMAL,	.index = 1100 * 1000},
+//	{.frequency = 200 * 1000 + DDR_FREQ_SUSPEND,    .index = 950 * 1000},
+//	{.frequency = 300 * 1000 + DDR_FREQ_VIDEO,      .index = 1000 * 1000},
 //	{.frequency = 396 * 1000 + DDR_FREQ_NORMAL,     .index = 1100 * 1000},
-	{.frequency = 528 * 1000 + DDR_FREQ_NORMAL,     .index = 1200 * 1000},
-	{.frequency = 720 * 1000 + DDR_FREQ_NORMAL,     .index = 1250 * 1000},
+//	{.frequency = 528 * 1000 + DDR_FREQ_NORMAL,     .index = 1200 * 1000},
+//	{.frequency = 720 * 1000 + DDR_FREQ_NORMAL,     .index = 1250 * 1000},
 //	{.frequency = 800 * 1000 + DDR_FREQ_NORMAL,     .index = 1250 * 1000},
 	{.frequency = CPUFREQ_TABLE_END},
 };

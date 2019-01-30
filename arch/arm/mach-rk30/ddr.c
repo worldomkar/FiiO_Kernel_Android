@@ -28,7 +28,7 @@
 
 typedef uint32_t uint32;
 
-#define ENABLE_DDR_CLCOK_GPLL_PATH  //for RK3188
+#define ENABLE_DDR_CLOCK_GPLL_PATH  //for RK3188
 
 #define DDR3_DDR2_ODT_DLL_DISABLE_FREQ    (333)
 #define SR_IDLE                       (0x1)   //unit:32*DDR clk cycle, and 0 for disable auto self-refresh
@@ -3335,7 +3335,7 @@ uint32_t ddr_change_freq(uint32_t nMHz)
     struct ddr_freq_t ddr_freq_t;
     ddr_freq_t.screen_ft_us = 0;
 
-#if defined(ENABLE_DDR_CLCOK_GPLL_PATH) && defined(CONFIG_ARCH_RK3188)
+#if defined(ENABLE_DDR_CLOCK_GPLL_PATH) && defined(CONFIG_ARCH_RK3188)
     return ddr_change_freq_gpll_dpll(nMHz);
 #else
     return ddr_change_freq_sram(nMHz,ddr_freq_t);

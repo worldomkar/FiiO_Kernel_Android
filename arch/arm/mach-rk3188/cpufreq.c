@@ -150,12 +150,12 @@ static struct cpufreq_frequency_table temp_limits[4][4] = {
 };
 
 static struct cpufreq_frequency_table temp_limits_cpu_perf[] = {
-	{.frequency = 1200 * 1000, .index =  60},
-	{.frequency = 1008 * 1000, .index = 100},
+	{.frequency = 1704 * 1000, .index = 100},
+//	{.frequency = 1008 * 1000, .index = 100},
 };
 
 static struct cpufreq_frequency_table temp_limits_gpu_perf[] = {
-	{.frequency = 1008 * 1000, .index = 0},
+	{.frequency = 1704 * 1000, .index = 0},
 };
 #elif defined(CONFIG_ARCH_RK3026)
 static struct cpufreq_frequency_table temp_limits[2][1] = {

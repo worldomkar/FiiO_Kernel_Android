@@ -639,9 +639,14 @@ static int ddrfreq_init(void)
 	}
         
 	if (ddrfreq_version==0) {
-		ddr.video_rate = 300 * MHZ;
+		ddr.normal_rate = 396 * MHZ;
+		ddr.reboot_rate = 396 * MHZ;
+		ddr.idle_rate = 396 * MHZ;
+		ddr.video_rate = 396 * MHZ;
+		ddr.suspend_rate = 396 * MHZ;
+		//ddr.video_rate = 300 * MHZ;
 		ddr.dualview_rate = ddr.normal_rate;
-		ddr.suspend_rate = 200 * MHZ;
+		//ddr.suspend_rate = 200 * MHZ;
 	}
 
 	for (i = 0; ddrfreq_version == 1 && table && table[i].frequency != CPUFREQ_TABLE_END; i++) {
