@@ -1,1 +1,0 @@
-cmd_drivers/usb/dwc_otg/built-in.o :=  /home/jkbuha/gcc-linaro-4.9-2016.02-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi-ld.bfd -EL    -r -o drivers/usb/dwc_otg/built-in.o drivers/usb/dwc_otg/dwc_otg.o 

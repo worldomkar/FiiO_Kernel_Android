@@ -1,1 +1,0 @@
-cmd_drivers/media/video/built-in.o :=  /home/jkbuha/gcc-linaro-4.9-2016.02-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi-ld.bfd -EL    -r -o drivers/media/video/built-in.o drivers/media/video/videodev.o drivers/media/video/v4l2-int-device.o drivers/media/video/v4l2-common.o drivers/media/video/ir-kbd-i2c.o drivers/media/video/davinci/built-in.o 

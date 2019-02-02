@@ -1,1 +1,0 @@
-cmd_drivers/usb/serial/built-in.o :=  /home/jkbuha/gcc-linaro-4.9-2016.02-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi-ld.bfd -EL    -r -o drivers/usb/serial/built-in.o drivers/usb/serial/usbserial.o drivers/usb/serial/option.o drivers/usb/serial/usb_wwan.o 

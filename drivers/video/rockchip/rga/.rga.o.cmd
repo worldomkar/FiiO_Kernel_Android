@@ -1,1 +1,0 @@
-cmd_drivers/video/rockchip/rga/rga.o := /home/jkbuha/gcc-linaro-4.9-2016.02-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi-ld.bfd -EL    -r -o drivers/video/rockchip/rga/rga.o drivers/video/rockchip/rga/rga_drv.o drivers/video/rockchip/rga/rga_mmu_info.o drivers/video/rockchip/rga/rga_reg_info.o drivers/video/rockchip/rga/RGA_API.o 

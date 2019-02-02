@@ -1,1 +1,0 @@
-cmd_drivers/staging/built-in.o :=  /home/jkbuha/gcc-linaro-4.9-2016.02-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi-ld.bfd -EL    -r -o drivers/staging/built-in.o drivers/staging/staging.o drivers/staging/tty/built-in.o drivers/staging/generic_serial/built-in.o drivers/staging/android/built-in.o drivers/staging/rk29/ipp/built-in.o drivers/staging/zsmalloc/built-in.o 
