@@ -1,0 +1,1 @@
+cmd_sound/soc/codecs/snd-soc-fpga.o := /home/jkbuha/gcc-linaro-4.9-2016.02-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi-ld.bfd -EL    -r -o sound/soc/codecs/snd-soc-fpga.o sound/soc/codecs/fpga_audio_interface.o 

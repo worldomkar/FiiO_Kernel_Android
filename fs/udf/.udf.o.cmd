@@ -1,0 +1,1 @@
+cmd_fs/udf/udf.o := /home/jkbuha/gcc-linaro-4.9-2016.02-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi-ld.bfd -EL    -r -o fs/udf/udf.o fs/udf/balloc.o fs/udf/dir.o fs/udf/file.o fs/udf/ialloc.o fs/udf/inode.o fs/udf/lowlevel.o fs/udf/namei.o fs/udf/partition.o fs/udf/super.o fs/udf/truncate.o fs/udf/symlink.o fs/udf/directory.o fs/udf/misc.o fs/udf/udftime.o fs/udf/unicode.o 

@@ -1,0 +1,1 @@
+cmd_drivers/switch/built-in.o :=  /home/jkbuha/gcc-linaro-4.9-2016.02-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi-ld.bfd -EL    -r -o drivers/switch/built-in.o drivers/switch/switch_class.o drivers/switch/switch_external_sd.o drivers/switch/switch_gpio_msp430.o 

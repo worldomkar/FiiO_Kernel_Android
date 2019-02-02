@@ -1,0 +1,1 @@
+cmd_drivers/input/tablet/wacom.o := /home/jkbuha/gcc-linaro-4.9-2016.02-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi-ld.bfd -EL    -r -o drivers/input/tablet/wacom.o drivers/input/tablet/wacom_wac.o drivers/input/tablet/wacom_sys.o 

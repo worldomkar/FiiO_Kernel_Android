@@ -1,0 +1,1 @@
+cmd_sound/soc/rk29/snd-soc-ak4490.o := /home/jkbuha/gcc-linaro-4.9-2016.02-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi-ld.bfd -EL    -r -o sound/soc/rk29/snd-soc-ak4490.o sound/soc/rk29/rk29_ak4490.o 

@@ -1,0 +1,1 @@
+cmd_drivers/net/wireless/built-in.o :=  /home/jkbuha/gcc-linaro-4.9-2016.02-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi-ld.bfd -EL    -r -o drivers/net/wireless/built-in.o drivers/net/wireless/wifi_sys/rkwifi_sys_iface.o drivers/net/wireless/rkwifi/built-in.o 
