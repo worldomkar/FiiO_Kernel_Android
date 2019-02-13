@@ -3043,15 +3043,15 @@ static struct clk_lookup clks[] = {
 static void __init rk30_init_enable_clocks(void)
 {
 	#if 0
-	//clk_enable_nolock(&xin24m);
-	//clk_enable_nolock(&clk_12m);
-	//clk_enable_nolock(&arm_pll_clk);
-	//clk_enable_nolock(&ddr_pll_clk);
-	//clk_enable_nolock(&codec_pll_clk);
-	//clk_enable_nolock(&general_pll_clk);
+	clk_enable_nolock(&xin24m);
+	clk_enable_nolock(&clk_12m);
+	clk_enable_nolock(&arm_pll_clk);
+	clk_enable_nolock(&ddr_pll_clk);
+	clk_enable_nolock(&codec_pll_clk);
+	clk_enable_nolock(&general_pll_clk);
 	#endif
 	clk_enable_nolock(&clk_ddr);
-	//clk_enable_nolock(&clk_core);
+	clk_enable_nolock(&clk_core);
 	clk_enable_nolock(&clk_cpu_div);
 	clk_enable_nolock(&clk_core_gpll_path);
 	clk_enable_nolock(&clk_ddr_gpll_path);
@@ -3059,10 +3059,10 @@ static void __init rk30_init_enable_clocks(void)
 	clk_enable_nolock(&clk_core_dbg);
 	clk_enable_nolock(&core_periph);
 	clk_enable_nolock(&aclk_core);
-	//clk_enable_nolock(&aclk_cpu);
-	//clk_enable_nolock(&pclk_cpu);
+	clk_enable_nolock(&aclk_cpu);
+	clk_enable_nolock(&pclk_cpu);
 	clk_enable_nolock(&atclk_cpu);
-	//clk_enable_nolock(&hclk_cpu);
+	clk_enable_nolock(&hclk_cpu);
 	clk_enable_nolock(&ahb2apb_cpu);
 	if (flag_uboot_display) {
 		clk_enable_nolock(&dclk_lcdc0);
@@ -3609,7 +3609,7 @@ static void __init rk30_clock_common_init(unsigned long gpll_rate, unsigned long
 	clk_set_parent_nolock(&aclk_gpu, &general_pll_clk);
 	clk_set_rate_nolock(&aclk_gpu, 600 * MHZ);
 	
-	clk_set_rate_nolock(&clk_uart0, 48000000);
+	clk_set_rate_nolock(&clk_uart0, 49500000);
 	clk_set_rate_nolock(&clk_sdmmc, 24750000);
 	clk_set_rate_nolock(&clk_sdio, 24750000);
 }
