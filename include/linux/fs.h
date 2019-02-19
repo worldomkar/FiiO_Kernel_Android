@@ -1385,6 +1385,10 @@ struct super_block {
 	struct mutex		s_lock;
 	int			s_count;
 	atomic_t		s_active;
+#ifdef CONFIG_ASYNC_FSYNC
+#define FLAG_ASYNC_FSYNC        0x1
+	unsigned int fsync_flags;
+#endif
 #ifdef CONFIG_SECURITY
 	void                    *s_security;
 #endif
