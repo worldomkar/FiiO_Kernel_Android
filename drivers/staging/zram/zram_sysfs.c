@@ -30,18 +30,9 @@ static u64 zram_stat64_read(struct zram *zram, u64 *v)
 	return val;
 }
 
-static struct zram *dev_to_zram(struct device *dev)
+static inline struct zram *dev_to_zram(struct device *dev)
 {
-	int i;
-	struct zram *zram = NULL;
-
-	for (i = 0; i < zram_get_num_devices(); i++) {
-		zram = &zram_devices[i];
-		if (disk_to_dev(zram->disk) == dev)
-			break;
-	}
-
-	return zram;
+	return (struct zram *)dev_to_disk(dev)->private_data;
 }
 
 static ssize_t disksize_show(struct device *dev,
@@ -68,12 +59,7 @@ static ssize_t disksize_store(struct device *dev,
 		pr_info("Cannot change disksize for initialized device\n");
 		return -EBUSY;
 	}
-#ifdef CONFIG_ZRAM_FOR_ANDROID
-        if (!disksize) {
-                disksize = default_disksize_perc_ram *
-                                        ((totalram_pages << PAGE_SHIFT) / 100);
-        }
-#endif
+
 	zram->disksize = PAGE_ALIGN(disksize);
 	set_capacity(zram->disk, zram->disksize >> SECTOR_SHIFT);
 	up_write(&zram->init_lock);
@@ -87,6 +73,13 @@ static ssize_t initstate_show(struct device *dev,
 	struct zram *zram = dev_to_zram(dev);
 
 	return sprintf(buf, "%u\n", zram->init_done);
+}
+
+static inline ssize_t initstate_store(struct device *dev,
+				      struct device_attribute *attr,
+				      const char *buf, size_t len)
+{
+	return 0;
 }
 
 static ssize_t reset_store(struct device *dev,
@@ -191,15 +184,18 @@ static ssize_t mem_used_total_show(struct device *dev,
 	u64 val = 0;
 	struct zram *zram = dev_to_zram(dev);
 
-	if (zram->init_done)
+	down_read(&zram->init_lock);
+	if (zram->init_done) {
 		val = zs_get_total_size_bytes(zram->mem_pool);
+	}
+	up_read(&zram->init_lock);
 
 	return sprintf(buf, "%llu\n", val);
 }
 
 static DEVICE_ATTR(disksize, S_IRUGO | S_IWUSR,
 		disksize_show, disksize_store);
-static DEVICE_ATTR(initstate, S_IRUGO, initstate_show, NULL);
+static DEVICE_ATTR(initstate, S_IRUGO | S_IWUSR, initstate_show, initstate_store);
 static DEVICE_ATTR(reset, S_IWUSR, NULL, reset_store);
 static DEVICE_ATTR(num_reads, S_IRUGO, num_reads_show, NULL);
 static DEVICE_ATTR(num_writes, S_IRUGO, num_writes_show, NULL);

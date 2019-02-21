@@ -35,8 +35,11 @@
 #include <linux/vmalloc.h>
 
 #include "zram_drv.h"
-
+#if defined(CONFIG_ZRAM_LZ4)
 #define ZRAM_COMPRESSOR_DEFAULT "lz4"
+#elif defined(CONFIG_ZRAM_LZO)
+#define ZRAM_COMPRESSOR_DEFAULT "lzo"
+#endif
 
 /* Globals */
 static int zram_major;
@@ -392,11 +395,12 @@ static int zram_bvec_read(struct zram *zram, struct bio_vec *bvec,
 		return 0;
 	}
 
-	user_mem = kmap_atomic(page);
 	if (is_partial_io(bvec))
 		/* Use  a temporary buffer to decompress the page */
-		uncmem = kmalloc(PAGE_SIZE, GFP_KERNEL);
-	else
+		uncmem = kmalloc(PAGE_SIZE, GFP_NOIO);
+
+	user_mem = kmap_atomic(page);
+	if (!is_partial_io(bvec))
 		uncmem = user_mem;
 
 	if (!uncmem) {
@@ -443,7 +447,7 @@ static int zram_bvec_write(struct zram *zram, struct bio_vec *bvec, u32 index,
 		 * This is a partial IO. We need to read the full page
 		 * before to write the changes.
 		 */
-		uncmem = kmalloc(PAGE_SIZE, GFP_KERNEL);
+		uncmem = kmalloc(PAGE_SIZE, GFP_NOIO);
 		if (!uncmem) {
 			pr_info("Error allocating temp memory!\n");
 			ret = -ENOMEM;
@@ -632,6 +636,10 @@ static inline int valid_io_request(struct zram *zram, struct bio *bio)
 		return 0;
 	}
 
+	if (unlikely((bio->bi_sector << SECTOR_SHIFT) + bio->bi_size >=
+		     zram->disksize))
+		return 0;
+
 	/* I/O request is valid */
 	return 1;
 }
@@ -662,7 +670,6 @@ static int zram_make_request(struct request_queue *queue, struct bio *bio)
 
 error_unlock:
 	up_read(&zram->init_lock);
-	return 0;
 error:
 	bio_io_error(bio);
 	return 0;
@@ -915,8 +922,8 @@ static int __init zram_init(void)
 	return 0;
 
 free_devices:
-	while (dev_id)
-		destroy_device(&zram_devices[--dev_id]);
+	while (dev_id >= 0)
+		destroy_device(&zram_devices[dev_id--]);
 	kfree(zram_devices);
 unregister:
 	unregister_blkdev(zram_major, "zram");
@@ -936,9 +943,11 @@ static void __exit zram_exit(void)
 	for (i = 0; i < num_devices; i++) {
 		zram = &zram_devices[i];
 
+		get_disk(zram->disk);
 		destroy_device(zram);
 		if (zram->init_done)
 			zram_reset_device(zram);
+		put_disk(zram->disk);
 	}
 
 	unregister_blkdev(zram_major, "zram");
@@ -949,7 +958,7 @@ static void __exit zram_exit(void)
 	pr_debug("Cleanup done!\n");
 }
 
-module_param(num_devices, uint, 0);
+module_param(num_devices, uint, S_IRUGO);
 MODULE_PARM_DESC(num_devices, "Number of zram devices");
 
 module_init(zram_init);

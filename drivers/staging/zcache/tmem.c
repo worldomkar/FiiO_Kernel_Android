@@ -599,6 +599,7 @@ out:
  * That is, if a get is done with a certain handle and fails, any
  * subsequent "get" must also fail (unless of course there is a
  * "put" done with the same handle).
+
  */
 int tmem_get(struct tmem_pool *pool, struct tmem_oid *oidp, uint32_t index,
 		char *data, size_t *size, bool raw, int get_and_free)
