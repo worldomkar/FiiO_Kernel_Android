@@ -1,1 +1,0 @@
-arch-rockchip-rk3x/config.h
