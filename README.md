@@ -5,20 +5,35 @@ Features
 =========
 
 CPU overclock from 1416MHz to 1752MHz
+
 GPU overclock from 200MHz to 800MHz
+
 DDR overclock from 133MHz to 720MHz
+
 New Schedulers: Zen, Maple, Row, Sio, VR, BFQ
+
 New Governors: InteractiveX
+
 New TCP/IP: Westwood
+
 init.d support
+
 init.d optimisation scripts - thanks to prispewnic of 4PDA!
+
 frandom generator instead of urandom
+
 ARM RSEM implementation
+
 Kernel LZ4 compression instead of LZO
+
 fsync disable
+
 UKSM instead of KSM
+
 ZRAM implementation
+
 zsmalloc implementation
+
 zcache implementation
 
 Changelog
