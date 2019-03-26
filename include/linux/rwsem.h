@@ -16,7 +16,9 @@
 
 #include <asm/system.h>
 #include <asm/atomic.h>
+//#include <linux/atomic.h>
 
+struct optimistic_spin_queue;
 struct rw_semaphore;
 
 #ifdef CONFIG_RWSEM_GENERIC_SPINLOCK
@@ -24,9 +26,20 @@ struct rw_semaphore;
 #else
 /* All arch specific implementations share the same struct */
 struct rw_semaphore {
-	long			count;
-	spinlock_t		wait_lock;
-	struct list_head	wait_list;
+//	long			count;
+//	raw_spinlock_t		wait_lock;
+//	struct list_head	wait_list;
+	long count;
+	raw_spinlock_t wait_lock;
+	struct list_head wait_list;
+#ifdef CONFIG_SMP
+	/*
+	 * Write owner. Used as a speculative check to see
+	 * if the owner is running on the cpu.
+	 */
+	struct task_struct *owner;
+	struct optimistic_spin_queue *osq; /* spinner MCS lock */
+#endif
 #ifdef CONFIG_DEBUG_LOCK_ALLOC
 	struct lockdep_map	dep_map;
 #endif
@@ -56,9 +69,21 @@ static inline int rwsem_is_locked(struct rw_semaphore *sem)
 # define __RWSEM_DEP_MAP_INIT(lockname)
 #endif
 
-#define __RWSEM_INITIALIZER(name) \
-	{ RWSEM_UNLOCKED_VALUE, __SPIN_LOCK_UNLOCKED(name.wait_lock),	\
-	  LIST_HEAD_INIT((name).wait_list) __RWSEM_DEP_MAP_INIT(name) }
+#ifdef CONFIG_SMP
+#define __RWSEM_INITIALIZER(name)			\
+	{ RWSEM_UNLOCKED_VALUE,				\
+	  __RAW_SPIN_LOCK_UNLOCKED(name.wait_lock),	\
+	  LIST_HEAD_INIT((name).wait_list),		\
+	  NULL, /* owner */				\
+	  NULL /* mcs lock */                           \
+	  __RWSEM_DEP_MAP_INIT(name) }
+#else
+#define __RWSEM_INITIALIZER(name)			\
+	{ RWSEM_UNLOCKED_VALUE,				\
+	  __RAW_SPIN_LOCK_UNLOCKED(name.wait_lock),	\
+	  LIST_HEAD_INIT((name).wait_list)		\
+	  __RWSEM_DEP_MAP_INIT(name) }
+#endif
 
 #define DECLARE_RWSEM(name) \
 	struct rw_semaphore name = __RWSEM_INITIALIZER(name)
@@ -72,6 +97,17 @@ do {								\
 								\
 	__init_rwsem((sem), #sem, &__key);			\
 } while (0)
+
+/*
+ * This is the same regardless of which rwsem implementation that is being used.
+ * It is just a heuristic meant to be called by somebody alreadying holding the
+ * rwsem to see if somebody from an incompatible type is wanting access to the
+ * lock.
+ */
+static inline int rwsem_is_contended(struct rw_semaphore *sem)
+{
+	return !list_empty(&sem->wait_list);
+}
 
 /*
  * lock for reading
@@ -124,6 +160,14 @@ extern void downgrade_write(struct rw_semaphore *sem);
  */
 extern void down_read_nested(struct rw_semaphore *sem, int subclass);
 extern void down_write_nested(struct rw_semaphore *sem, int subclass);
+extern void _down_write_nest_lock(struct rw_semaphore *sem, struct lockdep_map *nest_lock);
+
+# define down_write_nest_lock(sem, nest_lock)			\
+do {								\
+	typecheck(struct lockdep_map *, &(nest_lock)->dep_map);	\
+	_down_write_nest_lock(sem, &(nest_lock)->dep_map);	\
+} while (0);
+
 /*
  * Take/release a lock when not the owner will release it.
  *
@@ -131,9 +175,11 @@ extern void down_write_nested(struct rw_semaphore *sem, int subclass);
  *   proper abstraction for this case is completions. ]
  */
 extern void down_read_non_owner(struct rw_semaphore *sem);
+//# define down_write_nest_lock(sem, nest_lock)	down_write(sem)
 extern void up_read_non_owner(struct rw_semaphore *sem);
 #else
 # define down_read_nested(sem, subclass)		down_read(sem)
+# define down_write_nest_lock(sem, nest_lock)   down_write(sem)
 # define down_write_nested(sem, subclass)	down_write(sem)
 # define down_read_non_owner(sem)		down_read(sem)
 # define up_read_non_owner(sem)			up_read(sem)
