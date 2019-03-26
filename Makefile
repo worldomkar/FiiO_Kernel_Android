@@ -258,7 +258,7 @@ HOSTCXX      = g++
 # HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer
 # HOSTCFLAGS = -O3 -pipe -Wl,--hash-style=gnu -fno-tree-vectorize -fno-inline-functions -fno-unswitch-loops
 #HOSTCFLAGS = -O2 -pipe -Wl,--hash-style=gnu -fno-tree-vectorize -fstrict-aliasing -Wstrict-aliasing=2 -Werror=strict-aliasing
-HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer
+HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer -std=gnu89
 HOSTCXXFLAGS = -O2
 #HOSTCXXFLAGS = -O2 -pipe -Wl,--hash-style=gnu -fno-tree-vectorize -fno-inline-functions -fno-unswitch-loops
 # Decide whether to build built-in, modular, or both.
@@ -364,11 +364,15 @@ CHECK		= sparse
 
 CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
 		  -Wbitwise -Wno-return-void $(CF)
-MODFLAGS  = -DMODULE -mtune=cortex-a9 -ftree-vectorize -ffast-math -fsingle-precision-constant -march=armv7-a -mfpu=vfpv3 -mvectorize-with-neon-quad -funroll-loops -fsched-spec-load -mfloat-abi=softfp
-CFLAGS_MODULE   = $(MODFLAGS)
-AFLAGS_MODULE   = $(MODFLAGS)
+#MODFLAGS  = -DMODULE -mtune=cortex-a9 -ftree-vectorize -ffast-math -fsingle-precision-constant -march=armv7-a -mfpu=vfpv3 -mvectorize-with-neon-quad -funroll-loops -fsched-spec-load -mfloat-abi=softfp
+MODFLAGS  =  -munaligned-access -ftree-vectorize -fgcse-lm -fgcse-sm -fsched-spec-load -ffast-math -fsingle-precision-constant -mcpu=cortex-a9 -march=armv7-a -mtune=cortex-a9 -marm -mfpu=vfpv3 -funroll-loops -mvectorize-with-neon-quad -mfloat-abi=softfp
+CFLAGS_MODULE   = -DMODULE $(MODFLAGS)
+#CFLAGS_MODULE   = -munaligned-access -ftree-vectorize -fgcse-lm -fgcse-sm -fsched-spec-load -ffast-math -fsingle-precision-constant -mcpu=cortex-a9 -mtune=cortex-a9 -marm -mfpu=vfpv3 -funroll-loops -mvectorize-with-neon-quad -mfloat-abi=softfp
+AFLAGS_MODULE   = -DMODULE $(MODFLAGS)
+AFLAGS_MODULE   =
 LDFLAGS_MODULE  =
-CFLAGS_KERNEL	= -mtune=cortex-a9 -ftree-vectorize -ffast-math -fsingle-precision-constant -march=armv7-a -mfpu=vfpv3 -mvectorize-with-neon-quad -funroll-loops -fsched-spec-load -mfloat-abi=softfp
+#CFLAGS_KERNEL	= -mtune=cortex-a9 -ftree-vectorize -ffast-math -fsingle-precision-constant -mcpu=cortex-a9 -march=armv7-a -mfpu=neon-vfpv3 -mvectorize-with-neon-quad -funroll-loops -fsched-spec-load -mfloat-abi=softfp
+CFLAGS_KERNEL	= $(MODFLAGS)
 AFLAGS_KERNEL	=
 CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
 
@@ -386,10 +390,16 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common \
 		   -Werror-implicit-function-declaration \
 		   -Wno-format-security \
-		   -fno-delete-null-pointer-checks \
-	       -march=armv7-a \
-	       -mtune=cortex-a9 \
-	             -mfpu=neon
+		   -fno-delete-null-pointer-checks
+
+# arter97's optimizations
+KBUILD_CFLAGS	+= -s -pipe -O2 -mcpu=cortex-a9 -march=armv7-a -mtune=cortex-a9 -mfpu=vfpv3 -mfloat-abi=softfp
+# -Wno-unused
+KBUILD_CFLAGS	+= -Wno-unused
+# L1/L2 cache size parameters by @jkbuha
+KBUILD_CFLAGS	+= --param l1-cache-size=32 --param l1-cache-line-size=32 --param l2-cache-size=512
+
+
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
 KBUILD_AFLAGS   := -D__ASSEMBLY__
