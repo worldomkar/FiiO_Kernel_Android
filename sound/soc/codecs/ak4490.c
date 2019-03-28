@@ -714,7 +714,7 @@ static const struct snd_kcontrol_new ak4490_snd_controls[] = {
 	SOC_SINGLE("AK4490 External Digital Filter", AK4490_00_CONTROL1, 6, 1, 0),
 	SOC_SINGLE("AK4490 MCLK Frequncy Auto Setting", AK4490_00_CONTROL1, 7, 1, 0),
 	SOC_SINGLE("AK4490 Soft Mute Control", AK4490_01_CONTROL2, 0, 1, 0),
-	SOC_SINGLE("AK4490 Short delay filter", AK4490_01_CONTROL2, 5, 1, 0),
+	SOC_SINGLE("AK4490 Short delay sharp filter", AK4490_01_CONTROL2, 5, 1, 0),
 	SOC_SINGLE("AK4490 Data Zero Detect Enable", AK4490_01_CONTROL2, 7, 1, 0),
 	SOC_SINGLE("AK4490 Slow Roll-off Filter", AK4490_02_CONTROL3, 0, 1, 0),
 	SOC_SINGLE("AK4490 Invering Enable of DZF", AK4490_02_CONTROL3, 4, 1, 0),
@@ -1159,23 +1159,23 @@ static int ak4490_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
 		case SND_SOC_DAIFMT_I2S:
 			format |= AK4490_DIF_I2S_MODE;
-            fpga_fmt=FMT_PCM;
+            		fpga_fmt=FMT_PCM;
 			if ( ak4490->nBickFreq == 1 ) 	format |= AK4490_DIF_32BIT_MODE;
 			break;
 		case SND_SOC_DAIFMT_LEFT_J:
 			format |= AK4490_DIF_MSB_MODE;
-            fpga_fmt=FMT_PCM;
+            		fpga_fmt=FMT_PCM;
 			if ( ak4490->nBickFreq == 1 ) 	format |= AK4490_DIF_32BIT_MODE;
 			break;
 		case SND_SOC_DAIFMT_DSD:
 			format2 |= AK4490_DIF_DSD_MODE;
-            fpga_fmt=FMT_DSD;
+            		fpga_fmt=FMT_DSD;
 			break;
 		case SND_SOC_DAIFMT_SOP:
-            fpga_fmt=FMT_SOP;
+            		fpga_fmt=FMT_SOP;
 			break;
 		default:
-            fpga_fmt=FMT_PCM;
+            		fpga_fmt=FMT_PCM;
 			return -EINVAL;
 	}
 
@@ -1507,39 +1507,42 @@ static int ak4490_set_dai_mute(struct snd_soc_dai *dai, int mute)
         }
 		/* ak4490_update_bits_lr2(AK4490_01_CONTROL2, 0x01, 0x00);  */
 #ifdef CONFIG_SND_SOC_AK4490_CUSTOM_DRIVER
-                if (selected_filter == 1) {
-                    ret = snd_soc_read(codec, AK4490_02_CONTROL3); // slow bit
-                    ret |= 1 << 0;
-                    snd_soc_write(codec, AK4490_02_CONTROL3, ret);
-                    ret = snd_soc_read(codec, AK4490_01_CONTROL2); // sd bit
-                    ret &= ~(1 << 5);
-                    snd_soc_write(codec, AK4490_01_CONTROL2, ret);
-                    
-                }
-                if (selected_filter == 2) {
-                    ret = snd_soc_read(codec, AK4490_02_CONTROL3);
-                    ret &= ~(1 << 0);
-                    snd_soc_write(codec, AK4490_02_CONTROL3, ret);
-                    ret = snd_soc_read(codec, AK4490_01_CONTROL2);
-                    ret |= 1 << 5;
-                    snd_soc_write(codec, AK4490_01_CONTROL2, ret);
-                }
-                if (selected_filter == 3) {
-                    ret = snd_soc_read(codec, AK4490_02_CONTROL3);
-                    ret &= ~(1 << 0);
-                    snd_soc_write(codec, AK4490_02_CONTROL3, ret);
-                    ret = snd_soc_read(codec, AK4490_01_CONTROL2);
-                    ret &= ~(1 << 5);
-                    snd_soc_write(codec, AK4490_01_CONTROL2, ret);
-                }
-                if (selected_filter == 4) {
-                    ret = snd_soc_read(codec, AK4490_02_CONTROL3);
-                    ret |= 1 << 0;
-                    snd_soc_write(codec, AK4490_02_CONTROL3, ret);
-                    ret = snd_soc_read(codec, AK4490_01_CONTROL2);
-                    ret |= 1 << 5;
-                    snd_soc_write(codec, AK4490_01_CONTROL2, ret);
-                }
+                switch (selected_filter) {
+		case 1:
+			ret = snd_soc_read(codec, AK4490_02_CONTROL3); // slow bit
+                        ret |= 1 << 0;
+                        snd_soc_write(codec, AK4490_02_CONTROL3, ret);
+                        ret = snd_soc_read(codec, AK4490_01_CONTROL2); // sd bit
+                        ret &= ~(1 << 5);
+                        snd_soc_write(codec, AK4490_01_CONTROL2, ret);
+			break;
+		case 2:
+			ret = snd_soc_read(codec, AK4490_02_CONTROL3);
+                        ret &= ~(1 << 0);
+                        snd_soc_write(codec, AK4490_02_CONTROL3, ret);
+                        ret = snd_soc_read(codec, AK4490_01_CONTROL2);
+                        ret |= 1 << 5;
+                        snd_soc_write(codec, AK4490_01_CONTROL2, ret);
+			break;
+		case 3:
+			ret = snd_soc_read(codec, AK4490_02_CONTROL3);
+                        ret &= ~(1 << 0);
+                        snd_soc_write(codec, AK4490_02_CONTROL3, ret);
+                        ret = snd_soc_read(codec, AK4490_01_CONTROL2);
+                        ret &= ~(1 << 5);
+                        snd_soc_write(codec, AK4490_01_CONTROL2, ret);
+			break;
+		case 4:
+			ret = snd_soc_read(codec, AK4490_02_CONTROL3);
+                        ret |= 1 << 0;
+                        snd_soc_write(codec, AK4490_02_CONTROL3, ret);
+                        ret = snd_soc_read(codec, AK4490_01_CONTROL2);
+                        ret |= 1 << 5;
+                        snd_soc_write(codec, AK4490_01_CONTROL2, ret);
+			break;
+		default:
+			return -EINVAL;
+	}
                 if(superslow == 1) {
                     ret = snd_soc_read(codec, AK4490_05_CONTROL4);
                     ret |= 1 << 0;

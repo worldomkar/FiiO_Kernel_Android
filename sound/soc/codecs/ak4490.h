@@ -15,7 +15,7 @@
  */
 
 
-// #define SND_SOC_DAIFMT_DSD		   0x101
+//#define SND_SOC_DAIFMT_DSD		   0x101
 
 #ifndef _AK4490_H
 #define _AK4490_H

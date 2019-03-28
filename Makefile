@@ -366,13 +366,14 @@ CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
 		  -Wbitwise -Wno-return-void $(CF)
 #MODFLAGS  = -DMODULE -mtune=cortex-a9 -ftree-vectorize -ffast-math -fsingle-precision-constant -march=armv7-a -mfpu=vfpv3 -mvectorize-with-neon-quad -funroll-loops -fsched-spec-load -mfloat-abi=softfp
 MODFLAGS  =  -munaligned-access -ftree-vectorize -fgcse-lm -fgcse-sm -fsched-spec-load -ffast-math -fsingle-precision-constant -mcpu=cortex-a9 -march=armv7-a -mtune=cortex-a9 -marm -mfpu=vfpv3 -funroll-loops -mvectorize-with-neon-quad -mfloat-abi=softfp
-CFLAGS_MODULE   = -DMODULE $(MODFLAGS)
+CFLAGS_MODULE   = $(MODFLAGS)
 #CFLAGS_MODULE   = -munaligned-access -ftree-vectorize -fgcse-lm -fgcse-sm -fsched-spec-load -ffast-math -fsingle-precision-constant -mcpu=cortex-a9 -mtune=cortex-a9 -marm -mfpu=vfpv3 -funroll-loops -mvectorize-with-neon-quad -mfloat-abi=softfp
-AFLAGS_MODULE   = -DMODULE $(MODFLAGS)
+#AFLAGS_MODULE   = -DMODULE $(MODFLAGS)
 AFLAGS_MODULE   =
 LDFLAGS_MODULE  =
 #CFLAGS_KERNEL	= -mtune=cortex-a9 -ftree-vectorize -ffast-math -fsingle-precision-constant -mcpu=cortex-a9 -march=armv7-a -mfpu=neon-vfpv3 -mvectorize-with-neon-quad -funroll-loops -fsched-spec-load -mfloat-abi=softfp
-CFLAGS_KERNEL	= $(MODFLAGS)
+#CFLAGS_KERNEL	= $(MODFLAGS)
+CFLAGS_KERNEL = 
 AFLAGS_KERNEL	=
 CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
 
