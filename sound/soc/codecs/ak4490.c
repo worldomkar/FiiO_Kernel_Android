@@ -69,6 +69,13 @@ static uint8_t first_play=0;
 int pmute=2000;
 module_param_named(po_mute, pmute, int, 0644);
 
+int selected_filter = 1; // 1 slow roll-off, 2 short delay sharp, 3 sharp, 4 short delay slow
+module_param(selected_filter, int, 0644);
+int oversampling_freq = 768000; // allow to set custom oversampting rate
+module_param(oversampling_freq, int, 0644);
+int superslow = 0; // 0 - disable superslow filter, 1 - enable superslow filter
+module_param(superslow, int, 0644);
+
 #define AK4490_DEBUG			//used at debug mode
 #define AK4490_CONTIF_DEBUG		//used at debug mode
 
@@ -1499,7 +1506,54 @@ static int ak4490_set_dai_mute(struct snd_soc_dai *dai, int mute)
             akdbgprt("\t[AK4490] %s mute %d set unmute\n",__FUNCTION__,mute);
         }
 		/* ak4490_update_bits_lr2(AK4490_01_CONTROL2, 0x01, 0x00);  */
-	}
+#ifdef CONFIG_SND_SOC_AK4490_CUSTOM_DRIVER
+                if (selected_filter == 1) {
+                    ret = snd_soc_read(codec, AK4490_02_CONTROL3); // slow bit
+                    ret |= 1 << 0;
+                    snd_soc_write(codec, AK4490_02_CONTROL3, ret);
+                    ret = snd_soc_read(codec, AK4490_01_CONTROL2); // sd bit
+                    ret &= ~(1 << 5);
+                    snd_soc_write(codec, AK4490_01_CONTROL2, ret);
+                    
+                }
+                if (selected_filter == 2) {
+                    ret = snd_soc_read(codec, AK4490_02_CONTROL3);
+                    ret &= ~(1 << 0);
+                    snd_soc_write(codec, AK4490_02_CONTROL3, ret);
+                    ret = snd_soc_read(codec, AK4490_01_CONTROL2);
+                    ret |= 1 << 5;
+                    snd_soc_write(codec, AK4490_01_CONTROL2, ret);
+                }
+                if (selected_filter == 3) {
+                    ret = snd_soc_read(codec, AK4490_02_CONTROL3);
+                    ret &= ~(1 << 0);
+                    snd_soc_write(codec, AK4490_02_CONTROL3, ret);
+                    ret = snd_soc_read(codec, AK4490_01_CONTROL2);
+                    ret &= ~(1 << 5);
+                    snd_soc_write(codec, AK4490_01_CONTROL2, ret);
+                }
+                if (selected_filter == 4) {
+                    ret = snd_soc_read(codec, AK4490_02_CONTROL3);
+                    ret |= 1 << 0;
+                    snd_soc_write(codec, AK4490_02_CONTROL3, ret);
+                    ret = snd_soc_read(codec, AK4490_01_CONTROL2);
+                    ret |= 1 << 5;
+                    snd_soc_write(codec, AK4490_01_CONTROL2, ret);
+                }
+                if(superslow == 1) {
+                    ret = snd_soc_read(codec, AK4490_05_CONTROL4);
+                    ret |= 1 << 0;
+                    snd_soc_write(codec, AK4490_05_CONTROL4, ret);
+                }
+                if(superslow == 0) {
+                    ret = snd_soc_read(codec, AK4490_05_CONTROL4);
+                    ret &= ~(1 << 0);
+                    snd_soc_write(codec, AK4490_05_CONTROL4, ret);
+                    
+                }
+#endif	
+
+}
 
 	return 0;
 }
@@ -1589,7 +1643,11 @@ static int ak4490_probe(struct snd_soc_codec *codec)
 	akdbgprt("\t[AK4490 Effect] %s(%d)\n",__FUNCTION__,__LINE__);
 
     wake_lock_init(&audiolink_wakelock, WAKE_LOCK_SUSPEND, "audiolink");
+#ifdef CONFIG_SND_SOC_AK4490_CUSTOM_DRIVER
+        ak4490->fs1 = oversampling_freq;
+#else
 	ak4490->fs1 = 48000;
+#endif
 	ak4490->nBickFreq = 0;		
 	ak4490->nDSDSel = 0;
 
