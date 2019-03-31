@@ -3603,7 +3603,7 @@ static void __init rk30_reserve(void)
 //new_FiiO_tables
 static struct cpufreq_frequency_table dvfs_arm_table_volt_level0[] = {
 //	{.frequency = 312 * 1000,		.index = 850 * 1000},
-//	{.frequency = 504 * 1000,		.index = 875 * 1000},
+	{.frequency = 504 * 1000,		.index = 875 * 1000},
 	{.frequency = 816 * 1000,		.index = 925 * 1000},
 	{.frequency = 1008 * 1000,		.index = 1000 * 1000},
 	{.frequency = 1200 * 1000, 		.index = 1075 * 1000},
@@ -3611,10 +3611,9 @@ static struct cpufreq_frequency_table dvfs_arm_table_volt_level0[] = {
 	{.frequency = 1608 * 1000, 		.index = 1200 * 1000},
 	{.frequency = 1704 * 1000,		.index = 1225 * 1000},
         {.frequency = 1752 * 1000,              .index = 1250 * 1000},
-	{.frequency = 1776 * 1000, 		.index = 1275 * 1000},
-        {.frequency = 1824 * 1000,              .index = 1300 * 1000},
         {.frequency = 1896 * 1000,              .index = 1350 * 1000},
-	{.frequency = 1920 * 1000,		.index = 1400 * 1000},
+        {.frequency = 1968 * 1000,              .index = 1425 * 1000},
+        {.frequency = 2016 * 1000,              .index = 1475 * 1000},
 	{.frequency = CPUFREQ_TABLE_END},
 };
 /*
@@ -3669,11 +3668,11 @@ static struct cpufreq_frequency_table dvfs_gpu_table_volt_level0[] = {
 //	{.frequency = 200 * 1000,       .index = 950 * 1000},
 //	{.frequency = 266 * 1000,       .index = 975 * 1000},
 //	{.frequency = 300 * 1000,       .index = 1025 * 1000},
-//	{.frequency = 400 * 1000,       .index = 1075 * 1000},
+	{.frequency = 400 * 1000,       .index = 1075 * 1000},
 	{.frequency = 600 * 1000,       .index = 1125 * 1000},
         {.frequency = 666 * 1000,       .index = 1175 * 1000},
         {.frequency = 700 * 1000,       .index = 1250 * 1000},
-	{.frequency = 798 * 1000,       .index = 1250 * 1000},
+//	{.frequency = 798 * 1000,       .index = 1250 * 1000},
 	{.frequency = CPUFREQ_TABLE_END},
 };
 /*//cube 10'
@@ -3703,10 +3702,14 @@ static struct cpufreq_frequency_table dvfs_ddr_table_volt_level0[] = {
 };
 
 static struct cpufreq_frequency_table dvfs_ddr_table_t[] = {
-	{.frequency = 300 * 1000 + DDR_FREQ_SUSPEND,    .index = 1025 * 1000},
+/* Original FiiO DDR3 frequencies
+	{.frequency = 200 * 1000 + DDR_FREQ_SUSPEND,    .index = 1025 * 1000},
 	{.frequency = 460 * 1000 + DDR_FREQ_NORMAL,     .index = 1200 * 1000},
-	{.frequency = 720 * 1000 + DDR_FREQ_NORMAL,     .index = 1200 * 1000},
-	{.frequency = 800 * 1000 + DDR_FREQ_NORMAL,     .index = 1250 * 1000},
+*/
+        {.frequency = 460 * 1000 + DDR_FREQ_IDLE,       .index = 1150 * 1000},
+	{.frequency = 460 * 1000 + DDR_FREQ_SUSPEND,    .index = 1150 * 1000},
+        {.frequency = 460 * 1000 + DDR_FREQ_NORMAL,    .index = 1150 * 1000},
+//	{.frequency = 792 * 1000 + DDR_FREQ_NORMAL,     .index = 1150 * 1000},
 	{.frequency = CPUFREQ_TABLE_END},
 };
 
