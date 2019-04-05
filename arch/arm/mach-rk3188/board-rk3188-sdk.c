@@ -3606,13 +3606,13 @@ static struct cpufreq_frequency_table dvfs_arm_table_volt_level0[] = {
 	{.frequency = 504 * 1000,		.index = 875 * 1000},
 	{.frequency = 816 * 1000,		.index = 925 * 1000},
 	{.frequency = 1008 * 1000,		.index = 1000 * 1000},
-	{.frequency = 1200 * 1000, 		.index = 1075 * 1000},
+//	{.frequency = 1200 * 1000, 		.index = 1075 * 1000},
 	{.frequency = 1416 * 1000,		.index = 1175 * 1000},
-	{.frequency = 1608 * 1000, 		.index = 1200 * 1000},
+//	{.frequency = 1608 * 1000, 		.index = 1200 * 1000},
 	{.frequency = 1704 * 1000,		.index = 1225 * 1000},
         {.frequency = 1752 * 1000,              .index = 1250 * 1000},
         {.frequency = 1896 * 1000,              .index = 1350 * 1000},
-        {.frequency = 1968 * 1000,              .index = 1425 * 1000},
+//      {.frequency = 1968 * 1000,              .index = 1425 * 1000},
         {.frequency = 2016 * 1000,              .index = 1475 * 1000},
 	{.frequency = CPUFREQ_TABLE_END},
 };
@@ -3706,10 +3706,10 @@ static struct cpufreq_frequency_table dvfs_ddr_table_t[] = {
 	{.frequency = 200 * 1000 + DDR_FREQ_SUSPEND,    .index = 1025 * 1000},
 	{.frequency = 460 * 1000 + DDR_FREQ_NORMAL,     .index = 1200 * 1000},
 */
-        {.frequency = 504 * 1000 + DDR_FREQ_IDLE,       .index = 1100 * 1000},
-	{.frequency = 200 * 1000 + DDR_FREQ_SUSPEND,    .index = 950 * 1000},
+        {.frequency = 396 * 1000 + DDR_FREQ_IDLE,       .index = 1050 * 1000},
+	{.frequency = 396 * 1000 + DDR_FREQ_SUSPEND,    .index = 1050 * 1000},
 //      {.frequency = 460 * 1000 + DDR_FREQ_NORMAL,    .index = 1150 * 1000},
-	{.frequency = 840 * 1000 + DDR_FREQ_NORMAL,     .index = 1200 * 1000},
+	{.frequency = 456 * 1000 + DDR_FREQ_NORMAL,     .index = 1050 * 1000},
 	{.frequency = CPUFREQ_TABLE_END},
 };
 

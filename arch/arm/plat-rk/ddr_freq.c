@@ -245,8 +245,8 @@ static noinline void ddrfreq_work(unsigned long sys_status)
 		&& !(s & (1 << SYS_STATUS_RGA))
 		&& !(s & (1 << SYS_STATUS_CIF0))
 		&& !(s & (1 << SYS_STATUS_CIF1))
-		&& (clk_get_rate(cpu) < 816 * MHZ)
-		&& (clk_get_rate(gpu) <= 200 * MHZ)
+		&& (clk_get_rate(cpu) < 1008 * MHZ)
+		&& (clk_get_rate(gpu) <= 446 * MHZ)
 		) {
 		ddrfreq_mode(false, &ddr.idle_rate, "idle");
 	} else {
