@@ -3640,9 +3640,10 @@ void __init _rk30_clock_data_init(unsigned long gpll, unsigned long cpll, int fl
 	}
 
 	rk_efuse_init();
-	pll_flag = rk_pll_flag();
-	printk("CLKDATA_MSG: pll_flag = 0x%02x\n", pll_flag);
-
+	printk("CLKDATA_MSG: pll_flag = 0x%02x\n", rk_pll_flag());
+//	pll_flag = rk_pll_flag();
+//	printk("CLKDATA_MSG: pll_flag = 0x%02x\n", pll_flag);
+/*
 	if (0 != pll_flag) {
 		CLKDATA_DBG("CPLL=%lu, GPLL=%lu;CPLL CAN NOT LOCK, SET CPLL BY PASS, USE GPLL REPLACE CPLL\n",
 				cpll, gpll);
@@ -3650,6 +3651,7 @@ void __init _rk30_clock_data_init(unsigned long gpll, unsigned long cpll, int fl
 		cpll = 24 * MHZ;
 		gpll = 891 * MHZ;
 	}
+*/
 #ifdef CONFIG_USE_XIN_FOR_I2S
 	codec_pll_clk.mode = NULL;
 	cpll = I2S_XIN_RATE;

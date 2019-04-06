@@ -28,7 +28,7 @@
 
 typedef uint32_t uint32;
 
-#define ENABLE_DDR_CLOCK_GPLL_PATH  //for RK3188
+//#define ENABLE_DDR_CLCOK_GPLL_PATH  //for RK3188
 
 #define DDR3_DDR2_ODT_DLL_DISABLE_FREQ    (333)
 #define SR_IDLE                       (0x1)   //unit:32*DDR clk cycle, and 0 for disable auto self-refresh
@@ -47,12 +47,6 @@ typedef uint32_t uint32;
 #define SysSrv_DdrTiming        (RK30_CPU_AXI_BUS_BASE+0x0c)
 #define SysSrv_DdrMode          (RK30_CPU_AXI_BUS_BASE+0x10)
 #define SysSrv_ReadLatency      (RK30_CPU_AXI_BUS_BASE+0x14)
-
-#if defined(CONFIG_ARCH_RK30) || defined(CONFIG_ARCH_RK3066B)
-#define SRAM_SIZE       RK30_IMEM_SIZE
-#elif defined(CONFIG_ARCH_RK3188)
-#define SRAM_SIZE       RK3188_IMEM_SIZE
-#endif
 
 #define ddr_print(x...) printk( "DDR DEBUG: " x )
 
@@ -1211,7 +1205,7 @@ uint32_t ddr_get_datatraing_addr(void)
         addr += (64-(addr&0x3F));
     }
     addr -= 0x60000000;
-    // find out col£¬row£¬bank
+    // find out col\A3\ACrow\A3\ACbank
     row = ddr_get_row();
     bank = ddr_get_bank();
     col = ddr_get_col();
@@ -1382,7 +1376,7 @@ __sramfunc void ddr_move_to_Config_state(void)
     }
 }
 
-//arg°üÀ¨bank_addrºÍcmd_addr
+//arg\B0\FC\C0\A8bank_addr\BA\CDcmd_addr
 void __sramlocalfunc ddr_send_command(uint32 rank, uint32 cmd, uint32 arg)
 {
     pDDR_Reg->MCMD = (start_cmd | (rank<<20) | arg | cmd);
@@ -1390,9 +1384,9 @@ void __sramlocalfunc ddr_send_command(uint32 rank, uint32 cmd, uint32 arg)
     while(pDDR_Reg->MCMD & start_cmd);
 }
 
-//¶ÔtypeÀàÐÍµÄDDRµÄ¼¸¸öcs½øÐÐDTT
-//0  DTT³É¹¦
-//!0 DTTÊ§°Ü
+//\B6\D4type\C0\E0\D0Íµ\C4DDR\B5Ä¼\B8\B8\F6cs\BD\F8\D0\D0DTT
+//0  DTT\B3É¹\A6
+//!0 DTTÊ§\B0\DC
 uint32_t __sramlocalfunc ddr_data_training(void)
 {
     uint32 value,cs,i,byte=2;
@@ -1429,7 +1423,7 @@ uint32_t __sramlocalfunc ddr_data_training(void)
                                       | ((pPHY_Reg->DATX8[i].DXDQSTR & 0x7)<<3)
                                       | (((pPHY_Reg->DATX8[i].DXDQSTR>>12) & 0x3)<<14);
     }
-    // send some auto refresh to complement the lost while DTT£¬//²âµ½1¸öCSµÄDTT×î³¤Ê±¼äÊÇ10.7us¡£×î¶à²¹2´ÎË¢ÐÂ
+    // send some auto refresh to complement the lost while DTT\A3\AC//\B2âµ½1\B8\F6CS\B5\C4DTT\D7î³¤Ê±\BC\E4\CA\C710.7us\A1\A3\D7\EE\B6à²¹2\B4\CEË¢\D0\C2
     if(cs > 1)
     {
         ddr_send_command(cs, REF_cmd, 0);
@@ -1555,7 +1549,7 @@ uint32_t __sramlocalfunc ddr_set_pll_3066(uint32_t nMHz, uint32_t set)
     uint32_t ret = 0;
     int delay = 1000;
     uint32_t pll_id=1;  //DPLL
-    //NOÒ»¶¨ÒªÅ¼Êý,NR¾¡Á¿Ð¡£¬jitter¾Í»áÐ¡
+    //NOÒ»\B6\A8ÒªÅ¼\CA\FD,NR\BE\A1\C1\BFÐ¡\A3\ACjitter\BEÍ»\E1Ð¡
     
     if(nMHz == 24)
     {
@@ -1645,8 +1639,9 @@ uint32_t __sramlocalfunc ddr_set_pll_rk3066b(uint32_t nMHz, uint32_t set)
     {
         dpllvaluel = ddr_get_pll_freq(DPLL);
         gpllvaluel = ddr_get_pll_freq(GPLL);
-
-        if(ddr_rk3188_dpll_is_good == false)    //if rk3188 DPLL is bad,use GPLL
+/*
+#if !defined(CONFIG_RK3188T_DDR_OVERRIDE)
+        if (ddr_rk3188_dpll_is_good == false)     //if rk3188 DPLL is bad,use GPLL
         {
             if( (gpllvaluel < 200) ||(gpllvaluel > 2000))
             {
@@ -1674,7 +1669,8 @@ uint32_t __sramlocalfunc ddr_set_pll_rk3066b(uint32_t nMHz, uint32_t set)
                 ddr_select_gpll_div=1;    //DDR_CLCOK:200MHz-500MHz
             }
         }
-
+#endif
+*/
         if(ddr_select_gpll_div > 0)
         {
             if(ddr_select_gpll_div == 4)
@@ -1813,35 +1809,6 @@ uint32_t __sramlocalfunc ddr_set_pll_rk3188_plus(uint32_t nMHz, uint32_t set)
         dpllvaluel = ddr_get_pll_freq(DPLL);
         gpllvaluel = ddr_get_pll_freq(GPLL);
 
-        if(ddr_rk3188_dpll_is_good == false)    //if rk3188 DPLL is bad,use GPLL
-        {
-            if( (gpllvaluel < 200) ||(gpllvaluel > 2000))
-            {
-                ddr_print("DPLL is bad and GPLL freq = %dMHz,Not suitable for ddr_clock\n",gpllvaluel);
-                return 0;
-            }
-
-            if(gpllvaluel > 1000)    //GPLL:1000MHz-2000MHz
-            {
-                ddr_select_gpll_div=4;    //DDR_CLCOK:250MHz-500MHz
-            }
-            else if(gpllvaluel > 800)    //GPLL:800MHz-1000MHz
-            {
-                if(nMHz > 250)
-                    ddr_select_gpll_div=2;    //DDR_CLCOK:400MHz-500MHz
-                else
-                    ddr_select_gpll_div=4;    //DDR_CLCOK:200MHz-250MHz
-            }
-            else if(gpllvaluel > 500)    //GPLL:500MHz-800MHz
-            {
-                ddr_select_gpll_div=2;    //DDR_CLCOK:250MHz-400MHz
-            }
-            else     //GPLL:200MHz-500MHz
-            {
-                ddr_select_gpll_div=1;    //DDR_CLCOK:200MHz-500MHz
-            }
-        }
-
         if(ddr_select_gpll_div > 0)
         {
             if(ddr_select_gpll_div == 4)
@@ -1891,7 +1858,7 @@ uint32_t __sramlocalfunc ddr_set_pll_rk3188_plus(uint32_t nMHz, uint32_t set)
                                                           | 2;           //clk_ddr_src:clk_ddrphy = 4:1                
                 dsb();
             }
-            else if(ddr_select_gpll_div == 2)
+            if(ddr_select_gpll_div == 2)
             {
                 pCRU_Reg->CRU_CLKGATE_CON[1] = 0x00800000;
                 pCRU_Reg->CRU_CLKSEL_CON[26] = ((0x3 | (0x1<<8))<<16)
@@ -2045,11 +2012,11 @@ uint32_t ddr_get_parameter(uint32_t nMHz)
             ret = -4;
         if(nMHz <= DDR3_DDR2_ODT_DLL_DISABLE_FREQ)
         {
-            p_publ_timing->mr[1] = DDR3_DS_34 | DDR3_Rtt_Nom_DIS;
+            p_publ_timing->mr[1] = DDR3_DS_40 | DDR3_Rtt_Nom_DIS;
         }
         else
         {
-            p_publ_timing->mr[1] = DDR3_DS_34 | DDR3_Rtt_Nom_120;
+            p_publ_timing->mr[1] = DDR3_DS_40 | DDR3_Rtt_Nom_120;
         }
         p_publ_timing->mr[2] = DDR3_MR2_CWL(cwl) /* | DDR3_Rtt_WR_60 */;
         p_publ_timing->mr[3] = 0;
@@ -2848,7 +2815,7 @@ void __sramlocalfunc ddr_update_odt(void)
             pPHY_Reg->DATX8[3].DXGCR &= ~(0x3<<9);
         }
     }
-    tmp = (0x1<<28) | (0x2<<15) | (0x2<<10) | (0x19<<5) | 0x19;  //DS=34ohm,ODT=171ohm
+    tmp = (0x1<<28) | (0x2<<15) | (0x2<<10) | (0x9<<5) | 0xb;  //DS=34ohm,ODT=171ohm
     cs = ((pPHY_Reg->PGCR>>18) & 0xF);
     if(cs > 1)
     {
@@ -2877,7 +2844,7 @@ __sramfunc void ddr_adjust_config(uint32_t dram_type)
     isb();
     DDR_SAVE_SP(save_sp);
 
-    for(i=0;i<SRAM_SIZE/4096;i++) 
+    for(i=0;i<16;i++)
     {
         n=temp[1024*i];
         barrier();
@@ -3211,6 +3178,11 @@ uint32_t __sramfunc ddr_change_freq_sram(uint32_t nMHz , struct ddr_freq_t ddr_f
     isb();
     DDR_SAVE_SP(save_sp);
 
+#if defined(CONFIG_ARCH_RK30)
+#define SRAM_SIZE       RK30_IMEM_SIZE
+#elif defined(CONFIG_ARCH_RK3188)
+#define SRAM_SIZE       RK3188_IMEM_SIZE
+#endif
     for(i=0;i<SRAM_SIZE/4096;i++)     
     {
         n=temp[1024*i];
@@ -3335,7 +3307,7 @@ uint32_t ddr_change_freq(uint32_t nMHz)
     struct ddr_freq_t ddr_freq_t;
     ddr_freq_t.screen_ft_us = 0;
 
-#if defined(ENABLE_DDR_CLOCK_GPLL_PATH) && defined(CONFIG_ARCH_RK3188)
+#if defined(ENABLE_DDR_CLCOK_GPLL_PATH) && defined(CONFIG_ARCH_RK3188)
     return ddr_change_freq_gpll_dpll(nMHz);
 #else
     return ddr_change_freq_sram(nMHz,ddr_freq_t);
@@ -3390,6 +3362,11 @@ else
     outer_flush_all();
     //flush_tlb_all();
 
+#if defined(CONFIG_ARCH_RK30)
+#define SRAM_SIZE       RK30_IMEM_SIZE
+#elif defined(CONFIG_ARCH_RK3188)
+#define SRAM_SIZE       RK3188_IMEM_SIZE
+#endif
     for(i=0;i<SRAM_SIZE/4096;i++)     
     {
         n=temp[1024*i];
@@ -3479,7 +3456,7 @@ void __sramfunc ddr_resume(void)
 }
 EXPORT_SYMBOL(ddr_resume);
 
-//»ñÈ¡ÈÝÁ¿£¬·µ»Ø×Ö½ÚÊý
+//\BB\F1È¡\C8\DD\C1\BF\A3\AC\B7\B5\BB\D8\D7Ö½\DA\CA\FD
 uint32 ddr_get_cap(void)
 {
     uint32 cap;
@@ -3590,7 +3567,7 @@ int ddr_init(uint32_t dram_speed_bin, uint32_t freq)
     uint32_t die=1;
     uint32_t gsr,dqstr;
 
-    ddr_print("version 1.00 20131106 \n");
+    ddr_print("version 1.00 201300814 \n");
 
     mem_type = pPHY_Reg->DCR.b.DDRMD;
     ddr_speed_bin = dram_speed_bin;
@@ -3650,7 +3627,7 @@ int ddr_init(uint32_t dram_speed_bin, uint32_t freq)
                                                                     (ddr_get_cap()>>20));
     ddr_adjust_config(mem_type);
     
-    if(ddr_rk3188_dpll_is_good == true)
+   if(ddr_rk3188_dpll_is_good == true)
    {
         if(freq != 0)
             value=ddr_change_freq(freq);

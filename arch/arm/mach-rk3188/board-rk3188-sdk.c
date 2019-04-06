@@ -3669,8 +3669,8 @@ static struct cpufreq_frequency_table dvfs_gpu_table_volt_level0[] = {
 //	{.frequency = 266 * 1000,       .index = 975 * 1000},
 //	{.frequency = 300 * 1000,       .index = 1025 * 1000},
 //	{.frequency = 400 * 1000,       .index = 1075 * 1000},
-	{.frequency = 600 * 1000,       .index = 1125 * 1000},
-        {.frequency = 666 * 1000,       .index = 1175 * 1000},
+//	{.frequency = 600 * 1000,       .index = 1125 * 1000},
+//      {.frequency = 666 * 1000,       .index = 1175 * 1000},
         {.frequency = 700 * 1000,       .index = 1250 * 1000},
 	{.frequency = 798 * 1000,       .index = 1250 * 1000},
 	{.frequency = CPUFREQ_TABLE_END},
@@ -3705,11 +3705,14 @@ static struct cpufreq_frequency_table dvfs_ddr_table_t[] = {
 /* Original FiiO DDR3 frequencies
 	{.frequency = 200 * 1000 + DDR_FREQ_SUSPEND,    .index = 1025 * 1000},
 	{.frequency = 460 * 1000 + DDR_FREQ_NORMAL,     .index = 1200 * 1000},
+
+        {.frequency = 792 * 1000 + DDR_FREQ_NORMAL,     .index = 1100 * 1000},
+        {.frequency = 460 * 1000 + DDR_FREQ_IDLE,       .index = 1050 * 1000},
+	{.frequency = 200 * 1000 + DDR_FREQ_SUSPEND,    .index = 975 * 1000},
 */
-        {.frequency = 396 * 1000 + DDR_FREQ_IDLE,       .index = 1050 * 1000},
-	{.frequency = 396 * 1000 + DDR_FREQ_SUSPEND,    .index = 1050 * 1000},
-//      {.frequency = 460 * 1000 + DDR_FREQ_NORMAL,    .index = 1150 * 1000},
-	{.frequency = 456 * 1000 + DDR_FREQ_NORMAL,     .index = 1050 * 1000},
+	{.frequency = 200 * 1000 + DDR_FREQ_SUSPEND,    .index = 950 * 1000},
+//	{.frequency = 300 * 1000 + DDR_FREQ_VIDEO,      .index = 1000 * 1000},
+	{.frequency = 720 * 1000 + DDR_FREQ_NORMAL,     .index = 1250 * 1000},
 	{.frequency = CPUFREQ_TABLE_END},
 };
 
