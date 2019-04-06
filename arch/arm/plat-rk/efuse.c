@@ -113,11 +113,23 @@ int rk_pll_flag(void)
 }
 int rk_tflag(void)
 {
-#if defined(CONFIG_ARCH_RK3188) && defined(CONFIG_ARCH_RK3188T)
-    return 1;
-#else
-	return efuse_buf[22] & (0x1 << 3);
-#endif
+//#if defined(CONFIG_ARCH_RK3188) && defined(CONFIG_ARCH_RK3188T)
+//    return 1;
+//#else
+//	return efuse_buf[22] & (0x1 << 3);
+//#endif
+	/*
+	 * efuse_buf[22]
+	 * bit[4]:
+	 * 	0:RK3188T
+	 * 	1:RK3188
+	 */
+
+	int tflag = efuse_buf[22] & (0x1 << 3);
+	char *cputype = tflag ? "RK3188T" : "RK3188";
+	printk(KERN_INFO "CPU is ROCKCHIP %s\n", cputype);
+
+	return tflag;
 }
 
 int efuse_version_val(void)

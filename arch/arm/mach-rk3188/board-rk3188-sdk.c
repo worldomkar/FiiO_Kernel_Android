@@ -1086,9 +1086,11 @@ static struct rk_hdmi_platform_data rk_hdmi_pdata = {
 
 #ifdef CONFIG_FB_ROCKCHIP
 
-#define LCD_CS_PIN         INVALID_GPIO
+//#define LCD_CS_PIN         INVALID_GPIO
+#define LCD_CS_PIN	   RK30_PIN0_PD7
 #define LCD_CS_VALUE       GPIO_HIGH
 
+//#define LCD_EN_PIN         RK30_PIN1_PB5
 #define LCD_EN_PIN         INVALID_GPIO
 #define LCD_EN_VALUE       GPIO_HIGH
 
@@ -3712,7 +3714,7 @@ static struct cpufreq_frequency_table dvfs_ddr_table_t[] = {
 */
 	{.frequency = 200 * 1000 + DDR_FREQ_SUSPEND,    .index = 950 * 1000},
 //	{.frequency = 300 * 1000 + DDR_FREQ_VIDEO,      .index = 1000 * 1000},
-	{.frequency = 720 * 1000 + DDR_FREQ_NORMAL,     .index = 1250 * 1000},
+	{.frequency = 792 * 1000 + DDR_FREQ_NORMAL,     .index = 1250 * 1000},
 	{.frequency = CPUFREQ_TABLE_END},
 };
 
