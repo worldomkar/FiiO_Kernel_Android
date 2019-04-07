@@ -91,6 +91,7 @@ static inline int compact_nodes(bool sync)
 
 #endif /* CONFIG_COMPACTION */
 
+struct node;
 #if defined(CONFIG_COMPACTION) && defined(CONFIG_SYSFS) && defined(CONFIG_NUMA)
 extern int compaction_register_node(struct node *node);
 extern void compaction_unregister_node(struct node *node);
