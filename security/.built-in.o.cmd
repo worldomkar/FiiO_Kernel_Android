@@ -1,0 +1,1 @@
+cmd_security/built-in.o :=  /home/jkbuha/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi-ld.bfd -EL    -r -o security/built-in.o security/commoncap.o security/min_addr.o security/security.o security/capability.o 

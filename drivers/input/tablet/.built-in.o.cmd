@@ -1,0 +1,1 @@
+cmd_drivers/input/tablet/built-in.o :=  /home/jkbuha/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi-ld.bfd -EL    -r -o drivers/input/tablet/built-in.o drivers/input/tablet/acecad.o drivers/input/tablet/aiptek.o drivers/input/tablet/gtco.o drivers/input/tablet/hanwang.o drivers/input/tablet/kbtab.o drivers/input/tablet/wacom.o 

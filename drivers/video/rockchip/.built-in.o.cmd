@@ -1,0 +1,1 @@
+cmd_drivers/video/rockchip/built-in.o :=  /home/jkbuha/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi-ld.bfd -EL    -r -o drivers/video/rockchip/built-in.o drivers/video/rockchip/rk_fb.o drivers/video/rockchip/rkfb_sysfs.o drivers/video/rockchip/lcdc/built-in.o drivers/video/rockchip/screen/built-in.o drivers/video/rockchip/rga/built-in.o 

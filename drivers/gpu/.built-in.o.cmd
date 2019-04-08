@@ -1,0 +1,1 @@
+cmd_drivers/gpu/built-in.o :=  /home/jkbuha/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi-ld.bfd -EL    -r -o drivers/gpu/built-in.o drivers/gpu/drm/built-in.o drivers/gpu/vga/built-in.o drivers/gpu/stub/built-in.o drivers/gpu/ion/built-in.o drivers/gpu/mali/built-in.o 

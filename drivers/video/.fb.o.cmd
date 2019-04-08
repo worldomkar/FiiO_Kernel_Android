@@ -1,0 +1,1 @@
+cmd_drivers/video/fb.o := /home/jkbuha/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi-ld.bfd -EL    -r -o drivers/video/fb.o drivers/video/fbmem.o drivers/video/fbmon.o drivers/video/fbcmap.o drivers/video/fbsysfs.o drivers/video/modedb.o drivers/video/fbcvt.o 
