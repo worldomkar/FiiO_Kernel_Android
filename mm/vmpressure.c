@@ -49,6 +49,29 @@ static const unsigned long vmpressure_win = SWAP_CLUSTER_MAX * 16;
 static const unsigned int vmpressure_level_med = 60;
 static const unsigned int vmpressure_level_critical = 95;
 
+
+static unsigned long vmpressure_scale_max = 100;
+module_param_named(vmpressure_scale_max, vmpressure_scale_max,
+			ulong, S_IRUGO | S_IWUSR);
+
+static struct vmpressure global_vmpressure;
+BLOCKING_NOTIFIER_HEAD(vmpressure_notifier);
+
+int vmpressure_notifier_register(struct notifier_block *nb)
+{
+	return blocking_notifier_chain_register(&vmpressure_notifier, nb);
+}
+
+int vmpressure_notifier_unregister(struct notifier_block *nb)
+{
+	return blocking_notifier_chain_unregister(&vmpressure_notifier, nb);
+}
+
+void vmpressure_notify(unsigned long pressure)
+{
+	blocking_notifier_call_chain(&vmpressure_notifier, pressure, NULL);
+}
+
 /*
  * When there are too little pages left to scan, vmpressure() may miss the
  * critical pressure as number of pages will be less than "window size".
