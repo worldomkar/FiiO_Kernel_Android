@@ -40,6 +40,7 @@
 #include <linux/swap.h>
 #include <linux/mutex.h>
 #include <linux/delay.h>
+#include <linux/compaction.h>
 #include <linux/vmpressure.h>
 #include <linux/show_mem_notifier.h>
 
@@ -73,6 +74,8 @@ static int lmk_fast_run = 1;
 
 static struct task_struct *lowmem_deathpending;
 static unsigned long lowmem_deathpending_timeout;
+
+extern int compact_nodes(void);
 
 #define lowmem_print(level, x...)			\
 	do {						\
@@ -520,6 +523,8 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 	rcu_read_unlock();
 	lowmem_print(4, "lowmem_shrink %lu, %x, return %d\n",
 		     nr_to_scan, sc->gfp_mask, rem);
+	if (selected)
+	        compact_nodes();
 	mutex_unlock(&scan_mutex);
 	return rem;
 }

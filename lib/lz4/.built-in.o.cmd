@@ -1,1 +1,0 @@
-cmd_lib/lz4/built-in.o :=  /home/jkbuha/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi-ld.bfd -EL    -r -o lib/lz4/built-in.o lib/lz4/lz4_compress.o lib/lz4/lz4hc_compress.o lib/lz4/lz4_decompress.o 

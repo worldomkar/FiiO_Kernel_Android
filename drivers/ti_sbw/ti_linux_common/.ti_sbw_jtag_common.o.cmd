@@ -1,1 +1,0 @@
-cmd_drivers/ti_sbw/ti_linux_common/ti_sbw_jtag_common.o := /home/jkbuha/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi-ld.bfd -EL    -r -o drivers/ti_sbw/ti_linux_common/ti_sbw_jtag_common.o drivers/ti_sbw/ti_linux_common/dcdc_sbw.o drivers/ti_sbw/ti_linux_common/gpio_if.o 

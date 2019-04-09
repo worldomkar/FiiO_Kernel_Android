@@ -1,1 +1,0 @@
-cmd_drivers/input/touchscreen/gt9xx/built-in.o :=  /home/jkbuha/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi-ld.bfd -EL    -r -o drivers/input/touchscreen/gt9xx/built-in.o drivers/input/touchscreen/gt9xx/gt9xx.o drivers/input/touchscreen/gt9xx/goodix_tool.o drivers/input/touchscreen/gt9xx/gt9xx_update.o 
