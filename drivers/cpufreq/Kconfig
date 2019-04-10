@@ -115,6 +115,10 @@ config CPU_FREQ_DEFAULT_GOV_INTERACTIVEX
 	help
 	Use the CPUFreq governor 'interactiveX' as default.
 
+config CPU_FREQ_DEFAULT_GOV_NEOX
+	bool "NeoX"
+	select CPU_FREQ_GOV_NeoX
+
 endchoice
 
 config CPU_FREQ_GOV_PERFORMANCE
@@ -197,6 +201,13 @@ config CPU_FREQ_GOV_INTERACTIVEX
 	    This governor uses hotplug to shutdown and start up cpu1 when suspended.
 	    If in doubt, say N.
 
+config CPU_FREQ_GOV_NEOX
+        tristate "'NeoX' cpufreq governor"
+        depends on CPU_FREQ
+        ---help---
+          'NeoX' - a tweaked "pegasusq" based smart and smooth optimized governor!
+
+           If in doubt, say Y.
 
 config CPU_FREQ_GOV_CONSERVATIVE
 	tristate "'conservative' cpufreq governor"
