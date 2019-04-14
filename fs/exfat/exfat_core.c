@@ -60,7 +60,8 @@
 
 static void __set_sb_dirty(struct super_block *sb)
 {
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3,7,0)
+//#if LINUX_VERSION_CODE < KERNEL_VERSION(3,7,0)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5,1,0)
 	sb->s_dirt = 1;
 #else
 	struct exfat_sb_info *sbi = EXFAT_SB(sb);
