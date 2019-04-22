@@ -33,6 +33,7 @@
 #include "ak4490.h"
 #include "fpga_audio_interface.h"
 #include <linux/regulator/machine.h>
+#include <linux/moduleparam.h>
 
 extern void AudioBridge_disable();
 extern void AudioBridge_enable();
@@ -71,7 +72,7 @@ module_param_named(po_mute, pmute, int, 0644);
 
 int selected_filter = 1; // 1 slow roll-off, 2 short delay sharp, 3 sharp, 4 short delay slow
 module_param(selected_filter, int, 0644);
-int oversampling_freq = 768000; // allow to set custom oversampting rate
+int oversampling_freq = 384000; // allow to set custom oversampting rate
 module_param(oversampling_freq, int, 0644);
 int superslow = 0; // 0 - disable superslow filter, 1 - enable superslow filter
 module_param(superslow, int, 0644);
@@ -215,7 +216,7 @@ static const struct soc_enum ak4490_dac_enum[] = {
 
 };
 
-static const char *ak4490_dsdsel_select_texts[] = {"2.8224MHz", "5.6448MHz", "11.2896MHz"};
+static const char *ak4490_dsdsel_select_texts[] = {"2.8224MHz", "5.6448MHz", "11.2896MHz", "22.5792MHz"};
 static const char *ak4490_bickfreq_select[] = {"48fs", "64fs"};
 
 static const struct soc_enum ak4490_dac_enum2[] = {
@@ -254,11 +255,14 @@ struct snd_ctl_elem_value  *ucontrol)
 		snd_soc_update_bits(codec, AK4490_06_CONTROL5, 0x01, 0x01);
 		snd_soc_update_bits(codec, AK4490_09_CONTROL8, 0x01, 0x00);
 	}
-	else {								// 11.2896MHz
+	else /* if ( ak4490->nDSDSel == 2 ) */ {	// 11.2896MHz
 		snd_soc_update_bits(codec, AK4490_06_CONTROL5, 0x01, 0x00);
 		snd_soc_update_bits(codec, AK4490_09_CONTROL8, 0x01, 0x01);
-	}
-	
+	}/*
+	else {					// 22.5792MHz
+		snd_soc_update_bits(codec, AK4490_06_CONTROL5, 0x01, 0x01);
+		snd_soc_update_bits(codec, AK4490_09_CONTROL8, 0x01, 0x01);
+	}*/
 	return 0;
 }
 
@@ -986,7 +990,12 @@ static int ak4490_hw_params(struct snd_pcm_substream *substream,
 
 	akdbgprt("\t[AK4490] %s(%d)\n",__FUNCTION__,__LINE__);
 
-	nfs1 = params_rate(params);
+#ifdef CONFIG_SND_SOC_AK4490_CUSTOM_DRIVER
+        nfs1 = oversampling_freq;
+#else
+        nfs1 = params_rate(params);
+#endif
+//	nfs1 = params_rate(params);
 	ak4490->fs1 = nfs1;
 
 	dfs = snd_soc_read(codec, AK4490_01_CONTROL2);
@@ -1024,9 +1033,12 @@ static int ak4490_hw_params(struct snd_pcm_substream *substream,
             dsdsel0=0;
             dsdsel1=1;
 			break;
+		case 705600:
 		case 768000:
 			dfs |= AK4490_DFS_768KHZ;
 			dfs2 |= AK4490_DFS2_384KHZ;
+	 //   dsdsel0=1;
+         //   dsdsel1=1;
 			break;
 		default:
 			return -EINVAL;
@@ -1457,7 +1469,7 @@ static int ak4490_set_dai_mute(struct snd_soc_dai *dai, int mute)
 {
     struct snd_soc_codec *codec = dai->codec;
 	struct ak4490_priv *ak4490 = snd_soc_codec_get_drvdata(codec);
-	int nfs, ndt;
+	int nfs, ndt, ret;
     int count=30;
 	
 	nfs = ak4490->fs1;
@@ -1567,7 +1579,8 @@ static int ak4490_set_dai_mute(struct snd_soc_dai *dai, int mute)
 				SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |\
 				SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_176400 |\
 				SNDRV_PCM_RATE_192000|SNDRV_PCM_RATE_64000 |\
-                SNDRV_PCM_RATE_384000|SNDRV_PCM_RATE_352800)
+                		SNDRV_PCM_RATE_384000|SNDRV_PCM_RATE_352800 |\
+				SNDRV_PCM_RATE_768000|SNDRV_PCM_RATE_705600)
 
 #define AK4490_FORMATS		SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE |SNDRV_PCM_FMTBIT_SOP |\
                             SNDRV_PCM_FMTBIT_DSD64_F32 |  SNDRV_PCM_FMTBIT_DSD128_F32  |SNDRV_PCM_FMTBIT_DSD256_F32

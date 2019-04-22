@@ -132,6 +132,13 @@ config SND_RK29_SOC_AK4490
 	  Say Y if you want to add support for SoC audio on rockchip
 	  with the AK4490.
 
+config SND_SOC_AK4490_CUSTOM_DRIVER
+ tristate "Custom driver for rockchip - AK4490"
+        depends on SND_RK29_SOC_AK4490
+        help
+          Say Y if you want to enable custom drivers for SoC audio on rockchip
+          with the AK4490
+
 config SND_RK29_SOC_BRIDGE_CT7302
 	tristate "SoC I2S Audio bridge  for rockchip - CT7302"
 	depends on SND_RK29_SOC

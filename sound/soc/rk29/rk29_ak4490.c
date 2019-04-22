@@ -174,6 +174,7 @@ static int rk29_hw_params(struct snd_pcm_substream *substream,
         	break;
         case 352800:
         case 384000:
+	case 768000:
             pll_out = 12288000*2;
             break;
         default:
@@ -289,6 +290,7 @@ static int rk29_hw_params__(struct snd_pcm_substream *substream,
 		case 96000:
 		case 192000:
 		case 384000:
+		case 768000:
 			pll_out = 12288000*2;
 			break;
 		default:

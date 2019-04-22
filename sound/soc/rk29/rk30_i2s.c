@@ -716,7 +716,7 @@ static int __devinit rockchip_i2s_probe(struct platform_device *pdev)
 	}	
 
 	spin_lock_init(&i2s->spinlock_wr);
-	dai->playback.rates = SNDRV_PCM_RATE_8000_384000;
+	dai->playback.rates = SNDRV_PCM_RATE_8000_768000;
 	dai->playback.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |
 		SNDRV_PCM_FMTBIT_S24_LE| SNDRV_PCM_FMTBIT_S32_LE |SNDRV_PCM_FMTBIT_SOP |
         SNDRV_PCM_FMTBIT_DSD64_F32 |  SNDRV_PCM_FMTBIT_DSD128_F32  |SNDRV_PCM_FMTBIT_DSD256_F32 |
