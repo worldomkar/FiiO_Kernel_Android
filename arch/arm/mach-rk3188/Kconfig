@@ -1,3 +1,10 @@
+config AUTOSMP
+	bool "AutoSMP Hotplug"
+	depends on SMP && HOTPLUG_CPU
+	help
+	  Automatically hotplugs the multiple CPU cores based on
+	  CPU load and suspend state.
+
 choice
 	prompt "Rockchip SoC Type"
 	depends on ARCH_RK3188

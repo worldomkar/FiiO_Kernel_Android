@@ -16,6 +16,7 @@ obj-$(CONFIG_SMP) += ../mach-rk30/platsmp.o ../mach-rk30/headsmp.o
 obj-$(CONFIG_HOTPLUG_CPU) += ../mach-rk30/hotplug.o
 obj-$(CONFIG_CPU_IDLE) += ../mach-rk30/cpuidle.o
 obj-$(CONFIG_CPU_FREQ) += cpufreq.o
+obj-$(CONFIG_AUTOSMP) += autosmp.o
 obj-$(CONFIG_DVFS) += dvfs.o
 obj-y += board.o
 

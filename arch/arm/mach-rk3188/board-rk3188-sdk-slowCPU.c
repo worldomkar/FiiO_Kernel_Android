@@ -3550,7 +3550,7 @@ static void __init rk30_reserve(void)
 #endif
 #ifdef CONFIG_ION
 	size = ddr_get_cap() >> 20;
-	if(size >= 1024) { // DDR >= 1G, set ion to 120M
+	if(size > 1024) { // DDR > 1G, set ion to 120M
 		rk30_ion_pdata.heaps[0].size = ION_RESERVE_SIZE_220M;
 		ion_reserve_size = ION_RESERVE_SIZE_220M;
 	}
