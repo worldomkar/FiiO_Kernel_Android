@@ -1518,6 +1518,7 @@ static int ak4490_set_dai_mute(struct snd_soc_dai *dai, int mute)
             akdbgprt("\t[AK4490] %s mute %d set unmute\n",__FUNCTION__,mute);
         }
 		/* ak4490_update_bits_lr2(AK4490_01_CONTROL2, 0x01, 0x00);  */
+/*
 #ifdef CONFIG_SND_SOC_AK4490_CUSTOM_DRIVER
                 switch (selected_filter) {
 		case 1:
@@ -1568,6 +1569,7 @@ static int ak4490_set_dai_mute(struct snd_soc_dai *dai, int mute)
                 }
 #endif	
 
+*/
 }
 
 	return 0;

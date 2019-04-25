@@ -103,25 +103,29 @@ static struct notifier_block __cpuinitdata blk_cpu_notifier = {
 
 void __blk_complete_request(struct request *req)
 {
+	int ccpu, cpu;
 	struct request_queue *q = req->q;
 	unsigned long flags;
-	int ccpu, cpu, group_cpu;
+	bool shared = false;
 
 	BUG_ON(!q->softirq_done_fn);
 
 	local_irq_save(flags);
 	cpu = smp_processor_id();
-	group_cpu = blk_cpu_to_group(cpu);
+//	group_cpu = blk_cpu_to_group(cpu);
 
 	/*
 	 * Select completion CPU
 	 */
-	if (test_bit(QUEUE_FLAG_SAME_COMP, &q->queue_flags) && req->cpu != -1)
+
+	if (test_bit(QUEUE_FLAG_SAME_COMP, &q->queue_flags) && req->cpu != -1) {
 		ccpu = req->cpu;
-	else
+		if (!test_bit(QUEUE_FLAG_SAME_FORCE, &q->queue_flags))
+			ccpu = blk_cpu_to_group(ccpu);
+	} else
 		ccpu = cpu;
 
-	if (ccpu == cpu || ccpu == group_cpu) {
+	if (ccpu == cpu) {
 		struct list_head *list;
 do_local:
 		list = &__get_cpu_var(blk_cpu_done);

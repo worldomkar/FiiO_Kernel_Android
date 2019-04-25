@@ -3703,10 +3703,10 @@ static struct cpufreq_frequency_table dvfs_ddr_table_volt_level0[] = {
 };
 
 static struct cpufreq_frequency_table dvfs_ddr_table_t[] = {
-	{.frequency = 300 * 1000 + DDR_FREQ_SUSPEND,    .index = 1025 * 1000},
+	{.frequency = 200 * 1000 + DDR_FREQ_SUSPEND,    .index = 1025 * 1000},
 	{.frequency = 460 * 1000 + DDR_FREQ_NORMAL,     .index = 1200 * 1000},
-	{.frequency = 720 * 1000 + DDR_FREQ_NORMAL,     .index = 1200 * 1000},
-	{.frequency = 800 * 1000 + DDR_FREQ_NORMAL,     .index = 1250 * 1000},
+//	{.frequency = 720 * 1000 + DDR_FREQ_NORMAL,     .index = 1200 * 1000},
+//	{.frequency = 800 * 1000 + DDR_FREQ_NORMAL,     .index = 1250 * 1000},
 	{.frequency = CPUFREQ_TABLE_END},
 };
 
