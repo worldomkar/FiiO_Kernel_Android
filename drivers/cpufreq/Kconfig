@@ -119,6 +119,10 @@ config CPU_FREQ_DEFAULT_GOV_NEOX
 	bool "NeoX"
 	select CPU_FREQ_GOV_NeoX
 
+config CPU_FREQ_DEFAULT_GOV_PEGASUSQ
+	bool "pegasusq"
+	select CPU_FREQ_GOV_PEGASUSQ
+
 endchoice
 
 config CPU_FREQ_GOV_PERFORMANCE
@@ -208,6 +212,10 @@ config CPU_FREQ_GOV_NEOX
           'NeoX' - a tweaked "pegasusq" based smart and smooth optimized governor!
 
            If in doubt, say Y.
+
+config CPU_FREQ_GOV_PEGASUSQ
+	tristate "pegasusq' cpufreq policy governor"
+	default y
 
 config CPU_FREQ_GOV_CONSERVATIVE
 	tristate "'conservative' cpufreq governor"
