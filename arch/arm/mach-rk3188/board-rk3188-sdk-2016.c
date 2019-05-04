@@ -3606,13 +3606,13 @@ static void __init rk30_reserve(void)
 static struct cpufreq_frequency_table dvfs_arm_table_volt_level0[] = {
 //	{.frequency = 312 * 1000,		.index = 850 * 1000},
         {.frequency = 504 * 1000,               .index = 875 * 1000},
-        {.frequency = 696 * 1000,               .index = 900 * 1000},
+//      {.frequency = 696 * 1000,               .index = 900 * 1000},
         {.frequency = 816 * 1000,               .index = 925 * 1000},
         {.frequency = 1008 * 1000,              .index = 1000 * 1000},
-        {.frequency = 1200 * 1000,              .index = 1075 * 1000},
+//      {.frequency = 1200 * 1000,              .index = 1075 * 1000},
         {.frequency = 1416 * 1000,              .index = 1175 * 1000},
-        {.frequency = 1512 * 1000,              .index = 1200 * 1000},
-        {.frequency = 1608 * 1000,              .index = 1200 * 1000},
+//      {.frequency = 1512 * 1000,              .index = 1200 * 1000},
+//      {.frequency = 1608 * 1000,              .index = 1200 * 1000},
         {.frequency = 1704 * 1000,              .index = 1225 * 1000},
         {.frequency = 1752 * 1000,              .index = 1250 * 1000},
         {.frequency = 1896 * 1000,              .index = 1350 * 1000},
@@ -3716,9 +3716,9 @@ static struct cpufreq_frequency_table dvfs_ddr_table_t[] = {
         {.frequency = 460 * 1000 + DDR_FREQ_IDLE,       .index = 1050 * 1000},
 	{.frequency = 200 * 1000 + DDR_FREQ_SUSPEND,    .index = 975 * 1000},
 */
-	{.frequency = 200 * 1000 + DDR_FREQ_SUSPEND,    .index = 950 * 1000},
+	{.frequency = 460 * 1000 + DDR_FREQ_SUSPEND,    .index = 1050 * 1000},
 //	{.frequency = 300 * 1000 + DDR_FREQ_VIDEO,      .index = 1000 * 1000},
-	{.frequency = 720 * 1000 + DDR_FREQ_NORMAL,     .index = 1250 * 1000},
+	{.frequency = 800 * 1000 + DDR_FREQ_NORMAL,     .index = 1250 * 1000},
 	{.frequency = CPUFREQ_TABLE_END},
 };
 
