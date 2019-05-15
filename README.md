@@ -39,6 +39,68 @@ zcache implementation
 Changelog
 =========
 
+Version 3.11
+
+Miscellaneous bugfixes
+
+Version 3.1
+
+Single installer for all kernel versions
+New optimised voltages for 1416, 1704 and 2016 kernels (more stable and better performance)
+Customisable removal of unwanted system applications
+Customisable removal of system equalizer
+Customising different audio_flinger libraries (different sound profiles to suit taste)
+Enable/Disable Boot-up animation
+Enable/Disable custom application on bootup
+
+Version 3.02
+
+New: 1704MHz release for players that can work at higher frequencies than 1416MHz (install this version if you previously had reboots at 2016MHz)
+Enhanced: Increased stability without performance decrease
+Enhanced: CPU down-volting for performance kernel version (2016MHz)
+Fix: Removed additional CPU frequencies for 1416MHz kernel version (increased stability)
+
+Version 3.01
+New: 1752MHz intermediary version
+Enhanced: More step frequencies from 504 to 2016MHz
+Enhanced: Better handling of frequencies at high CPU loads
+Enhanced: Powersave governor enabled by default
+
+Version 3.0
+New: Upstreamed relevant portions of kernel source code to Linux 3.10.49
+New: AdFree hosts file - 67825 exceptions for no spamware, faster browsing
+New: Support for DSD256
+New: CPU Boost algorithm to increase frequency on screen touch
+New: RQ Affinity for faster I/O scheduling
+New: CPU SMP feature for faster processing
+New: PegasusQ CPU governor
+New: Improved interactiveX governor with increased performance and more power saving on idle (2 core shutdown)
+New: Custom AK4490 driver with up to 768kHz oversampling
+New: Custom plugin module for AK4490 to add more audio filters in future
+New: CPU Maximum overclocking to 2016MHz! (Super significant performance improvement)
+New: Current CPU frequency 1896MHz (Significant performance improvement and good stability)
+New: GPU overclocking to 500MHz (More fluid screen responsiveness)
+New: DDR overclocking to 720MHz (Ultra-fast memory and software processing)
+New: Reduced Graphics requirements from 225MB down to 80MB (20% more available RAM)
+New: Adaptive Low Memory Killer (A-LMK) algorithm
+New: A-LMK optimised scripting (thanks again to prispewnic)
+New: Compaction algorithm for low memory killer
+New: FiiO RK3188/RK3188T efuse algorithm handling
+New: VM Pressure algorithm implementation
+Enhanced: zram and zcache now compressed with LZ4
+Enhanced: better voltage regulation code
+Enhanced: support for apll, cpll and gpll clocks on RK30 board
+Enhanced: better GPIO code specific to FiiO player
+Enhanced: removed unnecessary encryption
+Enhanced: lowered minimum screen brightness for better battery lifetime
+
+Version 2.8
+Performance Build
+New: Disabled CRC checking in all kernel code (significant performance improvement)
+New: Optimised compilation parameters (-Wall -Wmissing-prototypes -Wstrict-prototypes -O2 -fomit-frame-pointer)
+New: Fine-tuned kernel optimisation for RK3188 (-mtune=cortex-a9)
+New: Optimised ARM RWSEM algorithm
+
 Version 2.7
 New: Redesigned Busybox installer
 New: Redesigned Permissive SE Linux installer
