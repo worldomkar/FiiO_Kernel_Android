@@ -3602,12 +3602,12 @@ static void __init rk30_reserve(void)
 #if defined(CONFIG_ARCH_RK3188)
 //new_FiiO_tables
 static struct cpufreq_frequency_table dvfs_arm_table_volt_level0[] = {
-        {.frequency = 504 * 1000,               .index = 875 * 1000},
+        {.frequency = 504 * 1000,               .index = 900 * 1000},
 //      {.frequency = 696 * 1000,               .index = 900 * 1000},
-        {.frequency = 816 * 1000,               .index = 925 * 1000},
-        {.frequency = 1008 * 1000,              .index = 1000 * 1000},
+        {.frequency = 816 * 1000,               .index = 950 * 1000},
+        {.frequency = 1008 * 1000,              .index = 1025 * 1000},
 //      {.frequency = 1200 * 1000,              .index = 1075 * 1000},
-        {.frequency = 1416 * 1000,              .index = 1175 * 1000},
+        {.frequency = 1416 * 1000,              .index = 1200 * 1000},
 //      {.frequency = 1512 * 1000,              .index = 1200 * 1000},
 //      {.frequency = 1608 * 1000,              .index = 1200 * 1000},
 //      {.frequency = 1704 * 1000,              .index = 1225 * 1000},
@@ -3669,12 +3669,12 @@ static struct cpufreq_frequency_table dvfs_arm_table_volt_level2[] = {
 /******************************** gpu dvfs frequency volt table **********************************/
 //FiiO new
 static struct cpufreq_frequency_table dvfs_gpu_table_volt_level0[] = {	
-//	{.frequency = 133 * 1000,       .index = 950 * 1000},//the mininum rate is limited 133M for rk3188
-	{.frequency = 200 * 1000,       .index = 950 * 1000},
-	{.frequency = 266 * 1000,       .index = 975 * 1000},
-	{.frequency = 300 * 1000,       .index = 1025 * 1000},
-//	{.frequency = 400 * 1000,       .index = 1075 * 1000},
-//	{.frequency = 600 * 1000,       .index = 1125 * 1000},
+	{.frequency = 133 * 1000,       .index = 975 * 1000},//the mininum rate is limited 133M for rk3188
+	{.frequency = 200 * 1000,       .index = 975 * 1000},
+	{.frequency = 266 * 1000,       .index = 1000 * 1000},
+	{.frequency = 300 * 1000,       .index = 1050 * 1000},
+	{.frequency = 400 * 1000,       .index = 1100 * 1000},
+	{.frequency = 600 * 1000,       .index = 1200 * 1000},
 //      {.frequency = 666 * 1000,       .index = 1175 * 1000},
 //      {.frequency = 700 * 1000,       .index = 1250 * 1000},
 //	{.frequency = 798 * 1000,       .index = 1250 * 1000},

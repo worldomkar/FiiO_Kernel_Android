@@ -3605,7 +3605,7 @@ static void __init rk30_reserve(void)
 //new_FiiO_tables
 static struct cpufreq_frequency_table dvfs_arm_table_volt_level0[] = {
 //	{.frequency = 312 * 1000,		.index = 825 * 1000},
-        {.frequency = 504 * 1000,               .index = 850 * 1000},
+        {.frequency = 504 * 1000,               .index = 825 * 1000},
 //      {.frequency = 696 * 1000,               .index = 900 * 1000},
         {.frequency = 816 * 1000,               .index = 900 * 1000},
         {.frequency = 1008 * 1000,              .index = 975 * 1000},
@@ -3618,7 +3618,7 @@ static struct cpufreq_frequency_table dvfs_arm_table_volt_level0[] = {
         {.frequency = 1896 * 1000,              .index = 1350 * 1000},
 //      {.frequency = 1968 * 1000,              .index = 1425 * 1000},
         {.frequency = 2016 * 1000,              .index = 1425 * 1000},
-//      {.frequency = 2112 * 1000,              .index = 1450 * 1000},
+//      {.frequency = 2112 * 1000,              .index = 1425 * 1000},
 //      {.frequency = 2208 * 1000,              .index = 1500 * 1000},
 	{.frequency = CPUFREQ_TABLE_END},
 };

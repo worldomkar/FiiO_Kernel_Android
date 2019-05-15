@@ -71,7 +71,7 @@ static unsigned int suspend_freq = 816 * 1000;
 #if defined(CONFIG_ARCH_RK3026)
 static unsigned int suspend_volt = 1100000; // 1.1V
 #else
-static unsigned int suspend_volt = 1000000; // 1V
+static unsigned int suspend_volt = 875000; // 0.875V
 #endif
 static unsigned int low_battery_freq = 600 * 1000;
 static unsigned int low_battery_capacity = 5; // 5%
