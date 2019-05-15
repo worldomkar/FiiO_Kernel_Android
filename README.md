@@ -4,37 +4,52 @@ Created by jkbuha, props to @FiiO for releasing
 Features
 =========
 
-CPU overclock from 1416MHz to 1752MHz
+- Custom AK4490 DAC driver (faster, better oversampling)
 
-GPU overclock from 200MHz to 800MHz
+- Support for DSD256
 
-DDR overclock from 133MHz to 720MHz
+- Increased clock speed from 1416MHz to 2016MHz
 
-New Schedulers: Zen, Maple, Row, Sio, VR, BFQ
+- Increased GPU speed from 133MHz to 600MHz
 
-New Governors: InteractiveX
+- Increased DDR speed from 200MHz to 800MHz
 
-New TCP/IP: Westwood
+- Better voltage regulation using all possible pwm and clocks on the board
 
-init.d support
+- Increased available RAM by 20%
 
-init.d optimisation scripts - thanks to prispewnic of 4PDA!
+- LZ4 compression for better, faster swap and virtual memory usage
 
-frandom generator instead of urandom
+- ZRAM usage for additional system memory
 
-ARM RSEM implementation
+- Fsync_disable for much faster system processing
 
-Kernel LZ4 compression instead of LZO
+- UKSM for faster Kernel operations
 
-fsync disable
+- Adaptive-LMK for better memory management
 
-UKSM instead of KSM
+- Undervolting for lower heat dissipation and battery consumption
 
-ZRAM implementation
+- New Faster CPU Governors: interactiveX, PegasusQ,
 
-zsmalloc implementation
+- New Faster I/O Schedulers: zen, bfq, sio, vr, maple
 
-zcache implementation
+- New Faster Westwood TCP/IP congestion handler for faster wifi and internet access
+
+- CPUBoost algorithm for faster on-demand processing
+
+- CPU SMP feature for powering down unused cores on screen off
+
+- RQ Affinity for faster I/O scheduling
+
+- Linaro gcc toolkit for faster, leaner code
+
+- RK3188 neon vfp3 code optimisation for faster fixed-point and floating DSP operation
+
+- Full init.d support for script runtime loading
+
+- Frandom genrator (23x faster than standard random function)
+
 
 Changelog
 =========
