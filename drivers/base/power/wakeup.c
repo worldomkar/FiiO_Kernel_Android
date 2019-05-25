@@ -344,6 +344,13 @@ EXPORT_SYMBOL_GPL(device_set_wakeup_enable);
  */
 static void wakeup_source_activate(struct wakeup_source *ws)
 {
+
+	/*
+	 * active wakeup source should bring the system
+	 * out of PM_SUSPEND_FREEZE state
+	 */
+	freeze_wake();
+
 	ws->active = true;
 	ws->active_count++;
 	ws->timer_expires = jiffies;
@@ -602,8 +609,10 @@ bool pm_wakeup_pending(void)
 		events_check_enabled = !ret;
 	}
 	spin_unlock_irqrestore(&events_lock, flags);
-	if (ret)
+	if (ret) {
+		pr_info("PM: Wakeup pending, aborting suspend\n");
 		pm_wakeup_update_hit_counts();
+	}
 	return ret;
 }
 
