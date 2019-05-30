@@ -27,13 +27,14 @@
 #include <net/inet_common.h>
 #include <net/xfrm.h>
 
-int sysctl_tcp_syncookies __read_mostly = 1;
+int sysctl_tcp_syncookies __read_mostly;
 EXPORT_SYMBOL(sysctl_tcp_syncookies);
 
 int sysctl_tcp_abort_on_overflow __read_mostly;
 
 struct inet_timewait_death_row tcp_death_row = {
 	.sysctl_max_tw_buckets = NR_FILE * 2,
+	.sysctl_tw_recycle = 1,
 	.period		= TCP_TIMEWAIT_LEN / INET_TWDR_TWKILL_SLOTS,
 	.death_lock	= __SPIN_LOCK_UNLOCKED(tcp_death_row.death_lock),
 	.hashinfo	= &tcp_hashinfo,

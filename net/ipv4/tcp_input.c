@@ -73,15 +73,15 @@
 #include <asm/unaligned.h>
 #include <net/netdma.h>
 
-int sysctl_tcp_timestamps __read_mostly = 1;
+int sysctl_tcp_timestamps __read_mostly;
 int sysctl_tcp_window_scaling __read_mostly = 1;
-int sysctl_tcp_sack __read_mostly = 1;
-int sysctl_tcp_fack __read_mostly = 1;
+int sysctl_tcp_sack __read_mostly;
+int sysctl_tcp_fack __read_mostly;
 int sysctl_tcp_reordering __read_mostly = TCP_FASTRETRANS_THRESH;
 EXPORT_SYMBOL(sysctl_tcp_reordering);
 int sysctl_tcp_ecn __read_mostly = 2;
 EXPORT_SYMBOL(sysctl_tcp_ecn);
-int sysctl_tcp_dsack __read_mostly = 1;
+int sysctl_tcp_dsack __read_mostly;
 int sysctl_tcp_app_win __read_mostly = 31;
 int sysctl_tcp_adv_win_scale __read_mostly = 2;
 EXPORT_SYMBOL(sysctl_tcp_adv_win_scale);
@@ -317,11 +317,12 @@ static int __tcp_grow_window(const struct sock *sk, const struct sk_buff *skb)
 static void tcp_grow_window(struct sock *sk, struct sk_buff *skb)
 {
 	struct tcp_sock *tp = tcp_sk(sk);
+	int room;
+
+ 	room = min_t(int, tp->window_clamp, tcp_space(sk)) - tp->rcv_ssthresh;
 
 	/* Check #1 */
-	if (tp->rcv_ssthresh < tp->window_clamp &&
-	    (int)tp->rcv_ssthresh < tcp_space(sk) &&
-	    !tcp_memory_pressure) {
+	if (room > 0 && !tcp_memory_pressure) {
 		int incr;
 
 		/* Check #2. Increase window, if skb with such overhead
@@ -334,8 +335,7 @@ static void tcp_grow_window(struct sock *sk, struct sk_buff *skb)
 
 		if (incr) {
 			incr = max_t(int, incr, 2 * skb->len);
-			tp->rcv_ssthresh = min(tp->rcv_ssthresh + incr,
-					       tp->window_clamp);
+			tp->rcv_ssthresh += min(room, incr);
 			inet_csk(sk)->icsk_ack.quick |= 1;
 		}
 	}
