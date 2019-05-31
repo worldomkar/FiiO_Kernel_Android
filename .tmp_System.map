@@ -31357,10 +31357,10 @@ c0ae8d10 T kallsyms_names
 c0b673a0 T kallsyms_markers
 c0b67650 T kallsyms_token_table
 c0b679f0 T kallsyms_token_index
-c0bee788 T __proc_info_begin
-c0bee788 t __v7_ca9mp_proc_info
-c0bee7bc t __v7_proc_info
-c0bee7f0 T __proc_info_end
+c0bee77c T __proc_info_begin
+c0bee77c t __v7_ca9mp_proc_info
+c0bee7b0 t __v7_proc_info
+c0bee7e4 T __proc_info_end
 c0bef000 R __start___tracepoints_ptrs
 c0bef000 R __start_rodata
 c0bef000 r __tracepoint_ptr_sched_pi_setprio

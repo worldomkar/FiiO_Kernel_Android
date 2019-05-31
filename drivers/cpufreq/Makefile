@@ -14,6 +14,7 @@ obj-$(CONFIG_CPU_FREQ_GOV_INTERACTIVE)	+= cpufreq_interactive.o
 obj-$(CONFIG_CPU_FREQ_GOV_INTERACTIVEX)	+= cpufreq_interactiveX.o
 obj-$(CONFIG_CPU_FREQ_GOV_NEOX)		+= cpufreq_neox.o
 obj-$(CONFIG_CPU_BOOST)			+= cpu-boost.o
+obj-$(CONFIG_DSBOOST)			+= dsboost.o
 
 # CPUfreq cross-arch helpers
 obj-$(CONFIG_CPU_FREQ_TABLE)		+= freq_table.o
