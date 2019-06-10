@@ -109,7 +109,6 @@ EXPORT_SYMBOL_GPL(rcu_scheduler_active);
  * a time.
  */
 static int rcu_scheduler_fully_active __read_mostly;
-
 #ifdef CONFIG_RCU_BOOST
 
 /*
@@ -127,8 +126,6 @@ DEFINE_PER_CPU(char, rcu_cpu_has_work);
 static void rcu_node_kthread_setaffinity(struct rcu_node *rnp, int outgoingcpu);
 static void invoke_rcu_core(void);
 static void invoke_rcu_callbacks(struct rcu_state *rsp, struct rcu_data *rdp);
-
-#define RCU_KTHREAD_PRIO 1	/* RT priority for per-CPU kthreads. */
 
 /*
  * Track the rcutorture test sequence number and the update version
