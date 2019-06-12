@@ -35,7 +35,7 @@
 
 int sysctl_panic_on_oom;
 int sysctl_oom_kill_allocating_task;
-int sysctl_oom_dump_tasks = 1;
+int sysctl_oom_dump_tasks;
 static DEFINE_SPINLOCK(zone_scan_lock);
 
 /**

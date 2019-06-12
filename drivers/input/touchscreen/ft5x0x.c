@@ -18,7 +18,7 @@
 #include <linux/regulator/machine.h>
 #include <linux/regulator/consumer.h>
 #include <linux/regulator/machine.h>
-#include <linux/pm_qos_params.h>
+
 
 //#define FT5X0X_DEBUG
 #ifdef FT5X0X_DEBUG
@@ -509,10 +509,6 @@ static void  ft5x0x_delaywork_func(struct work_struct *work)
 	struct ft5x0x_data *ft5x0x = container_of(work, struct ft5x0x_data, pen_event_work);
 	struct i2c_client *client = ft5x0x->client;
 
-	struct sched_param param = { .sched_priority = MAX_USER_RT_PRIO / 2 };
-
-	sched_setscheduler(current, SCHED_FIFO, &param);
-	
 	ft5x0x_process_points(ft5x0x);
 	enable_irq(client->irq);		
 }
@@ -520,14 +516,12 @@ static void  ft5x0x_delaywork_func(struct work_struct *work)
 static irqreturn_t ft5x0x_interrupt(int irq, void *handle)
 {
 	struct ft5x0x_data *ft5x0x_ts = handle;
-//	pm_qos_update_request(&ts->pm_qos_req, 100);
+
 	//printk("Enter:%s %d\n",__FUNCTION__,__LINE__);
 	disable_irq_nosync(irq);
 	//if (!work_pending(&ft5x0x_ts->pen_event_work)) {
 		queue_work(ft5x0x_ts->ts_workqueue, &ft5x0x_ts->pen_event_work);
 	//}
-
-//	pm_qos_update_request(&ts->pm_qos_req, PM_QOS_DEFAULT_VALUE);
 	return IRQ_HANDLED;
 }
 
