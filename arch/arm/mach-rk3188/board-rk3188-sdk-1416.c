@@ -623,7 +623,7 @@ static int rk29_backlight_pwm_resume(void)
 static struct rk29_bl_info rk29_bl_info = {
 	.pre_div = 30 * 1000,  // pwm output clk: 30k;
 	.pwm_id = PWM_ID,
-	.min_brightness=20,
+	.min_brightness=10,
 	.max_brightness=255,
 	.brightness_mode =BRIGHTNESS_MODE_LINE,
 	.bl_ref = PWM_EFFECT_VALUE,
@@ -1086,10 +1086,12 @@ static struct rk_hdmi_platform_data rk_hdmi_pdata = {
 
 #ifdef CONFIG_FB_ROCKCHIP
 
-#define LCD_CS_PIN         INVALID_GPIO
+//#define LCD_CS_PIN         INVALID_GPIO
+#define LCD_CS_PIN	   RK30_PIN0_PD7
 #define LCD_CS_VALUE       GPIO_HIGH
 
 #define LCD_EN_PIN         INVALID_GPIO
+//#define LCD_EN_PIN         RK30_PIN1_PB5
 #define LCD_EN_VALUE       GPIO_HIGH
 
 static int rk_fb_io_init(struct rk29_fb_setting_info *fb_setting)

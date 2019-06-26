@@ -4,3 +4,7 @@
 .img
 .s
 .S
+.tmp
+.tmp_System.map
+.tmp_vmlinux1
+.tmp_vmlinux2
