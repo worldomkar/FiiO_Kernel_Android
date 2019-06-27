@@ -2298,6 +2298,9 @@ kmem_cache_create (const char *name, size_t size, size_t align,
 	 */
 	align = ralign;
 
+	/* Embrace davem */
+	flags |= SLAB_HWCACHE_ALIGN;
+
 	if (slab_is_available())
 		gfp = GFP_KERNEL;
 	else
