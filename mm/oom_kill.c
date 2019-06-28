@@ -80,7 +80,7 @@ static bool has_intersects_mems_allowed(struct task_struct *tsk,
 {
 	struct task_struct *start = tsk;
 
-	do {
+	for_each_thread(start, tsk) {
 		if (mask) {
 			/*
 			 * If this is a mempolicy constrained oom, tsk's
@@ -98,7 +98,7 @@ static bool has_intersects_mems_allowed(struct task_struct *tsk,
 			if (cpuset_mems_allowed_intersects(current, tsk))
 				return true;
 		}
-	} while_each_thread(start, tsk);
+	}
 
 	return false;
 }
@@ -118,14 +118,14 @@ static bool has_intersects_mems_allowed(struct task_struct *tsk,
  */
 struct task_struct *find_lock_task_mm(struct task_struct *p)
 {
-	struct task_struct *t = p;
+	struct task_struct *t;
 
-	do {
+	for_each_thread(p, t) {
 		task_lock(t);
 		if (likely(t->mm))
 			return t;
 		task_unlock(t);
-	} while_each_thread(p, t);
+	}
 
 	return NULL;
 }
@@ -300,7 +300,7 @@ static struct task_struct *select_bad_process(unsigned int *ppoints,
 	struct task_struct *chosen = NULL;
 	*ppoints = 0;
 
-	do_each_thread(g, p) {
+	for_each_process_thread(g, p) {
 		unsigned int points;
 
 		if (p->exit_state)
@@ -352,7 +352,7 @@ static struct task_struct *select_bad_process(unsigned int *ppoints,
 			chosen = p;
 			*ppoints = points;
 		}
-	} while_each_thread(g, p);
+	}
 
 	return chosen;
 }
@@ -468,7 +468,7 @@ static int oom_kill_process(struct task_struct *p, gfp_t gfp_mask, int order,
 {
 	struct task_struct *victim = p;
 	struct task_struct *child;
-	struct task_struct *t = p;
+	struct task_struct *t;
 	unsigned int victim_points = 0;
 
 	if (printk_ratelimit())
@@ -494,7 +494,7 @@ static int oom_kill_process(struct task_struct *p, gfp_t gfp_mask, int order,
 	 * parent.  This attempts to lose the minimal amount of work done while
 	 * still freeing memory.
 	 */
-	do {
+	for_each_thread(p, t)  {
 		list_for_each_entry(child, &t->children, sibling) {
 			unsigned int child_points;
 
@@ -510,7 +510,7 @@ static int oom_kill_process(struct task_struct *p, gfp_t gfp_mask, int order,
 				victim_points = child_points;
 			}
 		}
-	} while_each_thread(p, t);
+	}
 
 	return oom_kill_task(victim, mem);
 }
