@@ -31346,10 +31346,10 @@ c0ae7500 T kallsyms_names
 c0b65b20 T kallsyms_markers
 c0b65dd0 T kallsyms_token_table
 c0b66170 T kallsyms_token_index
-c0bececc T __proc_info_begin
-c0bececc t __v7_ca9mp_proc_info
-c0becf00 t __v7_proc_info
-c0becf34 T __proc_info_end
+c0beced8 T __proc_info_begin
+c0beced8 t __v7_ca9mp_proc_info
+c0becf0c t __v7_proc_info
+c0becf40 T __proc_info_end
 c0bed000 R __start___tracepoints_ptrs
 c0bed000 R __start_rodata
 c0bed000 r __tracepoint_ptr_sched_pi_setprio
