@@ -390,7 +390,7 @@ static int external_sd_suspend()
         //enable wake irq
         enable_irq_wake(sd_irq); 
         //close sdcard power
-//      set_sdcard_power_onoff(0);
+        set_sdcard_power_onoff(0);
         return 0;
 }
 
