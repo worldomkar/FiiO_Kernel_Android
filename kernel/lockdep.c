@@ -3982,7 +3982,7 @@ void lockdep_sys_exit(void)
 	}
 }
 
-void lockdep_rcu_dereference(const char *file, const int line)
+void lockdep_rcu_suspicious(const char *file, const int line, const char *s)
 {
 	struct task_struct *curr = current;
 
@@ -4002,4 +4002,4 @@ void lockdep_rcu_dereference(const char *file, const int line)
 	printk("\nstack backtrace:\n");
 	dump_stack();
 }
-EXPORT_SYMBOL_GPL(lockdep_rcu_dereference);
+EXPORT_SYMBOL_GPL(lockdep_rcu_suspicious);

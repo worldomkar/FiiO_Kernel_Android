@@ -37,7 +37,11 @@
 #include <linux/cpu.h>
 #include <linux/prefetch.h>
 
+#ifdef CONFIG_RCU_TRACE
+#include <trace/events/rcu.h>
+#endif /* #else #ifdef CONFIG_RCU_TRACE */
 
+#include "rcu.h"
 
 /* Forward declarations for rcutiny_plugin.h. */
 struct rcu_ctrlblk;
@@ -143,16 +147,21 @@ void rcu_check_callbacks(int cpu, int user)
  */
 static void __rcu_process_callbacks(struct rcu_ctrlblk *rcp)
 {
+	char *rn = NULL;
 	struct rcu_head *next, *list;
 	unsigned long flags;
 	RCU_TRACE(int cb_count = 0);
 
 	/* If no RCU callbacks ready to invoke, just return. */
-	if (&rcp->rcucblist == rcp->donetail)
+	if (&rcp->rcucblist == rcp->donetail) {
+		RCU_TRACE(trace_rcu_batch_start(rcp->name, 0, -1));
+		RCU_TRACE(trace_rcu_batch_end(rcp->name, 0));
 		return;
+	}
 
 	/* Move the ready-to-invoke callbacks to a local list. */
 	local_irq_save(flags);
+	RCU_TRACE(trace_rcu_batch_start(rcp->name, 0, -1));
 	list = rcp->rcucblist;
 	rcp->rcucblist = *rcp->donetail;
 	*rcp->donetail = NULL;
@@ -163,17 +172,19 @@ static void __rcu_process_callbacks(struct rcu_ctrlblk *rcp)
 	local_irq_restore(flags);
 
 	/* Invoke the callbacks on the local list. */
+	RCU_TRACE(rn = rcp->name);
 	while (list) {
 		next = list->next;
 		prefetch(next);
 		debug_rcu_head_unqueue(list);
 		local_bh_disable();
-		__rcu_reclaim(list);
+		__rcu_reclaim(rn, list);
 		local_bh_enable();
 		list = next;
 		RCU_TRACE(cb_count++);
 	}
 	RCU_TRACE(rcu_trace_sub_qlen(rcp, cb_count));
+	RCU_TRACE(trace_rcu_batch_end(rcp->name, cb_count));
 }
 
 static void rcu_process_callbacks(struct softirq_action *unused)
@@ -242,31 +253,3 @@ void call_rcu_bh(struct rcu_head *head, void (*func)(struct rcu_head *rcu))
 	__call_rcu(head, func, &rcu_bh_ctrlblk);
 }
 EXPORT_SYMBOL_GPL(call_rcu_bh);
-
-void rcu_barrier_bh(void)
-{
-	struct rcu_synchronize rcu;
-
-	init_rcu_head_on_stack(&rcu.head);
-	init_completion(&rcu.completion);
-	/* Will wake me after RCU finished. */
-	call_rcu_bh(&rcu.head, wakeme_after_rcu);
-	/* Wait for it. */
-	wait_for_completion(&rcu.completion);
-	destroy_rcu_head_on_stack(&rcu.head);
-}
-EXPORT_SYMBOL_GPL(rcu_barrier_bh);
-
-void rcu_barrier_sched(void)
-{
-	struct rcu_synchronize rcu;
-
-	init_rcu_head_on_stack(&rcu.head);
-	init_completion(&rcu.completion);
-	/* Will wake me after RCU finished. */
-	call_rcu_sched(&rcu.head, wakeme_after_rcu);
-	/* Wait for it. */
-	wait_for_completion(&rcu.completion);
-	destroy_rcu_head_on_stack(&rcu.head);
-}
-EXPORT_SYMBOL_GPL(rcu_barrier_sched);
