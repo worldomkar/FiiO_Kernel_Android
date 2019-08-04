@@ -43,13 +43,13 @@ static void __clk_reparent(struct clk *child, struct clk *parent);
 
 static LIST_HEAD(clocks);
 static DEFINE_MUTEX(clocks_mutex);
-static DEFINE_SPINLOCK(clockfw_lock);
+static DEFINE_RAW_SPINLOCK(clockfw_lock);
 static LIST_HEAD(root_clks);
 static void clk_notify(struct clk *clk, unsigned long msg,
 		       unsigned long old_rate, unsigned long new_rate);
 
-#define LOCK() do { WARN_ON(in_irq()); if (!irqs_disabled()) spin_lock_bh(&clockfw_lock); } while (0)
-#define UNLOCK() do { if (!irqs_disabled()) spin_unlock_bh(&clockfw_lock); } while (0)
+#define LOCK() do { WARN_ON(in_irq()); if (!irqs_disabled()) raw_spin_lock_bh(&clockfw_lock); } while (0)
+#define UNLOCK() do { if (!irqs_disabled()) raw_spin_unlock_bh(&clockfw_lock); } while (0)
 /**********************************************for clock data****************************************************/
 struct list_head *get_rk_clocks_head(void)
 {

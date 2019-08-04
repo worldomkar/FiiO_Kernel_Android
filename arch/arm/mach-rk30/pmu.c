@@ -34,7 +34,7 @@ static noinline void do_pmu_set_power_domain(enum pmu_power_domain pd, bool on)
  *  power up multiple power domains simultaneously will result in chip electric current
  *  change dramatically which will affect the chip function.
  */
-static DEFINE_SPINLOCK(pmu_pd_lock);
+static DEFINE_RAW_SPINLOCK(pmu_pd_lock);
 static u32 lcdc0_qos[CPU_AXI_QOS_NUM_REGS];
 static u32 lcdc1_qos[CPU_AXI_QOS_NUM_REGS];
 static u32 cif0_qos[CPU_AXI_QOS_NUM_REGS];
@@ -48,9 +48,9 @@ void pmu_set_power_domain(enum pmu_power_domain pd, bool on)
 {
 	unsigned long flags;
 
-	spin_lock_irqsave(&pmu_pd_lock, flags);
+	raw_spin_lock_irqsave(&pmu_pd_lock, flags);
 	if (pmu_power_domain_is_on(pd) == on) {
-		spin_unlock_irqrestore(&pmu_pd_lock, flags);
+		raw_spin_unlock_irqrestore(&pmu_pd_lock, flags);
 		return;
 	}
 	if (!on) {
@@ -90,11 +90,11 @@ void pmu_set_power_domain(enum pmu_power_domain pd, bool on)
 			CPU_AXI_RESTORE_QOS(gpu_qos, GPU);
 		}
 	}
-	spin_unlock_irqrestore(&pmu_pd_lock, flags);
+	raw_spin_unlock_irqrestore(&pmu_pd_lock, flags);
 }
 EXPORT_SYMBOL(pmu_set_power_domain);
 
-static DEFINE_SPINLOCK(pmu_misc_con1_lock);
+static DEFINE_RAW_SPINLOCK(pmu_misc_con1_lock);
 
 void pmu_set_idle_request(enum pmu_idle_req req, bool idle)
 {
@@ -120,7 +120,7 @@ void pmu_set_idle_request(enum pmu_idle_req req, bool idle)
 	}
 #endif
 
-	spin_lock_irqsave(&pmu_misc_con1_lock, flags);
+	raw_spin_lock_irqsave(&pmu_misc_con1_lock, flags);
 	val = readl_relaxed(RK30_PMU_BASE + PMU_MISC_CON1);
 	if (idle)
 		val |=  mask;
@@ -133,6 +133,6 @@ void pmu_set_idle_request(enum pmu_idle_req req, bool idle)
 		;
 	while ((readl_relaxed(RK30_PMU_BASE + PMU_PWRDN_ST) & idle_mask) != idle_target)
 		;
-	spin_unlock_irqrestore(&pmu_misc_con1_lock, flags);
+	raw_spin_unlock_irqrestore(&pmu_misc_con1_lock, flags);
 }
 EXPORT_SYMBOL(pmu_set_idle_request);

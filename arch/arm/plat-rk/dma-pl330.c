@@ -96,7 +96,7 @@ static LIST_HEAD(chan_list);
  * Since we add resources(DMACs and Channels) to the global pool,
  * we need to guard access to the resources using a global lock
  */
-static DEFINE_SPINLOCK(res_lock);
+static DEFINE_RAW_SPINLOCK(res_lock);
 
 /* Returns the channel with ID 'id' in the chan_list */
 static struct rk29_pl330_chan *id_to_chan(const enum dma_ch id)
@@ -497,7 +497,7 @@ static void rk29_pl330_rq(struct rk29_pl330_chan *ch,
 	struct pl330_xfer *xl;
 	enum rk29_dma_buffresult res;
 
-	spin_lock_irqsave(&res_lock, flags);
+	raw_spin_lock_irqsave(&res_lock, flags);
 	xl = r->x;
 	if (!r->infiniteloop) {		
 		r->x = NULL;
@@ -505,7 +505,7 @@ static void rk29_pl330_rq(struct rk29_pl330_chan *ch,
 		rk29_pl330_submit(ch, r);
 	}
 
-	spin_unlock_irqrestore(&res_lock, flags);
+	raw_spin_unlock_irqrestore(&res_lock, flags);
 
 	/* Map result to rk29 DMA API */
 	if (err == PL330_ERR_NONE)
@@ -570,7 +570,7 @@ int rk29_dma_ctrl(enum dma_ch id, enum rk29_chan_op op)
 	unsigned long flags;
 	int idx, ret;
 
-	spin_lock_irqsave(&res_lock, flags);
+	raw_spin_lock_irqsave(&res_lock, flags);
 
 	ch = id_to_chan(id);
 
@@ -600,18 +600,18 @@ int rk29_dma_ctrl(enum dma_ch id, enum rk29_chan_op op)
 	case RK29_DMAOP_RESUME:
 	case RK29_DMAOP_TIMEOUT:
 	case RK29_DMAOP_STARTED:
-		spin_unlock_irqrestore(&res_lock, flags);
+		raw_spin_unlock_irqrestore(&res_lock, flags);
 		return 0;
 
 	default:
-		spin_unlock_irqrestore(&res_lock, flags);
+		raw_spin_unlock_irqrestore(&res_lock, flags);
 		return -EINVAL;
 	}
 
 	ret = pl330_chan_ctrl(ch->pl330_chan_id, pl330op);
 
 	if (pl330op == PL330_OP_START) {
-		spin_unlock_irqrestore(&res_lock, flags);
+		raw_spin_unlock_irqrestore(&res_lock, flags);
 		return ret;
 	}
 
@@ -628,10 +628,10 @@ int rk29_dma_ctrl(enum dma_ch id, enum rk29_chan_op op)
 
 		ch->req[idx].x = NULL;
 
-		spin_unlock_irqrestore(&res_lock, flags);
+		raw_spin_unlock_irqrestore(&res_lock, flags);
 		_finish_off(xfer, RK29_RES_ABORT,
 				pl330op == PL330_OP_FLUSH ? 1 : 0);
-		spin_lock_irqsave(&res_lock, flags);
+		raw_spin_lock_irqsave(&res_lock, flags);
 	}
 
 	/* Flush the whole queue */
@@ -645,9 +645,9 @@ int rk29_dma_ctrl(enum dma_ch id, enum rk29_chan_op op)
 
 			ch->req[1 - idx].x = NULL;
 
-			spin_unlock_irqrestore(&res_lock, flags);
+			raw_spin_unlock_irqrestore(&res_lock, flags);
 			_finish_off(xfer, RK29_RES_ABORT, 1);
-			spin_lock_irqsave(&res_lock, flags);
+			raw_spin_lock_irqsave(&res_lock, flags);
 		}
 
 		/* Finish off the remaining in the queue */
@@ -656,16 +656,16 @@ int rk29_dma_ctrl(enum dma_ch id, enum rk29_chan_op op)
 
 			del_from_queue(xfer);
 
-			spin_unlock_irqrestore(&res_lock, flags);
+			raw_spin_unlock_irqrestore(&res_lock, flags);
 			_finish_off(xfer, RK29_RES_ABORT, 1);
-			spin_lock_irqsave(&res_lock, flags);
+			raw_spin_lock_irqsave(&res_lock, flags);
 
 			xfer = ch->xfer_head;
 		}
 	}
 
 ctrl_exit:
-	spin_unlock_irqrestore(&res_lock, flags);
+	raw_spin_unlock_irqrestore(&res_lock, flags);
 
 	return ret;
 }
@@ -679,7 +679,7 @@ int rk29_dma_enqueue_ring(enum dma_ch id, void *token,
 	unsigned long flags;
 	int idx, ret = 0;
 	
-	spin_lock_irqsave(&res_lock, flags);
+	raw_spin_lock_irqsave(&res_lock, flags);
 
 	ch = id_to_chan(id);
 
@@ -731,7 +731,7 @@ int rk29_dma_enqueue_ring(enum dma_ch id, void *token,
 			ch->req[1 - idx].infiniteloop_sev = sev;
 		rk29_pl330_submit(ch, &ch->req[1 - idx]);
 	}
-	spin_unlock_irqrestore(&res_lock, flags);
+	raw_spin_unlock_irqrestore(&res_lock, flags);
 
 	if (ch->options & RK29_DMAF_AUTOSTART)
 		rk29_dma_ctrl(id, RK29_DMAOP_START);
@@ -739,7 +739,7 @@ int rk29_dma_enqueue_ring(enum dma_ch id, void *token,
 	return 0;
 
 enq_exit:
-	spin_unlock_irqrestore(&res_lock, flags);
+	raw_spin_unlock_irqrestore(&res_lock, flags);
 
 	return ret;
 }
@@ -761,7 +761,7 @@ int rk29_dma_request(enum dma_ch id,
 	unsigned long flags;
 	int ret = 0;
 
-	spin_lock_irqsave(&res_lock, flags);
+	raw_spin_lock_irqsave(&res_lock, flags);
 
 	ch = chan_acquire(id);
 	if (!ch) {
@@ -813,7 +813,7 @@ int rk29_dma_request(enum dma_ch id,
 	ch->xfer_head = NULL;
 
 req_exit:
-	spin_unlock_irqrestore(&res_lock, flags);
+	raw_spin_unlock_irqrestore(&res_lock, flags);
 
 	return ret;
 }
@@ -827,7 +827,7 @@ int rk29_dma_free(enum dma_ch id, struct rk29_dma_client *client)
 	int ret = 0;
 	unsigned idx;
 
-	spin_lock_irqsave(&res_lock, flags);
+	raw_spin_lock_irqsave(&res_lock, flags);
 
 	ch = id_to_chan(id);
 
@@ -853,9 +853,9 @@ int rk29_dma_free(enum dma_ch id, struct rk29_dma_client *client)
 		ch->req[idx].x = NULL;
 		del_from_queue(xfer);
 
-		spin_unlock_irqrestore(&res_lock, flags);
+		raw_spin_unlock_irqrestore(&res_lock, flags);
 		_finish_off(xfer, RK29_RES_ABORT, 1);
-		spin_lock_irqsave(&res_lock, flags);
+		raw_spin_lock_irqsave(&res_lock, flags);
 	}
 
 	if (ch->req[1 - idx].x) {
@@ -865,18 +865,18 @@ int rk29_dma_free(enum dma_ch id, struct rk29_dma_client *client)
 		ch->req[1 - idx].x = NULL;
 		del_from_queue(xfer);
 
-		spin_unlock_irqrestore(&res_lock, flags);
+		raw_spin_unlock_irqrestore(&res_lock, flags);
 		_finish_off(xfer, RK29_RES_ABORT, 1);
-		spin_lock_irqsave(&res_lock, flags);
+		raw_spin_lock_irqsave(&res_lock, flags);
 	}
 
 	/* Pluck and Abort the queued requests in order */
 	do {
 		xfer = get_from_queue(ch, 1);
 
-		spin_unlock_irqrestore(&res_lock, flags);
+		raw_spin_unlock_irqrestore(&res_lock, flags);
 		_finish_off(xfer, RK29_RES_ABORT, 1);
-		spin_lock_irqsave(&res_lock, flags);
+		raw_spin_lock_irqsave(&res_lock, flags);
 	} while (xfer);
 
 	ch->client = NULL;
@@ -888,7 +888,7 @@ int rk29_dma_free(enum dma_ch id, struct rk29_dma_client *client)
 	chan_release(ch);
 
 free_exit:
-	spin_unlock_irqrestore(&res_lock, flags);
+	raw_spin_unlock_irqrestore(&res_lock, flags);
 
 	return ret;
 }
@@ -910,7 +910,7 @@ int rk29_dma_config(enum dma_ch id, int xferunit, int brst_len)
 	unsigned long flags;
 	int i, ret = 0;
 
-	spin_lock_irqsave(&res_lock, flags);
+	raw_spin_lock_irqsave(&res_lock, flags);
 
 	ch = id_to_chan(id);
 
@@ -956,7 +956,7 @@ int rk29_dma_config(enum dma_ch id, int xferunit, int brst_len)
         ch->rqcfg.brst_len = brst_len;
 #endif
 cfg_exit:
-	spin_unlock_irqrestore(&res_lock, flags);
+	raw_spin_unlock_irqrestore(&res_lock, flags);
 
 	return ret;
 }
@@ -971,7 +971,7 @@ int rk29_dma_setflags(enum dma_ch id, unsigned int options)
 	unsigned long flags;
 	int ret = 0;
 
-	spin_lock_irqsave(&res_lock, flags);
+	raw_spin_lock_irqsave(&res_lock, flags);
 
 	ch = id_to_chan(id);
 
@@ -980,7 +980,7 @@ int rk29_dma_setflags(enum dma_ch id, unsigned int options)
 	else
 		ch->options = options;
 
-	spin_unlock_irqrestore(&res_lock, flags);
+	raw_spin_unlock_irqrestore(&res_lock, flags);
 
 	return 0;
 }
@@ -992,7 +992,7 @@ int rk29_dma_set_buffdone_fn(enum dma_ch id, rk29_dma_cbfn_t rtn)
 	unsigned long flags;
 	int ret = 0;
 
-	spin_lock_irqsave(&res_lock, flags);
+	raw_spin_lock_irqsave(&res_lock, flags);
 
 	ch = id_to_chan(id);
 
@@ -1001,7 +1001,7 @@ int rk29_dma_set_buffdone_fn(enum dma_ch id, rk29_dma_cbfn_t rtn)
 	else
 		ch->callback_fn = rtn;
 
-	spin_unlock_irqrestore(&res_lock, flags);
+	raw_spin_unlock_irqrestore(&res_lock, flags);
 
 	return ret;
 }
@@ -1014,7 +1014,7 @@ int rk29_dma_devconfig(enum dma_ch id, enum rk29_dmasrc source,
 	unsigned long flags;
 	int ret = 0;
 
-	spin_lock_irqsave(&res_lock, flags);
+	raw_spin_lock_irqsave(&res_lock, flags);
 
 	ch = id_to_chan(id);
 
@@ -1050,7 +1050,7 @@ int rk29_dma_devconfig(enum dma_ch id, enum rk29_dmasrc source,
 	ch->sdaddr = address;
 
 devcfg_exit:
-	spin_unlock_irqrestore(&res_lock, flags);
+	raw_spin_unlock_irqrestore(&res_lock, flags);
 
 	return ret;
 }
@@ -1245,7 +1245,7 @@ static int pl330_remove(struct platform_device *pdev)
 	if (!pdev->dev.platform_data)
 		return -EINVAL;
 
-	spin_lock_irqsave(&res_lock, flags);
+	raw_spin_lock_irqsave(&res_lock, flags);
 
 	found = 0;
 	list_for_each_entry(d, &dmac_list, node)
@@ -1255,7 +1255,7 @@ static int pl330_remove(struct platform_device *pdev)
 		}
 
 	if (!found) {
-		spin_unlock_irqrestore(&res_lock, flags);
+		raw_spin_unlock_irqrestore(&res_lock, flags);
 		return 0;
 	}
 
@@ -1278,9 +1278,9 @@ static int pl330_remove(struct platform_device *pdev)
 			}
 
 		if (del) {
-			spin_unlock_irqrestore(&res_lock, flags);
+			raw_spin_unlock_irqrestore(&res_lock, flags);
 			rk29_dma_free(ch->id, ch->client);
-			spin_lock_irqsave(&res_lock, flags);
+			raw_spin_lock_irqsave(&res_lock, flags);
 			list_del(&ch->node);
 			kfree(ch);
 		}
@@ -1290,7 +1290,7 @@ static int pl330_remove(struct platform_device *pdev)
 	list_del(&dmac->node);
 	kfree(dmac);
 
-	spin_unlock_irqrestore(&res_lock, flags);
+	raw_spin_unlock_irqrestore(&res_lock, flags);
 
 	return 0;
 }

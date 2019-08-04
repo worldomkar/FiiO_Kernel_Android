@@ -32,13 +32,13 @@ static int efuse_readregs(u32 addr, u32 length, u8 *buf)
 	return 0;
 #else
 	unsigned long flags;
-	static DEFINE_SPINLOCK(efuse_lock);
+	static DEFINE_RAW_SPINLOCK(efuse_lock);
 	int ret = length;
 
 	if (!length)
 		return 0;
 
-	spin_lock_irqsave(&efuse_lock, flags);
+	raw_spin_lock_irqsave(&efuse_lock, flags);
 
 	efuse_writel(EFUSE_CSB, REG_EFUSE_CTRL);
 	efuse_writel(EFUSE_LOAD | EFUSE_PGENB, REG_EFUSE_CTRL);
@@ -59,7 +59,7 @@ static int efuse_readregs(u32 addr, u32 length, u8 *buf)
 	efuse_writel(efuse_readl(REG_EFUSE_CTRL) | EFUSE_CSB, REG_EFUSE_CTRL);
 	udelay(1);
 
-	spin_unlock_irqrestore(&efuse_lock, flags);
+	raw_spin_unlock_irqrestore(&efuse_lock, flags);
 	return ret;
 #endif
 }
