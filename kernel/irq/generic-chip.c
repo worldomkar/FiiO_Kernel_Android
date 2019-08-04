@@ -1,4 +1,4 @@
-/*
+w/*
  * Library implementing the most common irq chip callback functions
  *
  * Copyright (C) 2011, Thomas Gleixner
@@ -212,6 +212,8 @@ irq_alloc_generic_chip(const char *name, int num_ct, unsigned int irq_base,
 	return gc;
 }
 
+EXPORT_SYMBOL_GPL(irq_alloc_generic_chip);
+
 /*
  * Separate lockdep class for interrupt chip which can nest irq_desc
  * lock.
@@ -259,6 +261,8 @@ void irq_setup_generic_chip(struct irq_chip_generic *gc, u32 msk,
 	gc->irq_cnt = i - gc->irq_base;
 }
 
+EXPORT_SYMBOL_GPL(irq_setup_generic_chip);
+
 /**
  * irq_setup_alt_chip - Switch to alternative chip
  * @d:		irq_data for this interrupt
@@ -281,6 +285,8 @@ int irq_setup_alt_chip(struct irq_data *d, unsigned int type)
 	}
 	return -EINVAL;
 }
+
+EXPORT_SYMBOL_GPL(irq_setup_alt_chip);
 
 /**
  * irq_remove_generic_chip - Remove a chip
@@ -311,6 +317,8 @@ void irq_remove_generic_chip(struct irq_chip_generic *gc, u32 msk,
 		irq_modify_status(i, clr, set);
 	}
 }
+
+EXPORT_SYMBOL_GPL(irq_remove_generic_chip);
 
 #ifdef CONFIG_PM
 static int irq_gc_suspend(void)
