@@ -1619,7 +1619,8 @@ struct seq_file;
 ssize_t rw_copy_check_uvector(int type, const struct iovec __user * uvector,
 				unsigned long nr_segs, unsigned long fast_segs,
 				struct iovec *fast_pointer,
-				struct iovec **ret_pointer);
+				struct iovec **ret_pointer,
+			      int check_access);
 
 extern ssize_t vfs_read(struct file *, char __user *, size_t, loff_t *);
 extern ssize_t vfs_write(struct file *, const char __user *, size_t, loff_t *);
