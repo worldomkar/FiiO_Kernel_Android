@@ -14,7 +14,7 @@
  */
 
 #include <linux/earlysuspend.h>
-#include <linux/module.h>
+#include <linux/export.h>
 #include <linux/mutex.h>
 #include <linux/rtc.h>
 #include <linux/syscalls.h> /* sys_sync */

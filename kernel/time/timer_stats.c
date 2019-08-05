@@ -37,7 +37,7 @@
  */
 
 #include <linux/proc_fs.h>
-#include <linux/module.h>
+#include <linux/export.h>
 #include <linux/spinlock.h>
 #include <linux/sched.h>
 #include <linux/seq_file.h>

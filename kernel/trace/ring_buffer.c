@@ -10,7 +10,7 @@
 #include <linux/uaccess.h>
 #include <linux/hardirq.h>
 #include <linux/kmemcheck.h>
-#include <linux/module.h>
+#include <linux/export.h>
 #include <linux/percpu.h>
 #include <linux/mutex.h>
 #include <linux/slab.h>

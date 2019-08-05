@@ -9,7 +9,7 @@
 #include <linux/irqflags.h>
 #include <linux/debugfs.h>
 #include <linux/uaccess.h>
-#include <linux/module.h>
+#include <linux/export.h>
 #include <linux/ftrace.h>
 #include <linux/hash.h>
 #include <linux/fs.h>

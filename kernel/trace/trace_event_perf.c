@@ -5,7 +5,7 @@
  * Copyright (C) 2009-2010 Frederic Weisbecker <fweisbec@gmail.com>
  */
 
-#include <linux/module.h>
+#include <linux/export.h>
 #include <linux/kprobes.h>
 #include "trace.h"
 

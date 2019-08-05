@@ -11,7 +11,7 @@
  */
 
 #include <linux/version.h>
-#include <linux/module.h>
+#include <linux/export.h>
 #include <linux/mm.h>
 #include <linux/suspend.h>
 #include <linux/delay.h>

@@ -18,7 +18,7 @@
 #include <linux/stddef.h>
 #include <linux/vmalloc.h>
 #include <linux/ptrace.h>
-#include <linux/module.h>
+#include <linux/export.h>
 #include <linux/highmem.h>
 #include <linux/hardirq.h>
 #include <linux/delay.h>

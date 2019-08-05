@@ -28,7 +28,7 @@
  */
 
 #include <linux/time.h>
-#include <linux/module.h>
+#include <linux/export.h>
 
 /*
  * Nonzero if YEAR is a leap year (every 4 years,

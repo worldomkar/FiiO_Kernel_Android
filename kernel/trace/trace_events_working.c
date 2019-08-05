@@ -13,7 +13,7 @@
 #include <linux/kthread.h>
 #include <linux/debugfs.h>
 #include <linux/uaccess.h>
-#include <linux/module.h>
+#include <linux/export.h>
 #include <linux/ctype.h>
 #include <linux/slab.h>
 #include <linux/delay.h>

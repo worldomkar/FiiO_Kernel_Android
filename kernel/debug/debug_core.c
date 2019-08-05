@@ -35,7 +35,7 @@
 #include <linux/threads.h>
 #include <linux/uaccess.h>
 #include <linux/kernel.h>
-#include <linux/module.h>
+#include <linux/export.h>
 #include <linux/ptrace.h>
 #include <linux/string.h>
 #include <linux/delay.h>

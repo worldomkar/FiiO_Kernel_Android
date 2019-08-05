@@ -14,7 +14,7 @@
  *
  */
 
-#include <linux/module.h>
+#include <linux/export.h>
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/gpu.h>

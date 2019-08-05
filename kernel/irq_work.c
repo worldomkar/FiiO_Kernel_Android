@@ -8,7 +8,9 @@
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/irq_work.h>
+#include <linux/percpu.h>
 #include <linux/hardirq.h>
+#include <asm/processor.h>
 
 /*
  * An entry can be in one of four states:

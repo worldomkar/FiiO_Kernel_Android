@@ -14,7 +14,7 @@
  */
 
 #include <linux/earlysuspend.h>
-#include <linux/module.h>
+#include <linux/export.h>
 #include <linux/wait.h>
 
 #include "power.h"

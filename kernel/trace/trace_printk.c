@@ -10,7 +10,7 @@
 #include <linux/kernel.h>
 #include <linux/ftrace.h>
 #include <linux/string.h>
-#include <linux/module.h>
+#include <linux/export.h>
 #include <linux/mutex.h>
 #include <linux/ctype.h>
 #include <linux/list.h>

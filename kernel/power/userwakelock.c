@@ -14,7 +14,7 @@
  */
 
 #include <linux/ctype.h>
-#include <linux/module.h>
+#include <linux/export.h>
 #include <linux/wakelock.h>
 #include <linux/slab.h>
 

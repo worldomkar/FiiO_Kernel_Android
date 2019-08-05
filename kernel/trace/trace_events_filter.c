@@ -18,7 +18,7 @@
  * Copyright (C) 2009 Tom Zanussi <tzanussi@gmail.com>
  */
 
-#include <linux/module.h>
+#include <linux/export.h>
 #include <linux/ctype.h>
 #include <linux/mutex.h>
 #include <linux/perf_event.h>

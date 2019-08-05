@@ -26,7 +26,7 @@
 #include <linux/uaccess.h>
 #include <linux/kprobes.h>
 #include <linux/ftrace.h>
-#include <linux/module.h>
+#include <linux/export.h>
 #include <linux/percpu.h>
 #include <linux/splice.h>
 #include <linux/kdebug.h>

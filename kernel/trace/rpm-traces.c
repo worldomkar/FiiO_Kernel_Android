@@ -8,7 +8,7 @@
 #include <linux/types.h>
 #include <linux/workqueue.h>
 #include <linux/sched.h>
-#include <linux/module.h>
+#include <linux/export.h>
 #include <linux/usb.h>
 
 #define CREATE_TRACE_POINTS

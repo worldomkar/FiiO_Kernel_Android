@@ -14,7 +14,7 @@
 #include <linux/clockchips.h>
 #include <linux/hrtimer.h>
 #include <linux/init.h>
-#include <linux/module.h>
+#include <linux/export.h>
 #include <linux/notifier.h>
 #include <linux/smp.h>
 #include <linux/sysdev.h>

@@ -4,7 +4,7 @@
  * Copyright (C) 2007 Steven Rostedt <srostedt@redhat.com>
  *
  */
-#include <linux/module.h>
+#include <linux/export.h>
 #include <linux/fs.h>
 #include <linux/debugfs.h>
 #include <linux/kallsyms.h>

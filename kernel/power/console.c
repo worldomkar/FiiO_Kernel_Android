@@ -7,7 +7,7 @@
 #include <linux/vt_kern.h>
 #include <linux/kbd_kern.h>
 #include <linux/vt.h>
-#include <linux/module.h>
+#include <linux/export.h>
 #include "power.h"
 
 #if defined(CONFIG_VT) && defined(CONFIG_VT_CONSOLE)

@@ -13,7 +13,7 @@
  *
  */
 
-#include <linux/module.h>
+#include <linux/export.h>
 #include <linux/platform_device.h>
 #include <linux/rtc.h>
 #include <linux/suspend.h>

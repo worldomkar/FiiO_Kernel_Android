@@ -15,7 +15,7 @@
 #include <linux/spinlock.h>
 #include <linux/irqflags.h>
 #include <linux/hardirq.h>
-#include <linux/module.h>
+#include <linux/export.h>
 #include <linux/percpu.h>
 #include <linux/sched.h>
 #include <linux/ktime.h>
