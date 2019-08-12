@@ -28,6 +28,7 @@
 #include <linux/stop_machine.h>
 
 #define RCU_KTHREAD_PRIO 1
+#define CONFIG_RCU_BOOST_PRIO 1
 
 #ifdef CONFIG_RCU_BOOST
 #include "rtmutex_common.h"
