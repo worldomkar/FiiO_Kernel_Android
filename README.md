@@ -1,12 +1,13 @@
 # Custom FiiO X5iii Kernel
-Created by jkbuha, props to @FiiO for releasing
+jkbuha: Kernel code
+prispewnic: Scriping
+
+website: https://kernelmods.com
 
 Features
 =========
 
 - Custom AK4490 DAC driver (faster, better oversampling)
-
-- Support for DSD256
 
 - Increased clock speed from 1416MHz to 2016MHz
 
