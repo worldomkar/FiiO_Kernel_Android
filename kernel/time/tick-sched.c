@@ -19,7 +19,7 @@
 #include <linux/percpu.h>
 #include <linux/profile.h>
 #include <linux/sched.h>
-#include <linux/export.h>
+#include <linux/module.h>
 
 #include <asm/irq_regs.h>
 
@@ -197,7 +197,7 @@ static ktime_t tick_nohz_start_idle(int cpu, struct tick_sched *ts)
 /**
  * get_cpu_idle_time_us - get the total idle time of a cpu
  * @cpu: CPU number to query
- * @last_update_time: variable to store update time in. Dwo not update
+ * @last_update_time: variable to store update time in. Do not update
  * counters if NULL.
  *
  * Return the cummulative idle time (since boot) for a given
@@ -231,6 +231,7 @@ u64 get_cpu_idle_time_us(int cpu, u64 *last_update_time)
 	}
 
 	return ktime_to_us(idle);
+
 }
 EXPORT_SYMBOL_GPL(get_cpu_idle_time_us);
 
@@ -516,9 +517,9 @@ static void tick_nohz_restart(struct tick_sched *ts, ktime_t now)
 				hrtimer_get_expires(&ts->sched_timer), 0))
 				break;
 		}
-		/* Reread time and update jiffies */
-		now = ktime_get();
+		/* Update jiffies and reread time */
 		tick_do_update_jiffies64(now);
+		now = ktime_get();
 	}
 }
 
@@ -838,7 +839,7 @@ void tick_cancel_sched_timer(int cpu)
 		hrtimer_cancel(&ts->sched_timer);
 # endif
 
-	memset(ts, 0, sizeof(*ts));
+	ts->nohz_mode = NOHZ_MODE_INACTIVE;
 }
 #endif
 
