@@ -8,6 +8,7 @@
 #include <linux/blkdev.h>
 #include <linux/interrupt.h>
 #include <linux/cpu.h>
+#include <linux/sched.h>
 
 #include "blk.h"
 
@@ -126,11 +127,19 @@ void __blk_complete_request(struct request *req)
 	if (test_bit(QUEUE_FLAG_SAME_COMP, &q->queue_flags) && req->cpu != -1 && !idle_cpu(req->cpu)) {
 		ccpu = req->cpu;
 		if (!test_bit(QUEUE_FLAG_SAME_FORCE, &q->queue_flags))
-			ccpu = blk_cpu_to_group(ccpu);
+			shared = cpus_share_cache(cpu, ccpu);
 	} else
 		ccpu = cpu;
 
-	if (ccpu == cpu) {
+	/*
+	 * If current CPU and requested CPU share a cache, run the softirq on
+	 * the current CPU. One might concern this is just like
+	 * QUEUE_FLAG_SAME_FORCE, but actually not. blk_complete_request() is
+	 * running in interrupt handler, and currently I/O controller doesn't
+	 * support multiple interrupts, so current CPU is unique actually. This
+	 * avoids IPI sending from current CPU to the first CPU of a group.
+	 */
+	if (ccpu == cpu || shared) {
 		struct list_head *list;
 do_local:
 		list = &__get_cpu_var(blk_cpu_done);
