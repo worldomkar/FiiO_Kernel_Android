@@ -10,7 +10,7 @@
  *	Remote softirq infrastructure is by Jens Axboe.
  */
 
-#include <linux/module.h>
+#include <linux/export.h>
 #include <linux/kernel_stat.h>
 #include <linux/interrupt.h>
 #include <linux/init.h>
@@ -347,13 +347,13 @@ void irq_exit(void)
 	if (!in_interrupt() && local_softirq_pending())
 		invoke_softirq();
 
-	rcu_irq_exit();
 #ifdef CONFIG_NO_HZ
 	/* Make sure that timer wheel updates are propagated */
 	if (idle_cpu(smp_processor_id()) && !in_interrupt() && !need_resched())
 		tick_nohz_stop_sched_tick(0);
 #endif
-	preempt_enable_no_resched();
+	rcu_irq_exit();
+	sched_preempt_enable_no_resched();
 }
 
 /*
@@ -744,9 +744,7 @@ static int run_ksoftirqd(void * __bind_cpu)
 	while (!kthread_should_stop()) {
 		preempt_disable();
 		if (!local_softirq_pending()) {
-			preempt_enable_no_resched();
-			schedule();
-			preempt_disable();
+			schedule_preempt_disabled();
 		}
 
 		__set_current_state(TASK_RUNNING);
@@ -761,7 +759,7 @@ static int run_ksoftirqd(void * __bind_cpu)
 			if (local_softirq_pending())
 				__do_softirq();
 			local_irq_enable();
-			preempt_enable_no_resched();
+			sched_preempt_enable_no_resched();
 			cond_resched();
 			preempt_disable();
 			rcu_note_context_switch((long)__bind_cpu);
