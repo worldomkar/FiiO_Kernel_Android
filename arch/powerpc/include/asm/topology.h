@@ -18,6 +18,7 @@ struct device_node;
  */
 #define RECLAIM_DISTANCE 10
 
+<<<<<<< HEAD
 /*
  * Before going off node we want the VM to try and reclaim from the local
  * node. It does this if the remote distance is larger than RECLAIM_DISTANCE.
@@ -28,6 +29,8 @@ struct device_node;
  */
 #define RECLAIM_DISTANCE 10
 
+=======
+>>>>>>> cb83b629bae... sched/numa: Rewrite the CONFIG_NUMA sched domain support
 #include <asm/mmzone.h>
 
 static inline int cpu_to_node(int cpu)
@@ -55,6 +58,7 @@ static inline int pcibus_to_node(struct pci_bus *bus)
 				 cpu_all_mask :				\
 				 cpumask_of_node(pcibus_to_node(bus)))
 
+<<<<<<< HEAD
 /* sched_domains SD_NODE_INIT for PPC64 machines */
 #define SD_NODE_INIT (struct sched_domain) {				\
 	.min_interval		= 8,					\
@@ -85,6 +89,8 @@ static inline int pcibus_to_node(struct pci_bus *bus)
 	.balance_interval	= 1,					\
 }
 
+=======
+>>>>>>> cb83b629bae... sched/numa: Rewrite the CONFIG_NUMA sched domain support
 extern int __node_distance(int, int);
 #define node_distance(a, b) __node_distance(a, b)
 
