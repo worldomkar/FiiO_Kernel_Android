@@ -14,6 +14,11 @@ typedef void (elevator_merged_fn) (struct request_queue *, struct request *, int
 
 typedef int (elevator_allow_merge_fn) (struct request_queue *, struct request *, struct bio *);
 
+	/*
+	 * Used for both plugged list and elevator merging and in the
+	 * former case called without queue_lock.  Read comment on top of
+	 * attempt_plug_merge() for details.
+	 */
 typedef void (elevator_bio_merged_fn) (struct request_queue *,
 						struct request *, struct bio *);
 
