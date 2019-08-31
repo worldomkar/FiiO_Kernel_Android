@@ -3071,6 +3071,7 @@ static unsigned long __read_mostly max_load_balance_interval = HZ/10;
 
 #define LBF_ALL_PINNED	0x01
 #define LBF_NEED_BREAK	0x02
+#define LBF_ABORT	0x04
 
 struct lb_env {
 	struct sched_domain	*sd;
@@ -3083,6 +3084,7 @@ struct lb_env {
 	struct rq		*dst_rq;
 
 	enum cpu_idle_type	idle;
+	unsigned long		max_load_move;
 	long			imbalance;
 	unsigned int		flags;
 
@@ -3220,31 +3222,25 @@ static unsigned long task_h_load(struct task_struct *p);
 
 static const unsigned int sched_nr_migrate_break = 32;
 
-/*
- * move_tasks tries to move up to imbalance weighted load from busiest to
- * this_rq, as part of a balancing operation within domain "sd".
- * Returns 1 if successful and 0 otherwise.
- *
- * Called with both runqueues locked.
- */
-static int move_tasks(struct lb_env *env)
+static unsigned long balance_tasks(struct lb_env *env)
 {
-	struct list_head *tasks = &env->src_rq->cfs_tasks;
-	struct task_struct *p;
+	long rem_load_move = env->max_load_move;
+	struct task_struct *p, *n;
 	unsigned long load;
 	int pulled = 0;
 
-	if (env->imbalance <= 0)
-		return 0;
+	if (env->max_load_move == 0)
+		goto out;
 
-	while (!list_empty(tasks)) {
-		p = list_first_entry(tasks, struct task_struct, se.group_node);
+	list_for_each_entry_safe(p, n, &env->src_rq->cfs_tasks, se.group_node) {
 
 		env->loop++;
 		/* We've more or less seen every task there is, call it quits */
-		if (env->loop > env->loop_max)
+		if (env->loop > env->loop_max) {
+			env->flags |= LBF_ABORT;
 			break;
 
+		}
 		/* take a breather every nr_migrate tasks */
 		if (env->loop > env->loop_break) {
 			env->loop_break += sched_nr_migrate_break;
@@ -3252,15 +3248,15 @@ static int move_tasks(struct lb_env *env)
 			break;
 		}
 
-		if (throttled_lb_pair(task_group(p), env->src_cpu, env->dst_cpu))
+		if (throttled_lb_pair(task_group(p), env->src_rq->cpu,
+					env->dst_cpu))
 			goto next;
 
 		load = task_h_load(p);
-
 		if (sched_feat(LB_MIN) && load < 16 && !env->sd->nr_balance_failed)
 			goto next;
 
-		if ((load / 2) > env->imbalance)
+		if ((load * 2) > rem_load_move)
 			goto next;
 
 		if (!can_migrate_task(p, env))
@@ -3268,7 +3264,7 @@ static int move_tasks(struct lb_env *env)
 
 		move_task(p, env);
 		pulled++;
-		env->imbalance -= load;
+		rem_load_move -= load;
 
 #ifdef CONFIG_PREEMPT
 		/*
@@ -3276,22 +3272,24 @@ static int move_tasks(struct lb_env *env)
 		 * kernels will stop after the first task is pulled to minimize
 		 * the critical section.
 		 */
-		if (env->idle == CPU_NEWLY_IDLE)
+		if (env->idle == CPU_NEWLY_IDLE) {
+			env->flags |= LBF_ABORT;
 			break;
+		}
 #endif
 
 		/*
 		 * We only want to steal up to the prescribed amount of
 		 * weighted load.
 		 */
-		if (env->imbalance <= 0)
+		if (rem_load_move <= 0)
 			break;
 
 		continue;
 next:
-		list_move_tail(&p->se.group_node, tasks);
+		list_move_tail(&p->se.group_node, &env->src_rq->cfs_tasks);
 	}
-
+out:
 	/*
 	 * Right now, this is one of only two places move_task() is called,
 	 * so we can safely collect move_task() stats here rather than
@@ -3299,7 +3297,7 @@ next:
 	 */
 	schedstat_add(env->sd, lb_gained[env->idle], pulled);
 
-	return pulled;
+	return env->max_load_move - rem_load_move;
 }
 
 #ifdef CONFIG_FAIR_GROUP_SCHED
@@ -3408,6 +3406,43 @@ static unsigned long task_h_load(struct task_struct *p)
 	return p->se.load.weight;
 }
 #endif
+
+/*
+ * move_tasks tries to move up to max_load_move weighted load from busiest to
+ * this_rq, as part of a balancing operation within domain "sd".
+ * Returns 1 if successful and 0 otherwise.
+ *
+ * Called with both runqueues locked.
+ */
+static int move_tasks(struct lb_env *env)
+{
+	unsigned long max_load_move = env->max_load_move;
+	unsigned long total_load_moved = 0, load_moved;
+
+	update_h_load(cpu_of(env->src_rq));
+	do {
+		env->max_load_move = max_load_move - total_load_moved;
+		load_moved = balance_tasks(env);
+		total_load_moved += load_moved;
+
+		if (env->flags & (LBF_NEED_BREAK|LBF_ABORT))
+			break;
+
+#ifdef CONFIG_PREEMPT
+		/*
+		 * NEWIDLE balancing is a source of latency, so preemptible
+		 * kernels will stop after the first task is pulled to minimize
+		 * the critical section.
+		 */
+		if (env->idle == CPU_NEWLY_IDLE && env->dst_rq->nr_running) {
+			env->flags |= LBF_ABORT;
+			break;
+		}
+#endif
+	} while (load_moved && max_load_move > total_load_moved);
+
+	return total_load_moved > 0;
+}
 
 /********** Helpers for find_busiest_group ************************/
 /*
@@ -4401,6 +4436,7 @@ static int load_balance(int this_cpu, struct rq *this_rq,
 {
 	int ld_moved, active_balance = 0;
 	struct sched_group *group;
+	unsigned long imbalance;
 	struct rq *busiest;
 	unsigned long flags;
 	struct cpumask *cpus = __get_cpu_var(load_balance_tmpmask);
@@ -4447,29 +4483,30 @@ redo:
 		 * correctly treated as an imbalance.
 		 */
 		env.flags |= LBF_ALL_PINNED;
+		env.max_load_move = imbalance;
 		env.src_cpu   = busiest->cpu;
 		env.src_rq    = busiest;
 		env.loop_max  = min(sysctl_sched_nr_migrate, busiest->nr_running);
 
-more_balance:
 		local_irq_save(flags);
 		double_rq_lock(this_rq, busiest);
-		if (!env.loop)
-			update_h_load(env.src_cpu);
-		ld_moved += move_tasks(&env);
+		ld_moved = move_tasks(&env);
 		double_rq_unlock(this_rq, busiest);
 		local_irq_restore(flags);
-
-		if (env.flags & LBF_NEED_BREAK) {
-			env.flags &= ~LBF_NEED_BREAK;
-			goto more_balance;
-		}
 
 		/*
 		 * some other cpu did the load balance for us.
 		 */
 		if (ld_moved && this_cpu != smp_processor_id())
 			resched_cpu(this_cpu);
+
+		if (env.flags & LBF_ABORT)
+			goto out_balanced;
+
+		if (env.flags & LBF_NEED_BREAK) {
+			env.flags &= ~LBF_NEED_BREAK;
+			goto redo;
+		}
 
 		/* All tasks on this runqueue were pinned by CPU affinity */
 		if (unlikely(env.flags & LBF_ALL_PINNED)) {
