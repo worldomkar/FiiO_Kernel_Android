@@ -2029,7 +2029,7 @@ static void perf_event_context_sched_out(struct task_struct *task, int ctxn,
  * accessing the event control register. If a NMI hits, then it will
  * not restart the event.
  */
-static void __perf_event_task_sched_out(struct task_struct *task,
+void __perf_event_task_sched_out(struct task_struct *task,
 				 struct task_struct *next)
 {
 	int ctxn;
@@ -2224,7 +2224,7 @@ static void perf_event_context_sched_in(struct perf_event_context *ctx,
  * accessing the event control register. If a NMI hits, then it will
  * keep the event running.
  */
-static void __perf_event_task_sched_in(struct task_struct *prev,
+void __perf_event_task_sched_in(struct task_struct *prev,
 				struct task_struct *task)
 {
 	struct perf_event_context *ctx;
@@ -2244,12 +2244,6 @@ static void __perf_event_task_sched_in(struct task_struct *prev,
 	 */
 	if (atomic_read(&__get_cpu_var(perf_cgroup_events)))
 		perf_cgroup_sched_in(prev, task);
-}
-
-void __perf_event_task_sched(struct task_struct *prev, struct task_struct *next)
-{
-	__perf_event_task_sched_out(prev, next);
-	__perf_event_task_sched_in(prev, next);
 }
 
 static u64 perf_calculate_period(struct perf_event *event, u64 nsec, u64 count)
