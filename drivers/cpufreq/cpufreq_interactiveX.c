@@ -550,8 +550,8 @@ static void interactivex_suspend(int suspend)
 		mutex_lock(&set_speed_lock);
 		if (num_online_cpus() < 3) 
 		{ 
-//		  cpu_up(1);
-//		  cpu_up(2);
+		  cpu_up(1);
+		  cpu_up(2);
 		}
 		for_each_cpu(cpu, &tmp_mask) {
 		  pcpu = &per_cpu(cpuinfo, cpu);
@@ -561,7 +561,7 @@ static void interactivex_suspend(int suspend)
 		  __cpufreq_driver_target(pcpu->policy, hispeed_freq, CPUFREQ_RELATION_L);
 		}
 		mutex_unlock(&set_speed_lock);
-//                pr_info("[imoseyon] interactivex awake cpu1 and cpu2\n");
+                pr_info("[imoseyon] interactivex awake cpu1 and cpu2\n");
 	  } else {
 		mutex_lock(&set_speed_lock);
 		for_each_cpu(cpu, &tmp_mask) {
@@ -573,11 +573,11 @@ static void interactivex_suspend(int suspend)
 		}
 		if (num_online_cpus() > 1) 
 		{ 
-//		  cpu_down(1);
-//		  cpu_down(2);
+		  cpu_down(1);
+		  cpu_down(2);
 		}
 		mutex_unlock(&set_speed_lock);
-//               pr_info("[imoseyon] interactivex suspended cpu1 and cpu2\n");
+               pr_info("[imoseyon] interactivex suspended cpu1 and cpu2\n");
 	  }
 }
 
