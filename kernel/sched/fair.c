@@ -3059,8 +3059,9 @@ static unsigned long __read_mostly max_load_balance_interval = HZ/10;
 struct lb_env {
 	struct sched_domain	*sd;
 
-	int			src_cpu;
 	struct rq		*src_rq;
+	int			src_cpu;
+
 	struct cfs_rq		*src_cfs_rq;
 
 	int			dst_cpu;
