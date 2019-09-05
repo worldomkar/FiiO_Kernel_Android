@@ -346,56 +346,38 @@ void blk_put_queue(struct request_queue *q)
 }
 EXPORT_SYMBOL(blk_put_queue);
 
-void blk_drain_queue(struct request_queue *q)
+void blk_drain_queue(struct request_queue *q, bool drain_all)
 {
-	int i;
-
 	while (true) {
-		bool drain = false;
+		int nr_rqs;
 
 		spin_lock_irq(q->queue_lock);
 
-		if (q->elevator)
-			elv_drain_elevator(q);
+		elv_drain_elevator(q);
+		if (drain_all)
+			blk_throtl_drain(q);
 
-		/*
-		 * This function might be called on a queue which failed
-		 * driver init after queue creation or is not yet fully
-		 * active yet.  Some drivers (e.g. fd and loop) get unhappy
-		 * in such cases.  Kick queue iff dispatch queue has
-		 * something on it and @q has request_fn set.
-		 */
-		if (!list_empty(&q->queue_head) && q->request_fn)
-			__blk_run_queue(q);
+		__blk_run_queue(q);
 
-		drain |= q->rq.elvpriv;
-//		drain |= q->request_fn_active;
-		/*
-		 * Unfortunately, requests are queued at and tracked from
-		 * multiple places and there's no single counter which can
-		 * be drained.  Check all the queues and counters.
-		 */
-//		drain |= !list_empty(&q->queue_head);
-		for (i = 0; i < 2; i++) {
-			drain |= q->rq.count[i];
-			drain |= q->in_flight[i];
-			drain |= !list_empty(&q->flush_queue[i]);
-		}
+		if (drain_all)
+			nr_rqs = q->rq.count[0] + q->rq.count[1];
+		else
+			nr_rqs = q->rq.elvpriv;
 
 		spin_unlock_irq(q->queue_lock);
 
-		if (!drain)
+		if (!nr_rqs)
 			break;
-
 		msleep(10);
 	}
 }
 
-/*
- * Note: If a driver supplied the queue lock, it is disconnected
- * by this function. The actual state of the lock doesn't matter
- * here as the request_queue isn't accessible after this point
- * (QUEUE_FLAG_DEAD is set) and no other requests will be queued.
+/**
+ * blk_cleanup_queue - shutdown a request queue
+ * @q: request queue to shutdown
+ *
+ * Mark @q DEAD, drain all pending requests, destroy and put it.  All
+ * future requests will be failed immediately with -ENODEV.
  */
 void blk_cleanup_queue(struct request_queue *q)
 {
@@ -417,7 +399,7 @@ void blk_cleanup_queue(struct request_queue *q)
 	mutex_unlock(&q->sysfs_lock);
 
 	/* drain all requests queued before DEAD marking */
-	blk_drain_queue(q);
+	blk_drain_queue(q,true);
 
 	/* @q won't process any more request, flush async actions */
 	del_timer_sync(&q->backing_dev_info.laptop_mode_wb_timer);
@@ -1528,9 +1510,6 @@ generic_make_request_checks(struct bio *bio)
 		       queue_max_hw_sectors(q));
 		goto end_io;
 	}
-
-	if (unlikely(test_bit(QUEUE_FLAG_DEAD, &q->queue_flags)))
-		goto end_io;
 
 	part = bio->bi_bdev->bd_part;
 	if (should_fail_request(part, bio->bi_size) ||
