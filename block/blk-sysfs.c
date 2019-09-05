@@ -259,8 +259,6 @@ queue_rq_affinity_store(struct request_queue *q, const char *page, size_t count)
 	unsigned long val;
 
 	ret = queue_var_store(&val, page, count);
-//	if (ret < 0)
-//		return ret;
 	spin_lock_irq(q->queue_lock);
 	if (val == 2) {
 		queue_flag_set(QUEUE_FLAG_SAME_COMP, q);
