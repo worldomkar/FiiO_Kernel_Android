@@ -124,7 +124,7 @@ void __blk_complete_request(struct request *req)
 	 * exceed the rq->deadline constraint compared to executing the
 	 * request locally instead.
 	*/
-	if (test_bit(QUEUE_FLAG_SAME_COMP, &q->queue_flags) && req->cpu != -1 && !idle_cpu(req->cpu)) {
+	if (req->cpu != -1) {
 		ccpu = req->cpu;
 		if (!test_bit(QUEUE_FLAG_SAME_FORCE, &q->queue_flags))
 			shared = cpus_share_cache(cpu, ccpu);
