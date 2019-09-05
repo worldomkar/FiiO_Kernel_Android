@@ -346,7 +346,7 @@ void blk_put_queue(struct request_queue *q)
 }
 EXPORT_SYMBOL(blk_put_queue);
 
-static void blk_drain_queue(struct request_queue *q)
+void blk_drain_queue(struct request_queue *q)
 {
 	int i;
 
