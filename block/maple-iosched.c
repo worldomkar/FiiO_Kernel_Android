@@ -335,6 +335,7 @@ static struct elevator_type iosched_maple = {
 static int __init maple_init(void)
 {
 	elv_register(&iosched_maple);
+	return 0;
 }
 
 static void __exit maple_exit(void)
