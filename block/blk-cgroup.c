@@ -33,8 +33,11 @@ static struct blkio_policy_type *blkio_policy[BLKIO_NR_POLICIES];
 
 static struct cgroup_subsys_state *blkiocg_create(struct cgroup_subsys *,
 						  struct cgroup *);
-static int blkiocg_can_attach_task(struct cgroup *, struct task_struct *);
-static void blkiocg_attach_task(struct cgroup *, struct task_struct *);
+static int blkiocg_can_attach(struct cgroup_subsys *, struct cgroup *,
+			      struct cgroup_taskset *);
+static void blkiocg_attach(struct cgroup_subsys *, struct cgroup *,
+			   struct cgroup_taskset *);
+static int blkiocg_pre_destroy(struct cgroup_subsys *, struct cgroup *);
 static void blkiocg_destroy(struct cgroup_subsys *, struct cgroup *);
 static int blkiocg_populate(struct cgroup_subsys *, struct cgroup *);
 
@@ -47,12 +50,12 @@ static int blkiocg_populate(struct cgroup_subsys *, struct cgroup *);
 struct cgroup_subsys blkio_subsys = {
 	.name = "blkio",
 	.create = blkiocg_create,
-	.can_attach_task = blkiocg_can_attach_task,
-	.attach_task = blkiocg_attach_task,
+	.can_attach = blkiocg_can_attach,
+	.attach = blkiocg_attach,
+	.pre_destroy = blkiocg_pre_destroy,
 	.destroy = blkiocg_destroy,
 	.populate = blkiocg_populate,
 	.subsys_id = blkio_subsys_id,
-	.use_id = 1,
 	.module = THIS_MODULE,
 };
 EXPORT_SYMBOL_GPL(blkio_subsys);
@@ -440,6 +443,7 @@ struct blkio_group *blkg_lookup_create(struct blkio_cgroup *blkcg,
 	if (blkg)
 		return blkg;
 
+	/* blkg holds a reference to blkcg */
 	if (!css_tryget(&blkcg->css))
 		return ERR_PTR(-EINVAL);
 
@@ -461,15 +465,16 @@ struct blkio_group *blkg_lookup_create(struct blkio_cgroup *blkcg,
 
 		spin_lock_init(&new_blkg->stats_lock);
 		rcu_assign_pointer(new_blkg->q, q);
-		new_blkg->blkcg_id = css_id(&blkcg->css);
+		new_blkg->blkcg = blkcg;
 		new_blkg->plid = plid;
 		cgroup_path(blkcg->css.cgroup, new_blkg->path,
 			    sizeof(new_blkg->path));
+	} else {
+		css_put(&blkcg->css);
 	}
 
 	rcu_read_lock();
 	spin_lock_irq(q->queue_lock);
-	css_put(&blkcg->css);
 
 	/* did bypass get turned on inbetween? */
 	if (unlikely(blk_queue_bypass(q)) && !for_root) {
@@ -498,6 +503,7 @@ out:
 	if (new_blkg) {
 		free_percpu(new_blkg->stats_cpu);
 		kfree(new_blkg);
+		css_put(&blkcg->css);
 	}
 	return blkg;
 }
@@ -506,7 +512,6 @@ EXPORT_SYMBOL_GPL(blkg_lookup_create);
 static void __blkiocg_del_blkio_group(struct blkio_group *blkg)
 {
 	hlist_del_init_rcu(&blkg->blkcg_node);
-	blkg->blkcg_id = 0;
 }
 
 /*
@@ -515,24 +520,17 @@ static void __blkiocg_del_blkio_group(struct blkio_group *blkg)
  */
 int blkiocg_del_blkio_group(struct blkio_group *blkg)
 {
-	struct blkio_cgroup *blkcg;
+	struct blkio_cgroup *blkcg = blkg->blkcg;
 	unsigned long flags;
-	struct cgroup_subsys_state *css;
 	int ret = 1;
 
-	rcu_read_lock();
-	css = css_lookup(&blkio_subsys, blkg->blkcg_id);
-	if (css) {
-		blkcg = container_of(css, struct blkio_cgroup, css);
-		spin_lock_irqsave(&blkcg->lock, flags);
-		if (!hlist_unhashed(&blkg->blkcg_node)) {
-			__blkiocg_del_blkio_group(blkg);
-			ret = 0;
-		}
-		spin_unlock_irqrestore(&blkcg->lock, flags);
+	spin_lock_irqsave(&blkcg->lock, flags);
+	if (!hlist_unhashed(&blkg->blkcg_node)) {
+		__blkiocg_del_blkio_group(blkg);
+		ret = 0;
 	}
+	spin_unlock_irqrestore(&blkcg->lock, flags);
 
-	rcu_read_unlock();
 	return ret;
 }
 EXPORT_SYMBOL_GPL(blkiocg_del_blkio_group);
@@ -1385,7 +1383,8 @@ static int blkiocg_populate(struct cgroup_subsys *subsys, struct cgroup *cgroup)
 				ARRAY_SIZE(blkio_files));
 }
 
-static void blkiocg_destroy(struct cgroup_subsys *subsys, struct cgroup *cgroup)
+static int blkiocg_pre_destroy(struct cgroup_subsys *subsys,
+			       struct cgroup *cgroup)
 {
 	struct blkio_cgroup *blkcg = cgroup_to_blkio_cgroup(cgroup);
 	unsigned long flags;
@@ -1394,6 +1393,7 @@ static void blkiocg_destroy(struct cgroup_subsys *subsys, struct cgroup *cgroup)
 	struct blkio_policy_type *blkiop;
 
 	rcu_read_lock();
+
 	do {
 		spin_lock_irqsave(&blkcg->lock, flags);
 
@@ -1423,8 +1423,15 @@ static void blkiocg_destroy(struct cgroup_subsys *subsys, struct cgroup *cgroup)
 		spin_unlock(&blkio_list_lock);
 	} while (1);
 
-	free_css_id(&blkio_subsys, &blkcg->css);
 	rcu_read_unlock();
+
+	return 0;
+}
+
+static void blkiocg_destroy(struct cgroup_subsys *subsys, struct cgroup *cgroup)
+{
+	struct blkio_cgroup *blkcg = cgroup_to_blkio_cgroup(cgroup);
+
 	if (blkcg != &blkio_root_cgroup)
 		kfree(blkcg);
 }
@@ -1458,30 +1465,39 @@ done:
  * of the main cic data structures.  For now we allow a task to change
  * its cgroup only if it's the only owner of its ioc.
  */
-static int blkiocg_can_attach_task(struct cgroup *cgrp, struct task_struct *tsk)
+static int blkiocg_can_attach(struct cgroup_subsys *ss, struct cgroup *cgrp,
+			      struct cgroup_taskset *tset)
 {
+	struct task_struct *task;
 	struct io_context *ioc;
 	int ret = 0;
 
 	/* task_lock() is needed to avoid races with exit_io_context() */
-	task_lock(tsk);
-	ioc = tsk->io_context;
-	if (ioc && atomic_read(&ioc->nr_tasks) > 1)
-		ret = -EINVAL;
-	task_unlock(tsk);
-
+	cgroup_taskset_for_each(task, cgrp, tset) {
+		task_lock(task);
+		ioc = task->io_context;
+		if (ioc && atomic_read(&ioc->nr_tasks) > 1)
+			ret = -EINVAL;
+		task_unlock(task);
+		if (ret)
+			break;
+	}
 	return ret;
 }
 
-static void blkiocg_attach_task(struct cgroup *cgrp, struct task_struct *tsk)
+static void blkiocg_attach(struct cgroup_subsys *ss, struct cgroup *cgrp,
+			   struct cgroup_taskset *tset)
 {
+	struct task_struct *task;
 	struct io_context *ioc;
 
-	/* we don't lose anything even if ioc allocation fails */
-	ioc = get_task_io_context(tsk, GFP_ATOMIC, NUMA_NO_NODE);
-	if (ioc) {
-		ioc_cgroup_changed(ioc);
-		put_io_context(ioc);
+	cgroup_taskset_for_each(task, cgrp, tset) {
+		/* we don't lose anything even if ioc allocation fails */
+		ioc = get_task_io_context(task, GFP_ATOMIC, NUMA_NO_NODE);
+		if (ioc) {
+			ioc_cgroup_changed(ioc);
+			put_io_context(ioc);
+		}
 	}
 }
 
