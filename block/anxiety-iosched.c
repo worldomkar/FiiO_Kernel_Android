@@ -79,7 +79,7 @@ static void anxiety_add_request(struct request_queue *q, struct request *rq)
 }
 
 //static int anxiety_init_queue(struct request_queue *q, struct elevator_type *elv)
-static void *anxiety_init_queue(struct request_queue *q)
+static int anxiety_init_queue(struct request_queue *q)
 {
 	struct anxiety_data *adata;
 /*	struct elevator_queue *eq = elevator_alloc(q, elv);
@@ -91,7 +91,7 @@ static void *anxiety_init_queue(struct request_queue *q)
 	adata = kmalloc_node(sizeof(*adata), GFP_KERNEL, q->node);
 	if (!adata) {
 //		kobject_put(&eq->kobj);
-		return NULL;
+		return -ENOMEM;
 	}
 
 	/* Set the elevator data */
@@ -108,7 +108,7 @@ static void *anxiety_init_queue(struct request_queue *q)
 //	q->elevator = eq;
 //	spin_unlock_irq(q->queue_lock);
 
-	return adata;
+	return 0;
 }
 
 static void anxiety_exit_queue(struct elevator_queue *e)
