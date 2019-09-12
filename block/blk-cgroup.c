@@ -43,14 +43,12 @@ EXPORT_SYMBOL_GPL(blkio_root_cgroup);
 
 static struct blkio_policy_type *blkio_policy[BLKIO_NR_POLICIES];
 
-static struct cgroup_subsys_state *blkiocg_create(struct cgroup_subsys *,
-						  struct cgroup *);
-static int blkiocg_can_attach(struct cgroup_subsys *, struct cgroup *,
-			      struct cgroup_taskset *);
-static void blkiocg_attach(struct cgroup_subsys *, struct cgroup *,
-			   struct cgroup_taskset *);
-static int blkiocg_pre_destroy(struct cgroup_subsys *, struct cgroup *);
-static void blkiocg_destroy(struct cgroup_subsys *, struct cgroup *);
+static int blkiocg_pre_destroy(struct cgroup *);
+
+static struct cgroup_subsys_state *blkiocg_create(struct cgroup *);
+static int blkiocg_can_attach(struct cgroup *, struct cgroup_taskset *);
+static void blkiocg_attach(struct cgroup *, struct cgroup_taskset *);
+static void blkiocg_destroy(struct cgroup *);
 static int blkiocg_populate(struct cgroup_subsys *, struct cgroup *);
 
 /* for encoding cft->private value on file */
@@ -1586,8 +1584,7 @@ static int blkiocg_populate(struct cgroup_subsys *subsys, struct cgroup *cgroup)
  *
  * This is the blkcg counterpart of ioc_release_fn().
  */
-static int blkiocg_pre_destroy(struct cgroup_subsys *subsys,
-			       struct cgroup *cgroup)
+static int blkiocg_pre_destroy(struct cgroup *cgroup)
 {
 	struct blkio_cgroup *blkcg = cgroup_to_blkio_cgroup(cgroup);
 
@@ -1612,7 +1609,7 @@ static int blkiocg_pre_destroy(struct cgroup_subsys *subsys,
 	return 0;
 }
 
-static void blkiocg_destroy(struct cgroup_subsys *subsys, struct cgroup *cgroup)
+static void blkiocg_destroy(struct cgroup *cgroup)
 {
 	struct blkio_cgroup *blkcg = cgroup_to_blkio_cgroup(cgroup);
 
@@ -1620,8 +1617,7 @@ static void blkiocg_destroy(struct cgroup_subsys *subsys, struct cgroup *cgroup)
 		kfree(blkcg);
 }
 
-static struct cgroup_subsys_state *
-blkiocg_create(struct cgroup_subsys *subsys, struct cgroup *cgroup)
+static struct cgroup_subsys_state *blkiocg_create(struct cgroup *cgroup)
 {
 	static atomic64_t id_seq = ATOMIC64_INIT(0);
 	struct blkio_cgroup *blkcg;
@@ -1709,8 +1705,7 @@ void blkcg_exit_queue(struct request_queue *q)
  * of the main cic data structures.  For now we allow a task to change
  * its cgroup only if it's the only owner of its ioc.
  */
-static int blkiocg_can_attach(struct cgroup_subsys *ss, struct cgroup *cgrp,
-			      struct cgroup_taskset *tset)
+static int blkiocg_can_attach(struct cgroup *cgrp, struct cgroup_taskset *tset)
 {
 	struct task_struct *task;
 	struct io_context *ioc;
@@ -1729,8 +1724,7 @@ static int blkiocg_can_attach(struct cgroup_subsys *ss, struct cgroup *cgrp,
 	return ret;
 }
 
-static void blkiocg_attach(struct cgroup_subsys *ss, struct cgroup *cgrp,
-			   struct cgroup_taskset *tset)
+static void blkiocg_attach(struct cgroup *cgrp, struct cgroup_taskset *tset)
 {
 	struct task_struct *task;
 	struct io_context *ioc;
