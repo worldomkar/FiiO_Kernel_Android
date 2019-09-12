@@ -2046,7 +2046,7 @@ static int cgroup_attach_proc(struct cgroup *cgrp, struct task_struct *leader)
 	 * already PF_EXITING could be freed from underneath us unless we
 	 * take an rcu_read_lock.
 	 */
-	rcu_read_lock();
+	read_lock(&tasklist_lock);
 	do {
 		struct task_and_cgroup ent;
 
@@ -2069,7 +2069,7 @@ static int cgroup_attach_proc(struct cgroup *cgrp, struct task_struct *leader)
 		BUG_ON(retval != 0);
 		i++;
 	} while_each_thread(leader, tsk);
-	rcu_read_unlock();
+	read_unlock(&tasklist_lock);
 	/* remember the number of threads in the array for later. */
 	group_size = i;
 	tset.tc_array = group;
@@ -3566,7 +3566,8 @@ static int cgroup_write_event_control(struct cgroup *cgrp, struct cftype *cft,
 	}
 
 	/* the process need read permission on control file */
-	ret = file_permission(cfile, MAY_READ);
+	/* AV: shouldn't we check that it's been opened for read instead? */
+	ret = inode_permission(cfile->f_path.dentry->d_inode, MAY_READ);
 	if (ret < 0)
 		goto fail;
 
