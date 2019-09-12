@@ -1306,6 +1306,11 @@ static int cgroup_remount(struct super_block *sb, int *flags, char *data)
 	if (ret)
 		goto out_unlock;
 
+	/* See feature-removal-schedule.txt */
+	if (opts.subsys_bits != root->actual_subsys_bits || opts.release_agent)
+		pr_warning("cgroup: option changes via remount are deprecated (pid=%d comm=%s)\n",
+			   task_tgid_nr(current), current->comm);
+
 	/* Don't allow flags or name to change at remount */
 	if (opts.flags != root->flags ||
 	    (opts.name && strcmp(opts.name, root->name))) {
@@ -1898,7 +1903,7 @@ static void cgroup_task_migrate(struct cgroup *cgrp, struct cgroup *oldcgrp,
  */
 int cgroup_attach_task(struct cgroup *cgrp, struct task_struct *tsk)
 {
-	int retval;
+	int retval = 0;
 	struct cgroup_subsys *ss, *failed_ss = NULL;
 	struct cgroup *oldcgrp;
 	struct cgroupfs_root *root = cgrp->root;
