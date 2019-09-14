@@ -2308,9 +2308,9 @@ void ntfs_evict_big_inode(struct inode *vi)
  * mount. The mount options of the vfs mount @mnt are written to the seq file
  * @sf and success is returned.
  */
-int ntfs_show_options(struct seq_file *sf, struct vfsmount *mnt)
+int ntfs_show_options(struct seq_file *sf, struct dentry *root)
 {
-	ntfs_volume *vol = NTFS_SB(mnt->mnt_sb);
+	ntfs_volume *vol = NTFS_SB(root->d_sb);
 	int i;
 
 	seq_printf(sf, ",uid=%i", vol->uid);

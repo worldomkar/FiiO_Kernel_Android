@@ -2079,9 +2079,9 @@ static int exfat_show_options(struct seq_file *m, struct dentry *root)
 {
 	struct exfat_sb_info *sbi = EXFAT_SB(root->d_sb);
 #else
-static int exfat_show_options(struct seq_file *m, struct vfsmount *mnt)
+static int exfat_show_options(struct seq_file *m, struct dentry *root)
 {
-	struct exfat_sb_info *sbi = EXFAT_SB(mnt->mnt_sb);
+	struct exfat_sb_info *sbi = EXFAT_SB(root->d_sb);
 #endif
 	struct exfat_mount_options *opts = &sbi->options;
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
