@@ -1,0 +1,1000 @@
+ 2365  nano block/blk-map.c
+ 2366  git cherry-pick 3540d5e89b2ac268fcfc9b07a50a9ba4acc2e5e5 -n
+ 2367  git reset --hard
+ 2368  nano block/blk-core.c
+ 2369  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2370  git commit -am "block: avoid unnecessary plug list flush"
+ 2371  nano block/blk-core.c
+ 2372  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2373  git commit -am "block: add missed trace_block_plug"
+ 2374  git cherry-pick 5151412dd4338b273afdb107c3772528e9e67d92 -n
+ 2375  git commit -am "block: initialize request_queue's numa node during"
+ 2376  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2377  git commit -am "block: initialize request_queue's numa node during"
+ 2378  nano block/blk-core.c
+ 2379  git commit -am "block: initialize request_queue's numa node during"
+ 2380  nano block/cfq-iosched.c
+ 2381  git cherry-pick bb9d97b6dffa10cec5e1ce9adbce60f3c2b5eabc -n
+ 2382  git reset --hard
+ 2383  nano block/blk-cgroup.c
+ 2384  nano block/blk-core.c
+ 2385  git cherry-pick 1ba64edef6051d2ec79bb2fbd3a0c8f0df00ab55 -n
+ 2386  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2387  git commit -am "block, sx8: kill blk_insert_request()"
+ 2388  git cherry-pick 34f6055c80285e4efb3f602a9119db75239744dc -n
+ 2389  git reset --hard
+ 2390  nano block/blk-core.c
+ 2391  nano block/blk-exec.c
+ 2392  nano block/blk-sysfs.c
+ 2393  nano block/blk.h
+ 2394  nano include/linux/blkdev.h 
+ 2395  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2396  cd block
+ 2397  rm blk-throttle.c 
+ 2398  wget https://raw.githubusercontent.com/arter97/android_kernel_motorola_smelt/34f6055c80285e4efb3f602a9119db75239744dc/block/blk-throttle.c
+ 2399  git commit -am "block: add blk_queue_dead()"
+ 2400  git cherry-pick 481a7d64790cd7ca61a8bbcbd9d017ce58e6fe39 -n
+ 2401  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2402  cd ..
+ 2403  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2404  git commit -am "block: fix drain_all condition in blk_drain_queue()"
+ 2405  git cherry-pick 8ba61435d73f2274e12d4d823fde06735e8f6a54 -n
+ 2406  git commit -am "block: add missing blk_queue_dead() checks"
+ 2407  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2408  git cherry-pick a73f730d013ff2788389fd0c46ad3e5510f124e6 -n
+ 2409  git reset --hard
+ 2410  nano block/blk-core.c
+ 2411  nano block/blk-sysfs.c
+ 2412  nano block/blk.h
+ 2413  nano block/cfq-iosched.c
+ 2414  nano include/linux/blkdev.h 
+ 2415  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2416  nano include/linux/idr.h 
+ 2417  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2418  nano lib/idr.c
+ 2419  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2420  nano lib/idr.c
+ 2421  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2422  nano lib/idr.c
+ 2423  git commit -am "block, cfq: move cfqd->cic_index to q->id"
+ 2424  git cherry-pick 42ec57a8f68311bbbf4ff96a5d33c8a2e90b9d05 -n
+ 2425  git reset --hard
+ 2426  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2427  history | grep sudi
+ 2428  history | grep sudo
+ 2429  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 2430  git log
+ 2431  git status
+ 2432  git checkout 343ae5219865599c9c4a736b7c1fe4e73c509a40 .
+ 2433  make mrproper
+ 2434  history | grep clean
+ 2435  history | grep config
+ 2436  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- rk3188_X5_defconfig
+ 2437  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2438  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 2439  git reset --hard
+ 2440  git log
+ 2441  git checkout 2fb1a759d83a9764ce59bc5ea0b0dc4875f90334 .
+ 2442  make mrproper
+ 2443  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- rk3188_X5_defconfig
+ 2444  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2445  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 2446  git log
+ 2447  history
+ 2448  history | grep sudo
+ 2449  git log
+ 2450  git checkout 94b23cef6dc0d1928c69e7de8dc374008568494f .
+ 2451  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- rk3188_X5_defconfig
+ 2452  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2453  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 2454  git log
+ 2455  git checkout 35c705169a491aedc41be138df332b10fc41b15d .
+ 2456  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2457  git checkout 6e7edd96f2b11adaad010a78acce4b95923ca406 .
+ 2458  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2459  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 2460  history
+ 2461  git checkout 840d171b45dc13aee1b842a656d07d39e900b03e .
+ 2462  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2463  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 2464  git checkout 343ae5219865599c9c4a736b7c1fe4e73c509a40 .
+ 2465  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2466  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 2467  git reset --hard
+ 2468  git revert 343ae5219865599c9c4a736b7c1fe4e73c509a40
+ 2469  git reset --hard
+ 2470  git checkout 343ae5219865599c9c4a736b7c1fe4e73c509a40 .
+ 2471  nano block/blk-core.c
+ 2472  nano block/blk.h
+ 2473  nano block/elevator.h
+ 2474  nano block/elevator.c
+ 2475  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2476  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 2477  git reset --hard
+ 2478  git checkout 840d171b45dc13aee1b842a656d07d39e900b03e .
+ 2479  nano block/blk-core.c
+ 2480  nano block/blk.h
+ 2481  nano block/elevator.c
+ 2482  git reset --hard
+ 2483  nano block/blk-core.c
+ 2484  nano block/blk.h
+ 2485  nano block/elevator.c
+ 2486  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2487  nano block/blk-core.c
+ 2488  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2489  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 2490  git commit -am "Partly reverted block: reorganize queue draining"
+ 2491  git log
+ 2492  git status
+ 2493  git push origin master
+ 2494  nano block/blk-ioc.c
+ 2495  nano include/linux/iocontext.h
+ 2496  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2497  nano block/blk-ioc.c
+ 2498  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2499  nano block/blk-ioc.c
+ 2500  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2501  git commit -am "block: misc ioc cleanups"
+ 2502  git cherry-pick 6e736be7f282fff705db7c34a15313281b372a76 -n
+ 2503  git mergetool
+ 2504  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2505  git reset --hard
+ 2506  git cherry-pick 6e736be7f282fff705db7c34a15313281b372a76 -n
+ 2507  git mergetool
+ 2508  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2509  git reset --hard
+ 2510  nano block/blk-cgroup.c
+ 2511  rm block/blk-cgroup.c
+ 2512  cd block
+ 2513  wget https://raw.githubusercontent.com/arter97/android_kernel_motorola_smelt/6e736be7f282fff705db7c34a15313281b372a76/block/blk-cgroup.c
+ 2514  cd ..
+ 2515  nano block/blk-ioc.c
+ 2516  nano block/blk.h
+ 2517  nano block/cfq-iosched.c
+ 2518  nano fs/ioprio.c
+ 2519  nano include/linux/iocontext.h
+ 2520  nano kernel/fork.c
+ 2521  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2522  nano fs/ioprio.c
+ 2523  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2524  history | grep sudo
+ 2525  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 2526  git log
+ 2527  git status
+ 2528  history
+ 2529  nano block/blk.h
+ 2530  git commit -am "block: make ioc get/put interface more conventional and fix race on allocation"
+ 2531  git cherry-pick 09ac46c429464c919d04bb737b27edd84d944f02 -n
+ 2532  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2533  git commit -am "block: misc updates to blk_get_queue()"
+ 2534  git cherry-pick 283287a52e3c3f7f8f9da747f4b8c5202740d776 -n
+ 2535  git mergetool
+ 2536  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2537  nano block/cfq-iosched.c
+ 2538  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2539  nano block/zen-iosched.c
+ 2540  nano block/cfq-iosched.c
+ 2541  nano block/zen-iosched.c
+ 2542  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2543  history
+ 2544  git commit -am "block, cfq, zen: misc updates to cfq_io_context"
+ 2545  nano block/cfq-iosched.c
+ 2546  git cherry-pick dc86900e0a8f665122de6faadd27fb4c6d2b3e4d -n
+ 2547  git commit -am "Uncommented ioc"
+ 2548  git cherry-pick dc86900e0a8f665122de6faadd27fb4c6d2b3e4d -n
+ 2549  git mergetool
+ 2550  nano include/linux/iocontext.h
+ 2551  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2552  git commit -am "block, cfq: move ioc ioprio/cgroup changed handling to cic"
+ 2553  git cherry-picj 216284c352a0061f5b20acff2c4e50fb43fea183 -n
+ 2554  git cherry-pick 216284c352a0061f5b20acff2c4e50fb43fea183 -n
+ 2555  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2556  git commit -am "block, cfq: fix race condition in cic creation path and tighten locking"
+ 2557  git cherry-pick f1a4f4d35ff30a328d5ea28f6cc826b2083111d2 -n
+ 2558  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2559  git commit -am "block, cfq: fix cic lookup locking"
+ 2560  git cherry-pick b2efa05265d62bc29f3a64400fad4b44340eedb8 -n 
+ 2561  git mergetool
+ 2562  git reset --hard
+ 2563  git cherry-pick b2efa05265d62bc29f3a64400fad4b44340eedb8 -n 
+ 2564  git mergetool
+ 2565  nano block/blk-ioc.c
+ 2566  git mergetool
+ 2567  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2568  git commit -am "block, cfq: unlink cfq_io_context's immediately"
+ 2569  git cherry-pick b9a1920837bc53430d339380e393a6e4c372939f -n
+ 2570  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2571  git commit -am "block, cfq: remove delayed unlink"
+ 2572  git cherry-pick b50b636bce6293fa858cc7ff6c3ffe4920d90006 -n
+ 2573  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2574  git commit -am "block, cfq: kill ioc_gone"
+ 2575  git cherry-pick 1238033c79e92e5c315af12e45396f1a78c73dec -n
+ 2576  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2577  nano block/maple-iosched.c
+ 2578  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2579  git commit -am "block, cfq: kill cic->key"
+ 2580  git cherry-pick f2dbd76a0a994bc1d5a3d0e7c844cc373832e86c -n
+ 2581  git mergetool
+ 2582  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2583  git commit -am "block, cfq: replace current_io_context() with create_io_context()"
+ 2584  git cherry-pick f8fc877d3c1f10457d0d73d8540a0c51a1fa718a -n
+ 2585  git mergetool
+ 2586  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2587  git reset --hard
+ 2588  history | grep sudo
+ 2589  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 2590  git log
+ 2591  git commit -am "block: reorder elevator switch sequence"
+ 2592  git log
+ 2593  git commit -am "block: reorder elevator switch sequence"
+ 2594  git push origin master
+ 2595  git commit -am "block: reorder elevator switch sequence"
+ 2596  git add .
+ 2597  git commit -am "block: reorder elevator switch sequence"
+ 2598  nano block/elevator.c
+ 2599  history
+ 2600  git reset --hard HEAD~1
+ 2601  git status
+ 2602  nano block/elevator.c
+ 2603  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2604  git commit -am "block: reorder elevator switch sequence"
+ 2605  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 2606  git log
+ 2607  git checkout 78ec3a41c26fc778cbe03cfe1982b5f6823f9273 .
+ 2608  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2609  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 2610  git reset --hard
+ 2611  nano block/elevator.c
+ 2612  git checkout 78ec3a41c26fc778cbe03cfe1982b5f6823f9273 .
+ 2613  nano block/elevator.c
+ 2614  git reset --hard
+ 2615  gedit block/elevator.c
+ 2616  cd block/
+ 2617  rm elevator.c
+ 2618  wget https://raw.githubusercontent.com/arter97/android_kernel_motorola_smelt/f8fc877d3c1f10457d0d73d8540a0c51a1fa718a/block/elevator.c
+ 2619  cd ..
+ 2620  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2621  nano block/blk-core.c
+ 2622  nano block/blk.h
+ 2623  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2624  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 2625  git commit -am "Corrections to elevator and block code"
+ 2626  git log
+ 2627  history
+ 2628  git cherry-pick 22f746e235a5cbee2a6ca9887b1be2aa7d31fe71 -n
+ 2629  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2630  git commit -am "block: remove elevator_queue->ops"
+ 2631  git cherry-pick c58698073218f2c8f2fc5982fa3938c2d3803b9f -n
+ 2632  git mergetool
+ 2633  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2634  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 2635  git commit -am "block, cfq: reorganize cfq_io_context into generic and cfq specific parts"
+ 2636  git log
+ 2637  git cherry-pick a612fddf0d8090f2877305c9168b6c1a34fb5d90 -n
+ 2638  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2639  nano block/row-iosched.c 
+ 2640  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2641  git commit -am "block, row, cfq: move cfqd->icq_list to request_queue and add request->elv.icq"
+ 2642  git cherry-pick 47fdd4ca96bf4b28ac4d05d7a6e382df31d3d758 -n
+ 2643  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2644  git commit -am "block, cfq: move io_cq lookup to blk-ioc.c"
+ 2645  git cherry-pick 3d3c2379feb177a5fd55bb0ed76776dc9d4f3243 -n
+ 2646  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2647  git commit -am "block, cfq: move icq cache management to block core"
+ 2648  git cherry-pick 7e5a8794492e43e9eebb68a98a23be055888ccd0 -n
+ 2649  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2650  git commit -am "block, cfq: move io_cq exit/release to blk-ioc.c"
+ 2651  git cherry-pick 9b84cacd013996f244d85b3d873287c2a8f88658 -n
+ 2652  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2653  git commit -am "block, cfq: restructure io_cq creation path for io_context interface cleanup"
+ 2654  git cherry-pick f1f8cc94651738b418ba54c039df536303b91704 -n
+ 2655  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2656  git commit -am "block, cfq: move icq creation and rq->elv.icq association to block core"
+ 2657  git cherry-pick 4eabc941259f9d8c8fb71746d3f30c87e1d9e49b -n
+ 2658  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2659  git commit -am "block: don't kick empty queue in blk_drain_queue()"
+ 2660  history | grep sudo
+ 2661  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 2662  git log
+ 2663  git status
+ 2664  cd block/
+ 2665  rm row-iosched.c
+ 2666  wget https://raw.githubusercontent.com/arter97/android_kernel_motorola_smelt/bf74a231b8a50b5983a55689db89d7ee148e86d7/block/row-iosched.c
+ 2667  cd ..
+ 2668  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2669  cd block/
+ 2670  rm row-iosched.c 
+ 2671  wget https://raw.githubusercontent.com/arter97/android_kernel_motorola_smelt/d8fa466602111f5fa8ac3188504d59eac847dcaa/block/row-iosched.c
+ 2672  cd ..
+ 2673  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2674  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 2675  git commit -am "Replaced broken row scheduler (for now)"
+ 2676  git cherry-pick 4a0b75c7d02c2bd46ed227d4ba5941ba8a0aba5d -n
+ 2677  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2678  git commit -am "block, cfq: fix empty queue crash caused by request merge"
+ 2679  git cherry-pick 274193224cdabd687d804a26e0150bb20f2dd52c -n
+ 2680  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2681  git reset --hard
+ 2682  nano block/cfq-iosched.c
+ 2683  nano block/blk-ioc.c
+ 2684  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2685  git commit -am "block: ioc_cgroup_changed() needs to be exported"
+ 2686  nano block/blk-map.c
+ 2687  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2688  git commit -am "block: re-use existing 'reading' variable instead of checking direction again"
+ 2689  git cherry-pick fd63836811d6e5b5f5f608abf865bc9e91762c8c -n
+ 2690  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2691  git commit -am "block: an exiting task should be allowed to create io_context"
+ 2692  git cherry-pick c98b2cc29af8e84e7364b53e9bb4cc7cfaf62555 -n
+ 2693  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2694  git commit -am "block: remove WARN_ON_ONCE() in exit_io_context()"
+ 2695  git cherry-pick f2b20d436534f22ccc3f5ad172499fcb013bb315 -n
+ 2696  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2697  git commit -am "block: fix blk_queue_end_tag()"
+ 2698  nano block/genhd.c
+ 2699  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2700  git commit -am "make register_disk() static"
+ 2701  git cherry-pick 9be96f3fd10187f185d84cf878cf032465bcced3 -n
+ 2702  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2703  mv fs/partitions/mtdpart.* block/partitions/
+ 2704  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2705  git commit -am "move fs/partitions to block/"
+ 2706  git add .
+ 2707  git commit -am "Missing files"
+ 2708  git cherry-pick 94ea4158f1733e3b10cef067d535f504866e0c41 -n
+ 2709  git mergetool
+ 2710  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2711  nano block/partitions/check.c
+ 2712  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2713  nano block/partitions/check.c
+ 2714  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2715  nano block/partitions/check.c
+ 2716  nano include/linux/genhd.h 
+ 2717  nano block/partitions/check.c
+ 2718  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2719  nano block/partitions/check.c
+ 2720  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2721  nano block/partitions/check.c
+ 2722  git reset --hard
+ 2723  grep -rn "drop_partitions"
+ 2724  grep -rn "invalidate_partitions"
+ 2725  git cherry-pick 94ea4158f1733e3b10cef067d535f504866e0c41 -n
+ 2726  git mergetool
+ 2727  nano block/partitions/check.c
+ 2728  git reset --hard
+ 2729  nano block/partitions/check.c
+ 2730  git cherry-pick 94ea4158f1733e3b10cef067d535f504866e0c41 -n
+ 2731  git reset --hard
+ 2732  git cherry-pick 94ea4158f1733e3b10cef067d535f504866e0c41 -n
+ 2733  git mergetool
+ 2734  git reset --hard
+ 2735  git cherry-pick ff01bb4832651c6d25ac509a06a10fcbd75c461c -n
+ 2736  git reset --hard
+ 2737  git cherry-pick 07d106d0a33d6063d2061305903deb02489eba20 -n
+ 2738  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2739  git commit -am "vfs: fix up ENOIOCTLCMD error handling"
+ 2740  nano block/row-iosched.c
+ 2741  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2742  git stash
+ 2743  nano block/row-iosched.c
+ 2744  cd block/
+ 2745  rm row-iosched.c 
+ 2746  wget https://raw.githubusercontent.com/jkbuha/FiiO_Kernel_Android/9d0be61202bb017bc095d3e438c77f7aded7aba8/block/row-iosched.c
+ 2747  cd ..
+ 2748  nano block/row-iosched.c
+ 2749  cd block/
+ 2750  rm row-iosched.c 
+ 2751  wget https://raw.githubusercontent.com/CyanogenMod/android_kernel_samsung_smdk4412/b6bde0dc4079a17c0ce1e6d604f5c9a5e2ae5a8b/block/row-iosched.c
+ 2752  cd ..
+ 2753  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2754  nano block/row-iosched.c 
+ 2755  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2756  history | grep sudo
+ 2757  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 2758  git commit -am "Fixed row scheduler (for now)"
+ 2759  cd block/
+ 2760  rm row-iosched.c
+ 2761  wget https://raw.githubusercontent.com/arter97/android_kernel_motorola_smelt/c020424626386e532c71232cf642301f3e1576dd/block/row-iosched.c
+ 2762  nano row-iosched.c
+ 2763  cd ..
+ 2764  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2765  nano block/row-iosched.c
+ 2766  git stash
+ 2767  cd block/
+ 2768  rm row-iosched.c 
+ 2769  wget https://raw.githubusercontent.com/arter97/android_kernel_motorola_smelt/d8fa466602111f5fa8ac3188504d59eac847dcaa/block/row-iosched.c
+ 2770  cd ..
+ 2771  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2772  cd block/
+ 2773  nano row-iosched.c
+ 2774  cd ..
+ 2775  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2776  git stash
+ 2777  git reset --hard
+ 2778  gedit block/row-iosched.c 
+ 2779  cd block/
+ 2780  rm row-iosched.c 
+ 2781  cd ..
+ 2782  grep -rn "row_init_queue"
+ 2783  nano block/elevator.c
+ 2784  cd block/
+ 2785  wget https://raw.githubusercontent.com/arter97/android_kernel_motorola_smelt/d8fa466602111f5fa8ac3188504d59eac847dcaa/block/row-iosched.c
+ 2786  nano row-iosched.c 
+ 2787  cd ..
+ 2788  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2789  nano block/row-iosched.c 
+ 2790  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2791  git commit -am "row scheduler from trunk with minor backports"
+ 2792  git cherry-pick b1bd055d397e09f99dcef9b138ed104ff1812fcb -n
+ 2793  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2794  git commit -am "block: Introduce blk_set_stacking_limits function"
+ 2795  git cherry-pick ef00f59c95fe6e002e7c6e3663cdea65e253f4cc -n
+ 2796  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2797  git commit -am "block: Add BLKROTATIONAL ioctl"
+ 2798  git cherry-pick 577ebb374c78314ac4617242f509e2f5e7156649 -n
+ 2799  git mergetool
+ 2800  git reset --hard
+ 2801  git log
+ 2802  nano block/elevator.c
+ 2803  git status
+ 2804  git cherry-pick 54b466e44b1c7809144bbd8cd6be3f85877ca46f -n
+ 2805  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2806  git commit -am "cfq-iosched: fix use-after-free of cfqq"
+ 2807  git cherry-pick df0793abb929e66606fa25f3875ff1b89de5ad32 -n
+ 2808  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2809  git commit -am "block,cfq: change code order"
+ 2810  git cherry-pick 05c30b9551f1904d9950ad0d28e65fc4ff3c8a8e -n
+ 2811  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2812  git commit -am "block: fix NULL icq_cache reference"
+ 2813  nano block/blk-softirq.c
+ 2814  git log | grep cache
+ 2815  git log | grep cgroup
+ 2816  nano kernel/cpuset.c
+ 2817  nano kernel/cgroup_freezer.c
+ 2818  git status
+ 2819  git cherry-pick 761b3ef50e1c2649cffbfa67a4dcb2dcdb7982ed -n
+ 2820  git mergetool
+ 2821  git reset --hard
+ 2822  nano block/blk-cgroup.c
+ 2823  nano include/linux/cgroup.h
+ 2824  nano include/net/sock.h 
+ 2825  nano include/net/tcp_memcontrol.h
+ 2826  nano kernel/cgroup.c
+ 2827  nano kernel/cgroup_freezer.c
+ 2828  nano kernel/cpuset.c 
+ 2829  nano kernel/sched/core.c
+ 2830  nano mm/memcontrol.c
+ 2831  nano net/core/sock.c
+ 2832* 
+ 2833  history
+ 2834  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2835  nano mm/memcontrol.c
+ 2836  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2837  nano include/linux/cgroup.h
+ 2838  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2839  nano mm/memcontrol.c
+ 2840  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2841  nano kernel/sched/core.c
+ 2842  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2843  nano kernel/sched/core.c
+ 2844  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2845  nano mm/memcontrol.c
+ 2846  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2847  nano kernel/sched/core.c
+ 2848  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2849  nano kernel/sched/core.c
+ 2850  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2851  nano kernel/cgroup_freezer.c 
+ 2852  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2853  nano kernel/cgroup.c
+ 2854  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2855  nano kernel/cgroup.c
+ 2856  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2857  git reset --hard
+ 2858  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2859  history | grep sudo
+ 2860  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 2861  git log
+ 2862  git status
+ 2863  git cherry-pick 9fa73472ddbcd3da87d35a7f4566eaaf345f798e -n
+ 2864  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2865  git commit -am "block: fix ioc locking warning"
+ 2866  git cherry-pick 11a3122f6cf2d988a77eb8883d0fc49cd013a6d5 -n
+ 2867  nano block/blk-cgroup.c
+ 2868  git reset --hard
+ 2869  nano block/blk-cgroup.c
+ 2870  nano block/blk-core.c
+ 2871  nano block/blk-ioc.c
+ 2872  nano block/cfq-iosched.c
+ 2873  nano fs/ioprio.c
+ 2874  nano include/linux/blkdev.h 
+ 2875  nano include/linux/iocontext.h
+ 2876  nano kernel/fork.c
+ 2877  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2878  nano block/blk-ioc.c
+ 2879  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2880  git commit -am "block: strip out locking optimization in put_io_context()"
+ 2881  git log
+ 2882  git checkout 7586933de50a16890f6bd6d33db1aa2c9a751012 .
+ 2883  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2884  history | grep sudo
+ 2885  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 2886  git log
+ 2887  git checkout 3969f6a170bb1249758f551c4007f1e1550880b1 .
+ 2888  cd block/
+ 2889  cp row-iosched.c ~/
+ 2890  cd ..
+ 2891  git reset --hard
+ 2892  cp ~/row-iosched.c block/row-iosched.c
+ 2893  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2894  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 2895  git commit -am "Reimplement original (stable) row scheduler - for now"
+ 2896  git push origin master
+ 2897  git log
+ 2898  git cherry-pick 050c8ea80e3e90019d9e981c6a117ef614e882ed -n
+ 2899  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2900  git commit -am "block: separate out blk_rq_merge_ok() and blk_try_merge() from elevator functions"
+ 2901  git cherry-pick 07c2bd37350c9b1af71b35d05f16e300a6602948 -n
+ 2902  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2903  git commit -am "block: don't call elevator callbacks for plug merges"
+ 2904  git log
+ 2905  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 2906  nano block/bsg.c
+ 2907  nano block/blk-ioc.c
+ 2908  git cherry-pick d8c66c5d59247e25a69428aced0b79d33b9c66d6 -n
+ 2909  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2910  git commit -am "block: fix lockdep warning on io_context release put_io_context()"
+ 2911  git cherry-pick d705ae6b133f9f6a8beee617b1224b6a5c99c5da -n
+ 2912  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2913  git commit -am "block: replace icq->changed with icq->flags"
+ 2914  git cherry-pick 2274b029f640cd652ab59c363e5beebf5f50e609 -n
+ 2915  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2916  git commit -am "block: simplify ioc_release_fn()"
+ 2917  git cherry-pick 621032ad6eaabf2fe771c4fa0d8f58e1fcfcdba6 -n
+ 2918  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2919  git commit -am "block: exit_io_context() should call elevator_exit_icq_fn()"
+ 2920  git cherry-pick b855b04a0b2213dbc1b59cf936056726e7ed97ad -n
+ 2921  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2922  git commit -am "block: blk-throttle should be drained regardless of q->elevator"
+ 2923  git cherry-pick 32e380aedc3de454c06ce1c254fe3bea35a676e1 -n
+ 2924  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2925  git commit -am "blkcg: make CONFIG_BLK_CGROUP bool"
+ 2926  git cherry-pick b95ada558c9e69c69ffd6950eb644ee8a3dba18f -n
+ 2927  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2928  git commit -am "cfq: don't register propio policy if (not)CONFIG_CFQ_GROUP_IOSCHED"
+ 2929  history | grep sudo
+ 2930  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 2931  git log
+ 2932  git cherry-pick 5a5bafdc396b1da7570f84fb96a0f8a288970c5e -n
+ 2933  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2934  git commit -am "elevator: clear auxiliary data earlier during elevator switch"
+ 2935  git cherry-pick b2fab5acd28ead6f0dd6c3996ba23f0ef1772f15 -n
+ 2936  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2937  git commit -am "elevator: make elevator_init_fn() return 0/-errno"
+ 2938  nano block/zen-iosched.c
+ 2939  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2940  cd block/
+ 2941  rm row-iosched.c
+ 2942  wget https://raw.githubusercontent.com/arter97/android_kernel_motorola_smelt/d8fa466602111f5fa8ac3188504d59eac847dcaa/block/row-iosched.c
+ 2943  cd ..
+ 2944  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2945  nano block/row-iosched.c
+ 2946  nano block/zen-iosched.c
+ 2947  nano block/sio-iosched.c
+ 2948  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2949  nano block/vr-iosched.c
+ 2950  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2951  nano block/vr-iosched.c
+ 2952  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2953  nano block/sio-iosched.c
+ 2954  nano block/row-iosched.c
+ 2955  nano block/zen-iosched.c
+ 2956  nano block/maple-iosched.c
+ 2957  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2958  nano block/maple-iosched.c
+ 2959  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2960  nano block/maple-iosched.c
+ 2961  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2962  nano block/maple-iosched.c
+ 2963  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2964  nano block/maple-iosched.c
+ 2965  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2966  history | grep sudo
+ 2967  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 2968  git commit -am "Updated all schedulers to work with new elevator code"
+ 2969  find ./ | grep anxiety
+ 2970  git status
+ 2971  nano block/Kconfig.iosched 
+ 2972  nano block/Makefile 
+ 2973  cd block/
+ 2974  mv anxiety-iosched.c anxiety-iosched-temp.c
+ 2975  nano anxiety-iosched.c
+ 2976  cd ..
+ 2977  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2978  cd block/
+ 2979  mv anxiety-iosched-temp.c anxiety-iosched.c
+ 2980  cd ..
+ 2981  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2982  nano block/anxiety-iosched.c
+ 2983  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2984  nano block/anxiety-iosched.c
+ 2985  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2986  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 2987  git commit -am "Anxiety Scheduler first implementation"
+ 2988  git cherry-pick d732580b4eb31553c63744a47d590f770cafb8f0 -n
+ 2989  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2990  git commit -am "block: implement blk_queue_bypass_start/end()"
+ 2991  git cherry-pick 6ecf23afab13c39d3bb0e2d826d0984b0dd53733 -n
+ 2992  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2993  git commit -am "block: extend queue bypassing to cover blkcg policies"
+ 2994  git cherry-pick 72e06c255181537d0b3e1f657a9ed81655d745b1 -n
+ 2995  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2996  git commit -am "blkcg: shoot down blkio_groups on elevator switch"
+ 2997  git cherry-pick 2a7f124414b35645049e9c1b125a6f0b470aa5ae -n
+ 2998  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 2999  git commit -am "blkcg: move rcu_read_lock() outside of blkio_group get functions"
+ 3000  git cherry-pick 0a5a7d0e32be6643b881f0e7cd9d0d06fadde27a -n
+ 3001  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3002  git commit -am "blkcg: update blkg get functions take blkio_cgroup as parameter"
+ 3003  git cherry-picl ca32aefc7f2539ed88d42763330d54ee3e61769a -n
+ 3004  git cherry-pick ca32aefc7f2539ed88d42763330d54ee3e61769a -n
+ 3005  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3006  git commit -am "blkcg: use q and plid instead of opaque void * for blkio_group association"
+ 3007  history | grep sudo
+ 3008* git commit -am "Updated all schedulers to work with new elevator cod
+ 3009  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 3010  git log
+ 3011  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 3012  nano block/anxiety-iosched.c
+ 3013  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3014  nano block/anxiety-iosched.c
+ 3015  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3016  cd block/
+ 3017  rm anxiety-iosched.c
+ 3018  wget https://raw.githubusercontent.com/tytydraco/kernel_xiaomi_jasmine/8a317e5f5a6f5d2a0c25a5c7ee879343a3254e41/block/anxiety-iosched.c
+ 3019  cd ..
+ 3020  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3021  nano block/anxiety-iosched.c
+ 3022  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3023  nano block/anxiety-iosched.c
+ 3024  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3025  nano block/anxiety-iosched.c
+ 3026  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3027  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 3028  history
+ 3029  git status
+ 3030  git reset --hard
+ 3031  git cherry-pick 035d10b2fa7e5f7e9bf9465dbc39c35affd5ac32 -n
+ 3032  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3033  git commit -am "blkcg: add blkio_policy[] array and allow one policy per policy ID"
+ 3034  history | grep sudo
+ 3035  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 3036  git log
+ 3037  git cherry-pick f51b802c17e2a21926b29911493f5e7ddf6eee87 -n
+ 3038  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3039  git commit -am "blkcg: use the usual get blkg path for root blkio_group"
+ 3040  git cherry-pick cd1604fab4f95f7cfc227d3955fd7ae14da61f38 -n
+ 3041  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3042  git commit -am "blkcg: factor out blkio_group creation"
+ 3043  git cherry-pick e56da7e287967667474a58c4f60c286279e3f487 -n
+ 3044  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3045  git commit -am "blkcg: don't allow or retain configuration of missing devices"
+ 3046  git cherry-pick 4bfd482e73b30284cb21e10834ce729fa81aa256 -n
+ 3047  git mergetool
+ 3048  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3049  git commit -am "blkcg: kill blkio_policy_node"
+ 3050  git cherry-pick 7a4dd281ec66224f802093962d1d903d86b09560 -n
+ 3051  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3052  git commit -am "blkcg: kill the mind-bending blkg->dev"
+ 3053  git cherry-pick 92616b5b3a7c7fa8148df82e7ff6183056f2bfc8 -n
+ 3054  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3055  git commit -am "blkcg: skip blkg printing if q isn't associated with disk"
+ 3056  git cherry-pick 7ee9c5620504906e98451dc9a1945b2b9e892cb8 -n
+ 3057  git mergetool
+ 3058  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3059  git commit -am "blkcg: let blkio_group point to blkio_cgroup directly"
+ 3060  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 3061  git log
+ 3062  history
+ 3063  git cherry-pick 5efd611351d1a847c72d74fb12ff4bd187c0cb2c -n
+ 3064  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3065  git commit -am "blkcg: add blkcg_{init|drain|exit}_queue()"
+ 3066  git cherry-pick 923adde1be1df57cebd80c563058e503376645e8 -n
+ 3067  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3068  git commit -am "blkcg: clear all request_queues on blkcg policy [un]registrations"
+ 3069  git cherry-pick 0381411e4b1a52cee134eb73750e5e3cc1155d09 -n
+ 3070  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3071  git commit -am "blkcg: let blkcg core handle policy private data allocation"
+ 3072  git cherry-pick 1adaf3dde37a8b9b59ea59c5f58fed7761178383 -n
+ 3073  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3074  git commit -am "blkcg: move refcnt to blkcg core"
+ 3075  history | grep sudo
+ 3076  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 3077  git log
+ 3078  git cherry-pick 549d3aa872cd1aec1ee540fd93afd9611faa0def -n
+ 3079  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3080  git commit -am "blkcg: make blkg->pd an array and move configuration and stats into it"
+ 3081  git cherry-pick c1768268f9424410761da57ea71107acae7b03cc -n
+ 3082  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3083  git commit -am "blkcg: don't use blkg->plid in stat related functions"
+ 3084  git cherry-pick 4eef3049986e8397d5003916aed8cad6567a5e02 -n
+ 3085  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3086  git commit -am "blkcg: move per-queue blkg list heads and counters to queue and blkg"
+ 3087  git cherry-pick 03aa264ac15637b6f98374270bcdf31400965505 -n
+ 3088  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3089  git commit -am "blkcg: let blkcg core manage per-queue blkg list and counter"
+ 3090  git cherry-pick e8989fae38d9831c72b20375a206a919ca468c52 -n
+ 3091  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3092  git commit -am "blkcg: unify blkg's for blkcg policies"
+ 3093  git cherry-pick 9f13ef678efd977487fc0c2e489f17c9a8c67a3e -n
+ 3094  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3095  git commit -am "blkcg: use double locking instead of RCU for blkg synchronization"
+ 3096  git cherry-pick c875f4d0250a1f070fa26087a73bdd8f54c48100 -n
+ 3097  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3098  git commit -am "blkcg: drop unnecessary RCU locking"
+ 3099  git cherry-pick b679281a6410676a41b175c5a185150a1ae42f9d -n
+ 3100  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3101  git commit -am "block: restructure get_request()"
+ 3102  git cherry-pick 24acfc34fba0b4f62ef9d5c2616eb0faa802b606 -n
+ 3103  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3104  git commit -am "block: interface update for ioc/icq creation functions"
+ 3105  git cherry-pick f6e8d01bee036460e03bd4f6a79d014f98ba712e -n
+ 3106  git mergetool
+ 3107  nano include/linux/iocontext.h
+ 3108  git reset --hard
+ 3109  nano include/linux/iocontext.h
+ 3110  git cherry-pick f6e8d01bee036460e03bd4f6a79d014f98ba712e -n
+ 3111  nano block/blk-ioc.c
+ 3112  nano block/cfq-iosched.c
+ 3113  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3114  nano kernel/fork.c
+ 3115  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3116  nano kernel/fork.c
+ 3117  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3118  git commit -am "block: add io_context->active_ref"
+ 3119  git cherry-pick 852c788f8365062c8a383c5a93f7f7289977cb50 -n
+ 3120  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3121  git commit -am "block: implement bio_associate_current()"
+ 3122  git cherry-pick 4f85cb96d9d2fbbb7160db855a6beee1baced5e5 -n
+ 3123  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3124  git commit -am "block: make block cgroup policies follow bio task association"
+ 3125  git cherry-pick 671058fb2a2aac4e70f01b316b06bc59b98bd138 -n
+ 3126  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3127  git commit -am "block: make blk-throttle preserve the issuing task on delayed bios"
+ 3128  git cherry-pick ff8c1474cc2f5e11414c71ec4d739c18e6e669c0 -n
+ 3129  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3130  git commit -am "block: fix ioc leak in put_io_context"
+ 3131  nano arch/arm/configs/rk3188_X5_defconfig 
+ 3132  history | grep condig
+ 3133  history | grep config
+ 3134  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- rk3188_X5_defconfig
+ 3135  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3136  history | grep sudo
+ 3137  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 3138  git status
+ 3139  git commit -am "Disable Anxiety testing until elevator backport complete"
+ 3140  git push origin master
+ 3141  git log
+ 3142  git status
+ 3143  git cherry-pick 1cd9e039fc258f91fe38b97b3c622b13a3b8a795 -n
+ 3144  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3145  git commit -am "blkcg: alloc per cpu stats from worker thread in a delayed manner"
+ 3146  git cherry-pick 5fe224d2d5fbf8f020b30d0ba69fed7856923752 -n
+ 3147  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3148  git commit -am "blkcg: don't use percpu for merged stats"
+ 3149  git cherry-pick 997a026c80c3cc05f82e589aced1f0011c17d376 -n
+ 3150  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3151  git commit -am "blkcg: simplify stat reset"
+ 3152  nano block/Makefile 
+ 3153  nano arch/arm/configs/rk3188_X5_defconfig 
+ 3154  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3155  history | grep config
+ 3156  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- rk3188_X5_defconfig
+ 3157  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3158  nano block/Makefile 
+ 3159  git commit -am "Enable BLK_CGROUP config"
+ 3160  history
+ 3161  git cherry-pick c4c76a05382c7d05e0b911daa58a827399e9ba1a -n
+ 3162  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3163  git commit -am "blkcg: restructure blkio_get_stat()"
+ 3164  git cherry-pick edf1b879e308d37b5b7c414476ab39f79650a253 -n
+ 3165  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3166  git commit -am "blkcg: remove blkio_group->stats_lock"
+ 3167  git cherry-pick 9a9e8a26da4c2c5ddc60999bdea957935fb22b6b -n
+ 3168  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3169  git commit -am "blkcg: add blkcg->id"
+ 3170  git cherry-pick abede6da27d9bd62ea9512830c83e32b3ee1104c -n
+ 3171  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3172  git commit -am "cfq: pass around cfq_io_cq instead of io_context"
+ 3173  git cherry-pick 598971bfbdfdc8701337dc1636c7919c44699914 -n
+ 3174  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3175  git commit -am "cfq: don't use icq_get_changed()"
+ 3176  nano arch/arm/configs/rk3188_X5_defconfig 
+ 3177  history | grep config
+ 3178  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- rk3188_X5_defconfig
+ 3179  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3180  git commit -am "Enable CFQ_CGROUP_IOSCHED"
+ 3181  git cherry-pick 2b566fa55b9a94b53217c2818e6c5e5756eeb1a1 -n
+ 3182  git mergetool
+ 3183  git reset --hard
+ 3184  nano block/blk-cgroup.c
+ 3185  nano block/blk-ioc.c
+ 3186  nano block/blk-cgroup.c
+ 3187  nano fs/ioprio.c
+ 3188  nano include/linux/iocontext.h
+ 3189  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3190  git commit -am "block: remove ioc_*_changed()"
+ 3191  git log
+ 3192  nano block/blk-core.c
+ 3193  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3194  git commit -am "block: blk_alloc_queue_node(): use caller's GFP flags instead of GFP_KERNEL"
+ 3195  git cherry-pick eb7d8c07f9c5fca6190b0d328179551122d1b8a3 -n
+ 3196  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3197  git commit -am "cfq: fix cfqg ref handling when BLK_CGROUP and not CFQ_GROUP_IOSCHED"
+ 3198  git cherry-pick a5567932fc926739e29e98487128080f40c61710 -n
+ 3199  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3200  git commit -am "blkcg: change a spin_lock() to spin_lock_irq()"
+ 3201  git cherry-pick 8bcb6c7d48eb341b1f49f814cdcbe05eb6f15680 -n
+ 3202  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3203  git commit -am "block: use lockdep_assert_held for queue locking"
+ 3204  git cherry-pick 676f7c8f84d15e94065841529016da5ab92e901b -n
+ 3205  git reset --hard
+ 3206  nano arch/arm/configs/rk3188_X5_defconfig 
+ 3207  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- rk3188_X5_defconfig
+ 3208  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3209  history | grep sudo
+ 3210  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 3211  nano arch/arm/configs/rk3188_X5_defconfig 
+ 3212  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- rk3188_X5_defconfig
+ 3213  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3214  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 3215  nano arch/arm/configs/rk3188_X5_defconfig 
+ 3216  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- rk3188_X5_defconfig
+ 3217  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3218  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 3219  history
+ 3220  git status
+ 3221  git push origin master
+ 3222  nano block/blk-cgroup.c
+ 3223  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3224  nano block/blk-cgroup.c
+ 3225  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3226  nano block/blk-ioc.c
+ 3227  git reset --hard
+ 3228  nano block/blk-cgroup.c
+ 3229  nano block/blk-ioc.c
+ 3230  nano block/blk-cgroup.c
+ 3231  nano include/linux/cgroup.h
+ 3232  nano include/net/sock.h 
+ 3233  nano kernel/cgroup.c
+ 3234  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3235  nano block/blk-cgroup.c
+ 3236  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3237  nano block/blk-cgroup.c
+ 3238  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3239  git reset --hard
+ 3240  git log
+ 3241  git revert 14bed247bf6207860c12e572ab448c36cf841854
+ 3242  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3243  git log
+ 3244  nano block/blk-cgroup.c
+ 3245  nano include/linux/cgroup.h
+ 3246  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3247  nano block/blk-cgroup.c
+ 3248  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3249  nano kernel/sched/core.c
+ 3250  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3251  nano arch/arm/kernel/process.c
+ 3252  git log
+ 3253  nano arch/arm/kernel/process.c
+ 3254  nano arch/arm/kernel/smp.c
+ 3255  nano block/blk-softirq.c
+ 3256  nano block/blk.h 
+ 3257  nano fs/proc/base.c
+ 3258  nano include/linux/init_task.h 
+ 3259  nano include/linux/kernel.h
+ 3260  nano include/linux/preempt.h
+ 3261  nano include/linux/sched.h
+ 3262  nano include/linux/wait.h 
+ 3263  nano init/main.c
+ 3264  nano kernel/mutex.c
+ 3265  nano kernel/printk.c
+ 3266  nano kernel/sched/auto_group.c
+ 3267  nano kernel/sched/core.c
+ 3268  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3269  git reset --hard
+ 3270  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3271  nano arch/arm/kernel/process.c
+ 3272  nano block/blk-cgroup.c
+ 3273  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3274  nano include/linux/cgroup.h
+ 3275  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3276  nano include/net/sock.h 
+ 3277  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3278  nano kernel/sched/core.c
+ 3279  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3280  nano kernel/sched/core.c
+ 3281  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3282  nano kernel/sched/core.c
+ 3283  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3284  nano kernel/sched/core.c
+ 3285  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3286  nano mm/memcontrol.c
+ 3287  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3288  grep -rn "tcp_destroy_group"
+ 3289  cd net/ipv4/
+ 3290  grep -rn "tcp_destroy_group"
+ 3291  cd ..
+ 3292  cd net/ipv4
+ 3293  grep -rn "tcp_destroy_cgroup"
+ 3294  cd ..
+ 3295  nano net/core/sock.c
+ 3296  nano kernel/sched/core.c
+ 3297  nano kernel/cgroup_freezer.c
+ 3298  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3299  nano kernel/cgroup.c
+ 3300  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3301  nano kernel/cgroup.c
+ 3302  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3303  nano kernel/cgroup.c
+ 3304  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3305  nano kernel/cgroup.c
+ 3306  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3307  nano kernel/cgroup.c
+ 3308  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3309  git commit -am "Merge branch 'for-3.4' of git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup"
+ 3310  nano include/net/sock.h 
+ 3311  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3312  git commit -am "sock.h: Add a new sock zero-copy flag"
+ 3313  nano include/net/sock.h 
+ 3314  git cherry-pick bdeab991918663aed38757904219e8398214334c -n
+ 3315  git reset --hard
+ 3316  nano include/linux/skbuff.h 
+ 3317  git cherry-pick 5bc1421e34ecfe0bd4b26dc3232b7d5e25179144 -n
+ 3318  git mergetool
+ 3319  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3320  nano include/linux/netdevice.h
+ 3321  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3322  nano net/socket.c
+ 3323  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3324  nano net/socket.c
+ 3325  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3326  nano include <net/netprio_cgroup.h>
+ 3327  nano include/net/netprio_cgroup.h
+ 3328  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3329  nano include/net/netprio_cgroup.h
+ 3330  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3331  nano net/core/dev.c
+ 3332  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3333  git reset --hard
+ 3334  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3335  nano block/blk-cgroup.c
+ 3336  git status
+ 3337  nano block/blk-cgroup.c
+ 3338  nano net/sched/cls_cgroup.c 
+ 3339  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3340  git commit -am "cgroup: relocate cftype and cgroup_subsys definitions in controllers"
+ 3341  git cherry-pick 4baf6e33251b37f111e21289f8ee71fe4cce236e -n
+ 3342  git mergetool
+ 3343  git reset --hard
+ 3344  nano block/blk-cgroup.c
+ 3345  nano kernel/cgroup.c
+ 3346  nano kernel/cgroup_freezer.c
+ 3347  nano kernel/sched/core.c
+ 3348  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3349  nano include/linux/cgroup.h
+ 3350  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3351  nano include/linux/cgroup.h
+ 3352  nano kernel/cgroup.c
+ 3353  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3354  git reset --hard
+ 3355  git cherry-pick 5bf14c0727a07ded1bd9fa6d77923d7e6dc32833 -n
+ 3356  make ARCH=arm CROSS_COMPILE=~/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/bin/arm-linux-gnueabi- kernel.img -j8
+ 3357  history | grep sudo
+ 3358  sudo cp arch/arm/boot/Image /media/sf_Downloads/kernel_image
+ 3359  git log
+ 3360  git status
+ 3361  git commit -am "block: Make cfq_target_latency tunable through sysfs"
+ 3362  history
+ 3363  historu > history.txt
+ 3364  history > history.txt
