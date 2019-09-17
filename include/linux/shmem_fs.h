@@ -6,6 +6,13 @@
 #include <linux/pagemap.h>
 #include <linux/percpu_counter.h>
 
+struct page;
+struct file;
+struct inode;
+struct super_block;
+struct user_struct;
+struct vm_area_struct;
+
 /* inode in-kernel data */
 
 #define SHMEM_NR_DIRECT 16
