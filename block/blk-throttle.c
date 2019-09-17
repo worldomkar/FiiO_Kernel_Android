@@ -21,7 +21,7 @@ static int throtl_quantum = 32;
 /* Throttling is performed over 100ms slice and after that slice is renewed */
 static unsigned long throtl_slice = HZ/10;	/* 100 ms */
 
-static struct blkio_policy_type blkio_policy_throtl;
+static struct blkcg_policy blkcg_policy_throtl;
 
 /* A workqueue to queue throttle related work */
 static struct workqueue_struct *kthrotld_workqueue;
@@ -120,12 +120,12 @@ static LIST_HEAD(tg_stats_alloc_list);
 static void tg_stats_alloc_fn(struct work_struct *);
 static DECLARE_DELAYED_WORK(tg_stats_alloc_work, tg_stats_alloc_fn);
 
-static inline struct throtl_grp *blkg_to_tg(struct blkio_group *blkg)
+static inline struct throtl_grp *blkg_to_tg(struct blkcg_gq *blkg)
 {
-	return blkg_to_pdata(blkg, &blkio_policy_throtl);
+	return blkg_to_pdata(blkg, &blkcg_policy_throtl);
 }
 
-static inline struct blkio_group *tg_to_blkg(struct throtl_grp *tg)
+static inline struct blkcg_gq *tg_to_blkg(struct throtl_grp *tg)
 {
 	return pdata_to_blkg(tg);
 }
@@ -208,7 +208,7 @@ alloc_stats:
 		goto alloc_stats;
 }
 
-static void throtl_init_blkio_group(struct blkio_group *blkg)
+static void throtl_pd_init(struct blkcg_gq *blkg)
 {
 	struct throtl_grp *tg = blkg_to_tg(blkg);
 
@@ -233,7 +233,7 @@ static void throtl_init_blkio_group(struct blkio_group *blkg)
 	spin_unlock(&tg_stats_alloc_lock);
 }
 
-static void throtl_exit_blkio_group(struct blkio_group *blkg)
+static void throtl_pd_exit(struct blkcg_gq *blkg)
 {
 	struct throtl_grp *tg = blkg_to_tg(blkg);
 
@@ -244,7 +244,7 @@ static void throtl_exit_blkio_group(struct blkio_group *blkg)
 	free_percpu(tg->stats_cpu);
 }
 
-static void throtl_reset_group_stats(struct blkio_group *blkg)
+static void throtl_pd_reset_stats(struct blkcg_gq *blkg)
 {
 	struct throtl_grp *tg = blkg_to_tg(blkg);
 	int cpu;
@@ -260,33 +260,33 @@ static void throtl_reset_group_stats(struct blkio_group *blkg)
 	}
 }
 
-static struct
-throtl_grp *throtl_lookup_tg(struct throtl_data *td, struct blkio_cgroup *blkcg)
+static struct throtl_grp *throtl_lookup_tg(struct throtl_data *td,
+					   struct blkcg *blkcg)
 {
 	/*
-	 * This is the common case when there are no blkio cgroups.
-	 * Avoid lookup in this case
+	 * This is the common case when there are no blkcgs.  Avoid lookup
+	 * in this case
 	 */
-	if (blkcg == &blkio_root_cgroup)
+	if (blkcg == &blkcg_root)
 		return td_root_tg(td);
 
 	return blkg_to_tg(blkg_lookup(blkcg, td->queue));
 }
 
 static struct throtl_grp *throtl_lookup_create_tg(struct throtl_data *td,
-						  struct blkio_cgroup *blkcg)
+						  struct blkcg *blkcg)
 {
 	struct request_queue *q = td->queue;
 	struct throtl_grp *tg = NULL;
 
 	/*
-	 * This is the common case when there are no blkio cgroups.
-	 * Avoid lookup in this case
+	 * This is the common case when there are no blkcgs.  Avoid lookup
+	 * in this case
 	 */
-	if (blkcg == &blkio_root_cgroup) {
+	if (blkcg == &blkcg_root) {
 		tg = td_root_tg(td);
 	} else {
-		struct blkio_group *blkg;
+		struct blkcg_gq *blkg;
 
 		blkg = blkg_lookup_create(blkcg, q);
 
@@ -665,7 +665,7 @@ static bool tg_may_dispatch(struct throtl_data *td, struct throtl_grp *tg,
 	return 0;
 }
 
-static void throtl_update_dispatch_stats(struct blkio_group *blkg, u64 bytes,
+static void throtl_update_dispatch_stats(struct blkcg_gq *blkg, u64 bytes,
 					 int rw)
 {
 	struct throtl_grp *tg = blkg_to_tg(blkg);
@@ -822,7 +822,7 @@ static int throtl_select_dispatch(struct throtl_data *td, struct bio_list *bl)
 static void throtl_process_limit_change(struct throtl_data *td)
 {
 	struct request_queue *q = td->queue;
-	struct blkio_group *blkg, *n;
+	struct blkcg_gq *blkg, *n;
 
 	if (!td->limits_changed)
 		return;
@@ -951,9 +951,9 @@ static u64 tg_prfill_cpu_rwstat(struct seq_file *sf, void *pdata, int off)
 static int tg_print_cpu_rwstat(struct cgroup *cgrp, struct cftype *cft,
 			       struct seq_file *sf)
 {
-	struct blkio_cgroup *blkcg = cgroup_to_blkio_cgroup(cgrp);
+	struct blkcg *blkcg = cgroup_to_blkcg(cgrp);
 
-	blkcg_print_blkgs(sf, blkcg, tg_prfill_cpu_rwstat, &blkio_policy_throtl,
+	blkcg_print_blkgs(sf, blkcg, tg_prfill_cpu_rwstat, &blkcg_policy_throtl,
 			  cft->private, true);
 	return 0;
 }
@@ -979,54 +979,50 @@ static u64 tg_prfill_conf_uint(struct seq_file *sf, void *pdata, int off)
 static int tg_print_conf_u64(struct cgroup *cgrp, struct cftype *cft,
 			     struct seq_file *sf)
 {
-	blkcg_print_blkgs(sf, cgroup_to_blkio_cgroup(cgrp), tg_prfill_conf_u64,
-			  &blkio_policy_throtl, cft->private, false);
+	blkcg_print_blkgs(sf, cgroup_to_blkcg(cgrp), tg_prfill_conf_u64,
+			  &blkcg_policy_throtl, cft->private, false);
 	return 0;
 }
 
 static int tg_print_conf_uint(struct cgroup *cgrp, struct cftype *cft,
 			      struct seq_file *sf)
 {
-	blkcg_print_blkgs(sf, cgroup_to_blkio_cgroup(cgrp), tg_prfill_conf_uint,
-			  &blkio_policy_throtl, cft->private, false);
+	blkcg_print_blkgs(sf, cgroup_to_blkcg(cgrp), tg_prfill_conf_uint,
+			  &blkcg_policy_throtl, cft->private, false);
 	return 0;
 }
 
 static int tg_set_conf(struct cgroup *cgrp, struct cftype *cft, const char *buf,
 		       bool is_u64)
 {
-	struct blkio_cgroup *blkcg = cgroup_to_blkio_cgroup(cgrp);
+	struct blkcg *blkcg = cgroup_to_blkcg(cgrp);
 	struct blkg_conf_ctx ctx;
 	struct throtl_grp *tg;
+	struct throtl_data *td;
 	int ret;
 
-	ret = blkg_conf_prep(blkcg, &blkio_policy_throtl, buf, &ctx);
+	ret = blkg_conf_prep(blkcg, &blkcg_policy_throtl, buf, &ctx);
 	if (ret)
 		return ret;
 
-	ret = -EINVAL;
 	tg = blkg_to_tg(ctx.blkg);
-	if (tg) {
-		struct throtl_data *td = ctx.blkg->q->td;
+	td = ctx.blkg->q->td;
 
-		if (!ctx.v)
-			ctx.v = -1;
+	if (!ctx.v)
+		ctx.v = -1;
 
-		if (is_u64)
-			*(u64 *)((void *)tg + cft->private) = ctx.v;
-		else
-			*(unsigned int *)((void *)tg + cft->private) = ctx.v;
+	if (is_u64)
+		*(u64 *)((void *)tg + cft->private) = ctx.v;
+	else
+		*(unsigned int *)((void *)tg + cft->private) = ctx.v;
 
-		/* XXX: we don't need the following deferred processing */
-		xchg(&tg->limits_changed, true);
-		xchg(&td->limits_changed, true);
-		throtl_schedule_delayed_work(td, 0);
-
-		ret = 0;
-	}
+	/* XXX: we don't need the following deferred processing */
+	xchg(&tg->limits_changed, true);
+	xchg(&td->limits_changed, true);
+	throtl_schedule_delayed_work(td, 0);
 
 	blkg_conf_finish(&ctx);
-	return ret;
+	return 0;
 }
 
 static int tg_set_conf_u64(struct cgroup *cgrp, struct cftype *cft,
@@ -1090,11 +1086,11 @@ static void throtl_shutdown_wq(struct request_queue *q)
 	cancel_delayed_work_sync(&td->throtl_work);
 }
 
-static struct blkio_policy_type blkio_policy_throtl = {
+static struct blkcg_policy blkcg_policy_throtl = {
 	.ops = {
-		.blkio_init_group_fn = throtl_init_blkio_group,
-		.blkio_exit_group_fn = throtl_exit_blkio_group,
-		.blkio_reset_group_stats_fn = throtl_reset_group_stats,
+		.pd_init_fn		= throtl_pd_init,
+		.pd_exit_fn		= throtl_pd_exit,
+		.pd_reset_stats_fn	= throtl_pd_reset_stats,
 	},
 	.pdata_size = sizeof(struct throtl_grp),
 	.cftypes = throtl_files,
@@ -1105,7 +1101,7 @@ bool blk_throtl_bio(struct request_queue *q, struct bio *bio)
 	struct throtl_data *td = q->td;
 	struct throtl_grp *tg;
 	bool rw = bio_data_dir(bio), update_disptime = true;
-	struct blkio_cgroup *blkcg;
+	struct blkcg *blkcg;
 	bool throttled = false;
 
 	if (bio->bi_rw & REQ_THROTTLED) {
@@ -1122,7 +1118,7 @@ bool blk_throtl_bio(struct request_queue *q, struct bio *bio)
 	 * just update the dispatch stats in lockless manner and return.
 	 */
 	rcu_read_lock();
-	blkcg = bio_blkio_cgroup(bio);
+	blkcg = bio_blkcg(bio);
 	tg = throtl_lookup_tg(td, blkcg);
 	if (tg) {
 		if (tg_no_rule_group(tg, rw)) {
@@ -1210,7 +1206,7 @@ void blk_throtl_drain(struct request_queue *q)
 	struct bio_list bl;
 	struct bio *bio;
 
-	queue_lockdep_assert_held(q);
+	WARN_ON_ONCE(!queue_is_locked(q));
 
 	bio_list_init(&bl);
 
@@ -1233,7 +1229,7 @@ void blk_throtl_drain(struct request_queue *q)
 int blk_throtl_init(struct request_queue *q)
 {
 	struct throtl_data *td;
-	struct blkio_group *blkg;
+	int ret;
 
 	td = kzalloc_node(sizeof(*td), GFP_KERNEL, q->node);
 	if (!td)
@@ -1246,28 +1242,18 @@ int blk_throtl_init(struct request_queue *q)
 	q->td = td;
 	td->queue = q;
 
-	/* alloc and init root group. */
-	rcu_read_lock();
-	spin_lock_irq(q->queue_lock);
-
-	blkg = blkg_lookup_create(&blkio_root_cgroup, q, true);
-	if (!IS_ERR(blkg))
-		q->root_blkg = blkg;
-
-	spin_unlock_irq(q->queue_lock);
-	rcu_read_unlock();
-
-	if (!q->root_blkg) {
+	/* activate policy */
+	ret = blkcg_activate_policy(q, &blkio_policy_throtl);
+	if (ret)
 		kfree(td);
-		return -ENOMEM;
-	}
-	return 0;
+	return ret;
 }
 
 void blk_throtl_exit(struct request_queue *q)
 {
 	BUG_ON(!q->td);
 	throtl_shutdown_wq(q);
+	blkcg_deactivate_policy(q, &blkio_policy_throtl);
 	kfree(q->td);
 }
 
@@ -1277,7 +1263,7 @@ static int __init throtl_init(void)
 	if (!kthrotld_workqueue)
 		panic("Failed to create kthrotld\n");
 
-	return blkio_policy_register(&blkio_policy_throtl);
+	return blkcg_policy_register(&blkcg_policy_throtl);
 }
 
 module_init(throtl_init);
