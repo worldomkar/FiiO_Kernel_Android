@@ -2839,6 +2839,37 @@ int cgroup_add_cftypes(struct cgroup_subsys *ss, const struct cftype *cfts)
 EXPORT_SYMBOL_GPL(cgroup_add_cftypes);
 
 /**
+ * cgroup_rm_cftypes - remove an array of cftypes from a subsystem
+ * @ss: target cgroup subsystem
+ * @cfts: zero-length name terminated array of cftypes
+ *
+ * Unregister @cfts from @ss.  Files described by @cfts are removed from
+ * all existing cgroups to which @ss is attached and all future cgroups
+ * won't have them either.  This function can be called anytime whether @ss
+ * is attached or not.
+ *
+ * Returns 0 on successful unregistration, -ENOENT if @cfts is not
+ * registered with @ss.
+ */
+int cgroup_rm_cftypes(struct cgroup_subsys *ss, const struct cftype *cfts)
+{
+	struct cftype_set *set;
+
+	cgroup_cfts_prepare();
+
+	list_for_each_entry(set, &ss->cftsets, node) {
+		if (set->cfts == cfts) {
+			list_del_init(&set->node);
+			cgroup_cfts_commit(ss, cfts);
+			return 0;
+		}
+	}
+
+	cgroup_cfts_commit(ss, NULL);
+	return -ENOENT;
+}
+
+/**
  * cgroup_task_count - count the number of tasks in a cgroup.
  * @cgrp: the cgroup in question
  *

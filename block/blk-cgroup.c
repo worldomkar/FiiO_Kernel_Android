@@ -827,7 +827,7 @@ void blkio_policy_unregister(struct blkio_policy_type *blkiop)
 
 	/* kill the intf files first */
 	if (blkiop->cftypes)
-//		cgroup_rm_cftypes(&blkio_subsys, blkiop->cftypes);
+		cgroup_rm_cftypes(&blkio_subsys, blkiop->cftypes);
 
 	/* unregister and update blkgs */
 	blkio_policy[blkiop->plid] = NULL;
