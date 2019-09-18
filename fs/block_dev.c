@@ -1631,7 +1631,7 @@ ssize_t mydo_sync_read(struct file *filp, char __user *buf, size_t len, loff_t *
     }
 }
 
-ssize_t mydo_sync_write(struct file *filp, const char __user *buf, size_t len, loff_t *ppos)
+ssize_t mydo_sync_write(struct file *filp, char __user *buf, size_t len, loff_t *ppos)
 {
     unsigned long buf_addr = (unsigned long)buf;
     if((memcmp(filp->f_mapping->host->i_bdev->bd_disk->disk_name, "mtdblock", 8) == 0) &&(buf_addr >= 0xc0000000))// kernel mem is usb tran &&(buf_addr >= 0xc0000000)
