@@ -133,7 +133,7 @@ struct execute_work {
 	__WORK_INIT_LOCKDEP_MAP(#n, &(n))			\
 	}
 
-#define __DELAYED_WORK_INITIALIZER(n, f) {			\
+#define __DELAYED_WORK_INITIALIZER(n, f) {		\
 	.work = __WORK_INITIALIZER((n).work, (f)),		\
 	.timer = TIMER_INITIALIZER(delayed_work_timer_fn,	\
 				0, (unsigned long)&(n)),	\

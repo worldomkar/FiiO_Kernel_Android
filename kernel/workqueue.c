@@ -23,7 +23,6 @@
  * Please read Documentation/workqueue.txt for details.
  */
 
-
 #include <linux/export.h>
 #include <linux/kernel.h>
 #include <linux/sched.h>
@@ -1049,16 +1048,14 @@ static void cwq_dec_nr_in_flight(struct cpu_workqueue_struct *cwq, int color,
  *		for arbitrarily long
  *
  * On >= 0 return, the caller owns @work's PENDING bit.  To avoid getting
- * preempted while holding PENDING and @work off queue, preemption must be
- * disabled on entry.  This ensures that we don't return -EAGAIN while
- * another task is preempted in this function.
+ * interrupted while holding PENDING and @work off queue, irq must be
+ * disabled on entry.  This, combined with delayed_work->timer being
+ * irqsafe, ensures that we return -EAGAIN for finite short period of time.
  *
  * On successful return, >= 0, irq is disabled and the caller is
  * responsible for releasing it using local_irq_restore(*@flags).
  *
- * This function is safe to call from any context other than IRQ handler.
- * An IRQ handler may run on top of delayed_work_timer_fn() which can make
- * this function return -EAGAIN perpetually.
+ * This function is safe to call from any context including IRQ handler.
  */
 static int try_to_grab_pending(struct work_struct *work, bool is_dwork,
 			       unsigned long *flags)
@@ -1073,6 +1070,11 @@ static int try_to_grab_pending(struct work_struct *work, bool is_dwork,
 	if (is_dwork) {
 		struct delayed_work *dwork = to_delayed_work(work);
 
+		/*
+		 * dwork->timer is irqsafe.  If del_timer() fails, it's
+		 * guaranteed that the timer is not queued anywhere and not
+		 * running on the local CPU.
+		 */
 		if (likely(del_timer(&dwork->timer)))
 			return 1;
 	}
@@ -1328,9 +1330,8 @@ void delayed_work_timer_fn(unsigned long __data)
 	struct delayed_work *dwork = (struct delayed_work *)__data;
 	struct cpu_workqueue_struct *cwq = get_work_cwq(&dwork->work);
 
-	local_irq_disable();
+	/* should have been called from irqsafe timer with irq already off */
 	__queue_work(dwork->cpu, cwq->wq, &dwork->work);
-	local_irq_enable();
 }
 EXPORT_SYMBOL_GPL(delayed_work_timer_fn);
 
@@ -1445,7 +1446,7 @@ EXPORT_SYMBOL_GPL(queue_delayed_work);
  * Returns %false if @dwork was idle and queued, %true if @dwork was
  * pending and its timer was modified.
  *
- * This function is safe to call from any context other than IRQ handler.
+ * This function is safe to call from any context including IRQ handler.
  * See try_to_grab_pending() for details.
  */
 bool mod_delayed_work_on(int cpu, struct workqueue_struct *wq,
@@ -2398,10 +2399,8 @@ static int rescuer_thread(void *__wq)
 repeat:
 	set_current_state(TASK_INTERRUPTIBLE);
 
-	if (kthread_should_stop()) {
-		__set_current_state(TASK_RUNNING);
+	if (kthread_should_stop())
 		return 0;
-	}
 
 	/*
 	 * See whether any cpu is asking for help.  Unbounded
@@ -3585,17 +3584,18 @@ static int __devinit workqueue_cpu_down_callback(struct notifier_block *nfb,
 #ifdef CONFIG_SMP
 
 struct work_for_cpu {
-	struct work_struct work;
+	struct completion completion;
 	long (*fn)(void *);
 	void *arg;
 	long ret;
 };
 
-static void work_for_cpu_fn(struct work_struct *work)
+static int do_work_for_cpu(void *_wfc)
 {
-	struct work_for_cpu *wfc = container_of(work, struct work_for_cpu, work);
-
+	struct work_for_cpu *wfc = _wfc;
 	wfc->ret = wfc->fn(wfc->arg);
+	complete(&wfc->completion);
+	return 0;
 }
 
 /**
@@ -3610,11 +3610,19 @@ static void work_for_cpu_fn(struct work_struct *work)
  */
 long work_on_cpu(unsigned int cpu, long (*fn)(void *), void *arg)
 {
-	struct work_for_cpu wfc = { .fn = fn, .arg = arg };
+	struct task_struct *sub_thread;
+	struct work_for_cpu wfc = {
+		.completion = COMPLETION_INITIALIZER_ONSTACK(wfc.completion),
+		.fn = fn,
+		.arg = arg,
+	};
 
-	INIT_WORK_ONSTACK(&wfc.work, work_for_cpu_fn);
-	schedule_work_on(cpu, &wfc.work);
-	flush_work(&wfc.work);
+	sub_thread = kthread_create(do_work_for_cpu, &wfc, "work_for_cpu");
+	if (IS_ERR(sub_thread))
+		return PTR_ERR(sub_thread);
+	kthread_bind(sub_thread, cpu);
+	wake_up_process(sub_thread);
+	wait_for_completion(&wfc.completion);
 	return wfc.ret;
 }
 EXPORT_SYMBOL_GPL(work_on_cpu);
