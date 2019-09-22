@@ -16,7 +16,8 @@
 #include <linux/init.h>
 #include <linux/key.h>
 #include <linux/selinux.h>
-#include <asm/atomic.h>
+#include <linux/atomic.h>
+#include <linux/uidgid.h>
 
 struct user_struct;
 struct cred;
@@ -26,14 +27,14 @@ struct inode;
  * COW Supplementary groups list
  */
 #define NGROUPS_SMALL		32
-#define NGROUPS_PER_BLOCK	((unsigned int)(PAGE_SIZE / sizeof(gid_t)))
+#define NGROUPS_PER_BLOCK	((unsigned int)(PAGE_SIZE / sizeof(kgid_t)))
 
 struct group_info {
 	atomic_t	usage;
 	int		ngroups;
 	int		nblocks;
-	gid_t		small_block[NGROUPS_SMALL];
-	gid_t		*blocks[0];
+	kgid_t		small_block[NGROUPS_SMALL];
+	kgid_t		*blocks[0];
 };
 
 /**
@@ -66,7 +67,7 @@ extern struct group_info init_groups;
 extern void groups_free(struct group_info *);
 extern int set_current_groups(struct group_info *);
 extern int set_groups(struct cred *, struct group_info *);
-extern int groups_search(const struct group_info *, gid_t);
+extern int groups_search(const struct group_info *, kgid_t);
 
 /* access the groups "array" with this macro */
 #define GROUP_AT(gi, i) \
@@ -146,7 +147,7 @@ struct cred {
 	void		*security;	/* subjective LSM security */
 #endif
 	struct user_struct *user;	/* real user ID subscription */
-	struct user_namespace *user_ns; /* cached user->user_ns */
+	struct user_namespace *user_ns; /* user_ns the caps and keyrings are relative to. */
 	struct group_info *group_info;	/* supplementary groups for euid/fsgid */
 	struct rcu_head	rcu;		/* RCU deletion hook */
 };
@@ -265,10 +266,11 @@ static inline void put_cred(const struct cred *_cred)
 /**
  * current_cred - Access the current task's subjective credentials
  *
- * Access the subjective credentials of the current task.
+ * Access the subjective credentials of the current task.  RCU-safe,
+ * since nobody else can modify it.
  */
 #define current_cred() \
-	(current->cred)
+	rcu_dereference_protected(current->cred, 1)
 
 /**
  * __task_cred - Access a task's objective credentials
@@ -306,8 +308,8 @@ static inline void put_cred(const struct cred *_cred)
 #define get_current_user()				\
 ({							\
 	struct user_struct *__u;			\
-	struct cred *__cred;				\
-	__cred = (struct cred *) current_cred();	\
+	const struct cred *__cred;			\
+	__cred = current_cred();			\
 	__u = get_uid(__cred->user);			\
 	__u;						\
 })
@@ -321,8 +323,8 @@ static inline void put_cred(const struct cred *_cred)
 #define get_current_groups()				\
 ({							\
 	struct group_info *__groups;			\
-	struct cred *__cred;				\
-	__cred = (struct cred *) current_cred();	\
+	const struct cred *__cred;			\
+	__cred = current_cred();			\
 	__groups = get_group_info(__cred->group_info);	\
 	__groups;					\
 })
@@ -341,7 +343,7 @@ static inline void put_cred(const struct cred *_cred)
 
 #define current_cred_xxx(xxx)			\
 ({						\
-	current->cred->xxx;			\
+	current_cred()->xxx;			\
 })
 
 #define current_uid()		(current_cred_xxx(uid))
@@ -356,11 +358,13 @@ static inline void put_cred(const struct cred *_cred)
 #define current_user()		(current_cred_xxx(user))
 #define current_security()	(current_cred_xxx(security))
 
-#ifdef CONFIG_USER_NS
-#define current_user_ns() (current_cred_xxx(user_ns))
-#else
 extern struct user_namespace init_user_ns;
-#define current_user_ns() (&init_user_ns)
+#ifdef CONFIG_USER_NS
+#define current_user_ns()	(current_cred_xxx(user_ns))
+#define task_user_ns(task)	(task_cred_xxx((task), user_ns))
+#else
+#define current_user_ns()	(&init_user_ns)
+#define task_user_ns(task)	(&init_user_ns)
 #endif
 
 
