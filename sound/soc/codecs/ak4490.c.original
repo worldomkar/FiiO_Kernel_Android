@@ -919,7 +919,7 @@ static int ak4490_startup(struct snd_pcm_substream *substream,
     if(ret&WORK_BUSY_RUNNING){
 
         printk("ak4490 work_func WORK_BUSY_RUNNING wait it to finish\n");
-        flush_delayed_work_sync(&ak4490_delay_work);
+        flush_delayed_work(&ak4490_delay_work);
 
     }
 

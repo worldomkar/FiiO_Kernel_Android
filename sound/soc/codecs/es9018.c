@@ -322,7 +322,7 @@ static int es9018_startup(struct snd_pcm_substream *substream,
     if(ret&WORK_BUSY_RUNNING){
 
         printk(KERN_WARNING "9018 work_func WORK_BUSY_RUNNING wait it to finish\n");
-        flush_delayed_work_sync(&es9018_delay_work);
+        flush_delayed_work(&es9018_delay_work);
     }
     exAudioLinkChange(EVENT_PLAYBACK_START);
 
@@ -1253,7 +1253,7 @@ int audioLinkChange(struct audio_hw_link* link,char event)
         if(ret&WORK_BUSY_RUNNING){
 
             printk(KERN_WARNING "9018 work_func WORK_BUSY_RUNNING wait it to finish\n");
-            flush_delayed_work_sync(&es9018_delay_work);
+            flush_delayed_work(&es9018_delay_work);
             break;
         }
         if(ret&WORK_BUSY_PENDING){
@@ -1330,7 +1330,7 @@ int audioLinkChange(struct audio_hw_link* link,char event)
         if(ret&WORK_BUSY_RUNNING){
 
             printk(KERN_WARNING "9018 work_func WORK_BUSY_RUNNING wait it to finish\n");
-            flush_delayed_work_sync(&es9018_delay_work);
+            flush_delayed_work(&es9018_delay_work);
             break;
         }
         if(ret&WORK_BUSY_PENDING){

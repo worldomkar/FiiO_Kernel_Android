@@ -887,7 +887,7 @@ static int es9028_pcm_startup(struct snd_pcm_substream *substream,
     if(ret&WORK_BUSY_RUNNING){
 
         printk(KERN_WARNING "9028 work_func WORK_BUSY_RUNNING wait it to finish\n");
-        flush_delayed_work_sync(&es9028_delay_work);
+        flush_delayed_work(&es9028_delay_work);
     }
 
 
