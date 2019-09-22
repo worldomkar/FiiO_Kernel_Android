@@ -691,7 +691,7 @@ detach_expired_timer(struct timer_list *timer, struct tvec_base *base)
 {
 	detach_timer(timer, true);
 	if (!tbase_get_deferrable(timer->base))
-		timer->base->active_timers--;
+		base->active_timers--;
 }
 
 static int detach_if_pending(struct timer_list *timer, struct tvec_base *base,
@@ -702,7 +702,7 @@ static int detach_if_pending(struct timer_list *timer, struct tvec_base *base,
 
 	detach_timer(timer, clear_pending);
 	if (!tbase_get_deferrable(timer->base)) {
-		timer->base->active_timers--;
+		base->active_timers--;
 		if (timer->expires == base->next_timer)
 			base->next_timer = base->timer_jiffies;
 	}
