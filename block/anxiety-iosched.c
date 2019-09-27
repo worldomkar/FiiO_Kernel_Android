@@ -78,24 +78,24 @@ static void anxiety_add_request(struct request_queue *q, struct request *rq)
 	list_add_tail(&rq->queuelist, &adata->queue[dir]);
 }
 
-//static int anxiety_init_queue(struct request_queue *q, struct elevator_type *elv)
-static int anxiety_init_queue(struct request_queue *q)
+static int anxiety_init_queue(struct request_queue *q, struct elevator_type *elv)
+//static int anxiety_init_queue(struct request_queue *q)
 {
 	struct anxiety_data *adata;
-/*	struct elevator_queue *eq = elevator_alloc(q, elv);
+	struct elevator_queue *eq = elevator_alloc(q, elv);
 
 	if (!eq)
 		return -ENOMEM;
-*/
+
 	/* Allocate the data */
 	adata = kmalloc_node(sizeof(*adata), GFP_KERNEL, q->node);
 	if (!adata) {
-//		kobject_put(&eq->kobj);
+		kobject_put(&eq->kobj);
 		return -ENOMEM;
 	}
 
 	/* Set the elevator data */
-//	eq->elevator_data = adata;
+	eq->elevator_data = adata;
 
 	/* Initialize */
 	INIT_LIST_HEAD(&adata->queue[READ]);
@@ -104,9 +104,9 @@ static int anxiety_init_queue(struct request_queue *q)
 	adata->read_ratio = DEFAULT_READ_RATIO;
 
 	/* Set elevator to Anxiety */
-//	spin_lock_irq(q->queue_lock);
-//	q->elevator = eq;
-//	spin_unlock_irq(q->queue_lock);
+	spin_lock_irq(q->queue_lock);
+	q->elevator = eq;
+	spin_unlock_irq(q->queue_lock);
 
 	return 0;
 }
