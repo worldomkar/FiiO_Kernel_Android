@@ -222,7 +222,6 @@ static int do_fsync(unsigned int fd, int datasync)
 	int ret = -EBADF;
 	int fput_needed;
 
-	file = fget(fd);
 	file = fget_light(fd, &fput_needed);
 	if (file) {
 		ktime_t fsync_t, fsync_diff;
@@ -232,7 +231,7 @@ static int do_fsync(unsigned int fd, int datasync)
 			path = "(unknown)";
 		fsync_t = ktime_get();
 		ret = vfs_fsync(file, datasync);
-		fput(file);
+		fput_light(file, fput_needed);
 		fsync_diff = ktime_sub(ktime_get(), fsync_t);
 		if (ktime_to_ms(fsync_diff) >= 5000) {
                         pr_info("VFS: %s pid:%d(%s)(parent:%d/%s)\
