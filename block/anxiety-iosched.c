@@ -29,6 +29,12 @@ struct anxiety_data {
 	uint8_t read_ratio;
 };
 
+static inline bool anxiety_can_dispatch(struct anxiety_data *adata)
+{
+	return !list_empty(&adata->queue[READ]) ||
+			!list_empty(&adata->queue[WRITE]);
+}
+
 static void anxiety_merged_requests(struct request_queue *q, struct request *rq, struct request *next)
 {
 	list_del_init(&next->queuelist);
@@ -51,8 +57,7 @@ static int anxiety_dispatch(struct request_queue *q, int force)
 	int batched;
 
 	/* Make sure we can even process any requests at all */
-	if (list_empty(&adata->queue[READ]) &&
-			list_empty(&adata->queue[WRITE]))
+	if (!anxiety_can_dispatch(adata))
 		return 0;
 
 	/* Batch read requests according to tunables */
@@ -79,7 +84,6 @@ static void anxiety_add_request(struct request_queue *q, struct request *rq)
 }
 
 static int anxiety_init_queue(struct request_queue *q, struct elevator_type *elv)
-//static int anxiety_init_queue(struct request_queue *q)
 {
 	struct anxiety_data *adata;
 	struct elevator_queue *eq = elevator_alloc(q, elv);
