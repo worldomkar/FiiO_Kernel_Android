@@ -40,7 +40,8 @@ static void anxiety_merged_requests(struct request_queue *q, struct request *rq,
 	list_del_init(&next->queuelist);
 }
 
-static int __anxiety_dispatch(struct request_queue *q, struct request *rq)
+static inline int __anxiety_dispatch(struct request_queue *q,
+		struct request *rq)
 {
 	if (!rq)
 		return -EINVAL;
@@ -54,7 +55,7 @@ static int __anxiety_dispatch(struct request_queue *q, struct request *rq)
 static int anxiety_dispatch(struct request_queue *q, int force)
 {
 	struct anxiety_data *adata = q->elevator->elevator_data;
-	int batched;
+	uint8_t batched;
 
 	/* Make sure we can even process any requests at all */
 	if (!anxiety_can_dispatch(adata))
