@@ -63,6 +63,7 @@ EXPORT_SYMBOL(jiffies_64);
 #define TVR_SIZE (1 << TVR_BITS)
 #define TVN_MASK (TVN_SIZE - 1)
 #define TVR_MASK (TVR_SIZE - 1)
+#define MAX_TVAL ((unsigned long)((1ULL << (TVR_BITS + 4*TVN_BITS)) - 1))
 
 struct tvec {
 	struct list_head vec[TVN_SIZE];
@@ -359,11 +360,12 @@ __internal_add_timer(struct tvec_base *base, struct timer_list *timer)
 		vec = base->tv1.vec + (base->timer_jiffies & TVR_MASK);
 	} else {
 		int i;
-		/* If the timeout is larger than 0xffffffff on 64-bit
-		 * architectures then we use the maximum timeout:
+		/* If the timeout is larger than MAX_TVAL (on 64-bit
+		 * architectures or with CONFIG_BASE_SMALL=1) then we
+		 * use the maximum timeout.
 		 */
-		if (idx > 0xffffffffUL) {
-			idx = 0xffffffffUL;
+		if (idx > MAX_TVAL) {
+			idx = MAX_TVAL;
 			expires = idx + base->timer_jiffies;
 		}
 		i = (expires >> (TVR_BITS + 3 * TVN_BITS)) & TVN_MASK;
@@ -1393,13 +1395,6 @@ SYSCALL_DEFINE1(alarm, unsigned int, seconds)
 
 #endif
 
-#ifndef __alpha__
-
-/*
- * The Alpha uses getxpid, getxuid, and getxgid instead.  Maybe this
- * should be moved into arch/i386 instead?
- */
-
 /**
  * sys_getpid - return the thread group id of the current process
  *
@@ -1454,8 +1449,6 @@ SYSCALL_DEFINE0(getegid)
 	/* Only we change this so SMP safe */
 	return from_kgid_munged(current_user_ns(), current_egid());
 }
-
-#endif
 
 static void process_timeout(unsigned long __data)
 {
