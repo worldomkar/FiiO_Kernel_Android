@@ -200,7 +200,7 @@ static int proc_root_link(struct inode *inode, struct path *path)
 	return result;
 }
 
-static struct mm_struct *mm_access(struct task_struct *task, unsigned int mode)
+extern struct mm_struct *mm_access(struct task_struct *task, unsigned int mode)
 {
 	struct mm_struct *mm;
 	int err;
