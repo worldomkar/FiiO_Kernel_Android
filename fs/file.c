@@ -396,6 +396,95 @@ out:
 	return NULL;
 }
 
+static void close_files(struct files_struct * files)
+{
+	int i, j;
+	struct fdtable *fdt;
+
+	j = 0;
+
+	/*
+	 * It is safe to dereference the fd table without RCU or
+	 * ->file_lock because this is the last reference to the
+	 * files structure.  But use RCU to shut RCU-lockdep up.
+	 */
+	rcu_read_lock();
+	fdt = files_fdtable(files);
+	rcu_read_unlock();
+	for (;;) {
+		unsigned long set;
+		i = j * BITS_PER_LONG;
+		if (i >= fdt->max_fds)
+			break;
+		set = fdt->open_fds->fds_bits[j++];
+		while (set) {
+			if (set & 1) {
+				struct file * file = xchg(&fdt->fd[i], NULL);
+				if (file) {
+					filp_close(file, files);
+					cond_resched();
+				}
+			}
+			i++;
+			set >>= 1;
+		}
+	}
+}
+
+struct files_struct *get_files_struct(struct task_struct *task)
+{
+	struct files_struct *files;
+
+	task_lock(task);
+	files = task->files;
+	if (files)
+		atomic_inc(&files->count);
+	task_unlock(task);
+
+	return files;
+}
+
+void put_files_struct(struct files_struct *files)
+{
+	struct fdtable *fdt;
+
+	if (atomic_dec_and_test(&files->count)) {
+		close_files(files);
+		/* not really needed, since nobody can see us */
+		rcu_read_lock();
+		fdt = files_fdtable(files);
+		rcu_read_unlock();
+		/* free the arrays if they are not embedded */
+		if (fdt != &files->fdtab)
+			__free_fdtable(fdt);
+		kmem_cache_free(files_cachep, files);
+	}
+}
+
+void reset_files_struct(struct files_struct *files)
+{
+	struct task_struct *tsk = current;
+	struct files_struct *old;
+
+	old = tsk->files;
+	task_lock(tsk);
+	tsk->files = files;
+	task_unlock(tsk);
+	put_files_struct(old);
+}
+
+void exit_files(struct task_struct *tsk)
+{
+	struct files_struct * files = tsk->files;
+
+	if (files) {
+		task_lock(tsk);
+		tsk->files = NULL;
+		task_unlock(tsk);
+		put_files_struct(files);
+	}
+}
+
 static void __devinit fdtable_defer_list_init(int cpu)
 {
 	struct fdtable_defer *fddef = &per_cpu(fdtable_defer_list, cpu);
@@ -424,6 +513,12 @@ struct files_struct init_files = {
 	},
 	.file_lock	= __SPIN_LOCK_UNLOCKED(init_task.file_lock),
 };
+
+void daemonize_descriptors(void)
+{
+	atomic_inc(&init_files.count);
+	reset_files_struct(&init_files);
+}
 
 /*
  * allocate a file descriptor, mark it busy.

@@ -54,6 +54,9 @@
 #define PTRACE_SEIZE_DEVEL	0x80000000 /* temp flag for development */
 
 /* options set using PTRACE_SETOPTIONS */
+#define PT_OPT_FLAG_SHIFT	3
+/* PT_TRACE_* event enable flags */
+#define PT_EVENT_FLAG(event)	(1 << (PT_OPT_FLAG_SHIFT + (event)))
 #define PTRACE_O_TRACESYSGOOD	0x00000001
 #define PTRACE_O_TRACEFORK	0x00000002
 #define PTRACE_O_TRACEVFORK	0x00000004
@@ -155,19 +158,6 @@ static inline int task_ptrace(struct task_struct *task)
 	return task->ptrace;
 }
 
-/**
- * ptrace_event - possibly stop for a ptrace event notification
- * @mask:	%PT_* bit to check in @current->ptrace
- * @event:	%PTRACE_EVENT_* value to report if @mask is set
- * @message:	value for %PTRACE_GETEVENTMSG to return
- *
- * This checks the @mask bit to see if ptrace wants stops for this event.
- * If so we stop, reporting @event and @message to the ptrace parent.
- *
- * Returns nonzero if we did a ptrace notification, zero if not.
- *
- * Called without locks.
- */
 static inline int ptrace_event(int mask, int event, unsigned long message)
 {
 	if (mask && likely(!(current->ptrace & mask)))
