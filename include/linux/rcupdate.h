@@ -179,6 +179,10 @@ extern void rcu_bh_qs(int cpu);
 extern void rcu_preempt_note_context_switch(void);
 extern void rcu_check_callbacks(int cpu, int user);
 struct notifier_block;
+extern void rcu_idle_enter(void);
+extern void rcu_idle_exit(void);
+extern void rcu_irq_enter(void);
+extern void rcu_irq_exit(void);
 
 #ifdef CONFIG_NO_HZ
 
