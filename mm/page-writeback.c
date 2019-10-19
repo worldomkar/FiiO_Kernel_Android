@@ -1152,22 +1152,6 @@ void set_page_dirty_balance(struct page *page, int page_mkwrite)
 
 static DEFINE_PER_CPU(int, bdp_ratelimits);
 
-/*
- * Normal tasks are throttled by
- *	loop {
- *		dirty tsk->nr_dirtied_pause pages;
- *		take a snap in balance_dirty_pages();
- *	}
- * However there is a worst case. If every task exit immediately when dirtied
- * (tsk->nr_dirtied_pause - 1) pages, balance_dirty_pages() will never be
- * called to throttle the page dirties. The solution is to save the not yet
- * throttled page dirties in dirty_throttle_leaks on task exit and charge them
- * randomly into the running tasks. This works well for the above worst case,
- * as the new task will pick up and accumulate the old task's leaked dirty
- * count and eventually get throttled.
- */
-DEFINE_PER_CPU(int, dirty_throttle_leaks) = 0;
-
 /**
  * balance_dirty_pages_ratelimited_nr - balance dirty memory state
  * @mapping: address_space which was dirtied

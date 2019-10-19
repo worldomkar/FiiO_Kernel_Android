@@ -209,19 +209,10 @@ unsigned long get_mm_counter(struct mm_struct *mm, int member)
 	return (unsigned long)val;
 }
 
-void sync_mm_rss(struct mm_struct *mm)
+void sync_mm_rss(struct task_struct *task, struct mm_struct *mm)
 {
-	int i;
-
-	for (i = 0; i < NR_MM_COUNTERS; i++) {
-		if (current->rss_stat.count[i]) {
-			add_mm_counter(mm, i, current->rss_stat.count[i]);
-			current->rss_stat.count[i] = 0;
-		}
-	}
-	current->rss_stat.events = 0;
+	__sync_task_rss_stat(task, mm);
 }
-
 #else /* SPLIT_RSS_COUNTING */
 
 #define inc_mm_counter_fast(mm, member) inc_mm_counter(mm, member)
@@ -706,7 +697,7 @@ static inline void add_mm_rss_vec(struct mm_struct *mm, int *rss)
 	int i;
 
 	if (current->mm == mm)
-		sync_mm_rss(mm);
+		sync_mm_rss(current, mm);
 	for (i = 0; i < NR_MM_COUNTERS; i++)
 		if (rss[i])
 			add_mm_counter(mm, i, rss[i]);
