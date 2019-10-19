@@ -868,7 +868,7 @@ static int rcu_preempt_pending(int cpu)
 /*
  * Does preemptible RCU need the CPU to stay out of dynticks mode?
  */
-int rcu_preempt_needs_cpu(int cpu)
+static int rcu_preempt_needs_cpu(int cpu)
 {
 	return !!per_cpu(rcu_preempt_data, cpu).nxtlist;
 }
@@ -1948,41 +1948,9 @@ EXPORT_SYMBOL_GPL(synchronize_sched_expedited);
  * any flavor of RCU.  Do not chew up lots of CPU cycles with preemption
  * disabled in a most-likely vain attempt to cause RCU not to need this CPU.
  */
-int rcu_needs_cpu(int cpu, unsigned long *delta_jiffies)
+int rcu_needs_cpu(int cpu)
 {
-	*delta_jiffies = ULONG_MAX;
-	return rcu_cpu_has_callbacks(cpu);
-}
-
-/*
- * Because we do not have RCU_FAST_NO_HZ, don't bother initializing for it.
- */
-static void rcu_prepare_for_idle_init(int cpu)
-{
-}
-
-/*
- * Because we do not have RCU_FAST_NO_HZ, don't bother cleaning up
- * after it.
- */
-static void rcu_cleanup_after_idle(int cpu)
-{
-}
-
-/*
- * Do the idle-entry grace-period work, which, because CONFIG_RCU_FAST_NO_HZ=n,
- * is nothing.
- */
-static void rcu_prepare_for_idle(int cpu)
-{
-}
-
-/*
- * Don't bother keeping a running count of the number of RCU callbacks
- * posted because CONFIG_RCU_FAST_NO_HZ=n.
- */
-static void rcu_idle_count_callbacks_posted(void)
-{
+	return rcu_needs_cpu_quick_check(cpu);
 }
 
 #else /* #if !defined(CONFIG_RCU_FAST_NO_HZ) */

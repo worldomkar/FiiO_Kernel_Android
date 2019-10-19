@@ -303,86 +303,6 @@ static struct rcu_node *rcu_get_root(struct rcu_state *rsp)
 	return &rsp->node[0];
 }
 
-/*
- * rcu_eqs_enter_common - current CPU is moving towards extended quiescent state
- *
- * If the new value of the ->dynticks_nesting counter now is zero,
- * we really have entered idle, and must do the appropriate accounting.
- * The caller must have disabled interrupts.
- */
-static void rcu_eqs_enter_common(struct rcu_dynticks *rdtp, long long oldval,
-				bool user)
-{
-	trace_rcu_dyntick("Start", oldval, 0);
-	if (!user && !is_idle_task(current)) {
-		struct task_struct *idle = idle_task(smp_processor_id());
-
-		trace_rcu_dyntick("Error on entry: not idle task", oldval, 0);
-		ftrace_dump(DUMP_ORIG);
-		WARN_ONCE(1, "Current pid: %d comm: %s / Idle pid: %d comm: %s",
-			  current->pid, current->comm,
-			  idle->pid, idle->comm); /* must be idle task! */
-	}
-	rcu_prepare_for_idle(smp_processor_id());
-	/* CPUs seeing atomic_inc() must see prior RCU read-side crit sects */
-	smp_mb__before_atomic_inc();  /* See above. */
-	atomic_inc(&rdtp->dynticks);
-	smp_mb__after_atomic_inc();  /* Force ordering with next sojourn. */
-	WARN_ON_ONCE(atomic_read(&rdtp->dynticks) & 0x1);
-
-	/*
-	 * It is illegal to enter an extended quiescent state while
-	 * in an RCU read-side critical section.
-	 */
-	rcu_lockdep_assert(!lock_is_held(&rcu_lock_map),
-			   "Illegal idle entry in RCU read-side critical section.");
-	rcu_lockdep_assert(!lock_is_held(&rcu_bh_lock_map),
-			   "Illegal idle entry in RCU-bh read-side critical section.");
-	rcu_lockdep_assert(!lock_is_held(&rcu_sched_lock_map),
-			   "Illegal idle entry in RCU-sched read-side critical section.");
-}
-
-/*
- * Enter an RCU extended quiescent state, which can be either the
- * idle loop or adaptive-tickless usermode execution.
- */
-static void rcu_eqs_enter(bool user)
-{
-	long long oldval;
-	struct rcu_dynticks *rdtp;
-
-	rdtp = &__get_cpu_var(rcu_dynticks);
-	oldval = rdtp->dynticks_nesting;
-	WARN_ON_ONCE((oldval & DYNTICK_TASK_NEST_MASK) == 0);
-	if ((oldval & DYNTICK_TASK_NEST_MASK) == DYNTICK_TASK_NEST_VALUE)
-		rdtp->dynticks_nesting = 0;
-	else
-		rdtp->dynticks_nesting -= DYNTICK_TASK_NEST_VALUE;
-	rcu_eqs_enter_common(rdtp, oldval, user);
-}
-
-/**
- * rcu_idle_enter - inform RCU that current CPU is entering idle
- *
- * Enter idle mode, in other words, -leave- the mode in which RCU
- * read-side critical sections can occur.  (Though RCU read-side
- * critical sections can occur in irq handlers in idle, a possibility
- * handled by irq_enter() and irq_exit().)
- *
- * We crowbar the ->dynticks_nesting field to zero to allow for
- * the possibility of usermode upcalls having messed up our count
- * of interrupt nesting level during the prior busy period.
- */
-void rcu_idle_enter(void)
-{
-	unsigned long flags;
-
-	local_irq_save(flags);
-	rcu_eqs_enter(false);
-	local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(rcu_idle_enter);
-
 #ifdef CONFIG_SMP
 
 /*
@@ -444,7 +364,7 @@ void rcu_enter_nohz(void)
 		local_irq_restore(flags);
 		return;
 	}
-	trace_rcu_dyntick("Start",0,0);
+	trace_rcu_dyntick("Start");
 	/* CPUs seeing atomic_inc() must see prior RCU read-side crit sects */
 	smp_mb__before_atomic_inc();  /* See above. */
 	atomic_inc(&rdtp->dynticks);
@@ -475,7 +395,7 @@ void rcu_exit_nohz(void)
 	/* CPUs seeing atomic_inc() must see later RCU read-side crit sects */
 	smp_mb__after_atomic_inc();  /* See above. */
 	WARN_ON_ONCE(!(atomic_read(&rdtp->dynticks) & 0x1));
-	trace_rcu_dyntick("End",0,0);
+	trace_rcu_dyntick("End");
 	local_irq_restore(flags);
 }
 
@@ -1886,22 +1806,6 @@ static int rcu_pending(int cpu)
 	return __rcu_pending(&rcu_sched_state, &per_cpu(rcu_sched_data, cpu)) ||
 	       __rcu_pending(&rcu_bh_state, &per_cpu(rcu_bh_data, cpu)) ||
 	       rcu_preempt_pending(cpu);
-}
-
-/*
- * Check to see if any future RCU-related work will need to be done
- * by the current CPU, even if none need be done immediately, returning
- * 1 if so.
- */
-static int rcu_cpu_has_callbacks(int cpu)
-{
-	struct rcu_state *rsp;
-
-	/* RCU callbacks either ready or pending? */
-	for_each_rcu_flavor(rsp)
-		if (per_cpu_ptr(rsp->rda, cpu)->nxtlist)
-			return 1;
-	return 0;
 }
 
 /*

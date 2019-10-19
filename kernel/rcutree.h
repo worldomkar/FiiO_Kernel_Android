@@ -395,12 +395,7 @@ struct rcu_state {
 	unsigned long gp_max;			/* Maximum GP duration in */
 						/*  jiffies. */
 	char *name;				/* Name of structure. */
-	struct list_head flavors;		/* List of RCU flavors. */
 };
-
-extern struct list_head rcu_struct_flavors;
-#define for_each_rcu_flavor(rsp) \
-	list_for_each_entry((rsp), &rcu_struct_flavors, flavors)
 
 /* Return values for rcu_preempt_offline_tasks(). */
 
@@ -477,6 +472,5 @@ static void rcu_yield(void (*f)(unsigned long), unsigned long arg);
 #endif /* #ifdef CONFIG_RCU_BOOST */
 static void rcu_cpu_kthread_setrt(int cpu, int to_rt);
 static void __cpuinit rcu_prepare_kthreads(int cpu);
-static void rcu_prepare_for_idle(int cpu);
 
 #endif /* #ifndef RCU_TREE_NONCORE */
