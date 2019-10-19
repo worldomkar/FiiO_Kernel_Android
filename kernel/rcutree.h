@@ -478,6 +478,5 @@ static void rcu_yield(void (*f)(unsigned long), unsigned long arg);
 static void rcu_cpu_kthread_setrt(int cpu, int to_rt);
 static void __cpuinit rcu_prepare_kthreads(int cpu);
 static void rcu_prepare_for_idle(int cpu);
-static void rcu_cleanup_after_idle(int cpu);
 
 #endif /* #ifndef RCU_TREE_NONCORE */

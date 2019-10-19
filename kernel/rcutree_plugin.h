@@ -2060,31 +2060,4 @@ int rcu_needs_cpu(int cpu)
 	return c;
 }
 
-/*
- * Initialize the timer used to pull CPUs out of dyntick-idle mode.
- */
-static void rcu_prepare_for_idle_init(int cpu)
-{
-	struct rcu_dynticks *rdtp = &per_cpu(rcu_dynticks, cpu);
-
-	rdtp->dyntick_holdoff = jiffies - 1;
-	setup_timer(&rdtp->idle_gp_timer, rcu_idle_gp_timer_func, cpu);
-	rdtp->idle_gp_timer_expires = jiffies - 1;
-	rdtp->idle_first_pass = 1;
-}
-
-/*
- * Clean up for exit from idle.  Because we are exiting from idle, there
- * is no longer any point to ->idle_gp_timer, so cancel it.  This will
- * do nothing if this timer is not active, so just cancel it unconditionally.
- */
-static void rcu_cleanup_after_idle(int cpu)
-{
-	struct rcu_dynticks *rdtp = &per_cpu(rcu_dynticks, cpu);
-
-	del_timer(&rdtp->idle_gp_timer);
-	trace_rcu_prep_idle("Cleanup after idle");
-	rdtp->tick_nohz_enabled_snap = ACCESS_ONCE(tick_nohz_enabled);
-}
-
 #endif /* #else #if !defined(CONFIG_RCU_FAST_NO_HZ) */
