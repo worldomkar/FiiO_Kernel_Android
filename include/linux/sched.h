@@ -1889,14 +1889,6 @@ static inline void rcu_switch_from(struct task_struct *prev)
 {
 }
 
-static inline void rcu_switch(struct task_struct *prev,
-			      struct task_struct *next)
-{
-#ifdef CONFIG_RCU_USER_QS
-	rcu_user_hooks_switch(prev, next);
-#endif
-}
-
 #endif
 
 #ifdef CONFIG_SMP
