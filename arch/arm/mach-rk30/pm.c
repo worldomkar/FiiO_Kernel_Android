@@ -25,6 +25,9 @@
 #include <mach/debug_uart.h>
 #include <plat/efuse.h>
 #include <plat/cpu.h>
+#include <linux/regulator/machine.h>
+
+
 
 #define cru_readl(offset)	readl_relaxed(RK30_CRU_BASE + offset)
 #define cru_writel(v, offset)	do { writel_relaxed(v, RK30_CRU_BASE + offset); dsb(); } while (0)
@@ -54,6 +57,10 @@ __weak void board_act8846_set_resume_vol(void){}
 
 __weak void __sramfunc rk30_pwm_logic_suspend_voltage(void){}
 __weak void __sramfunc rk30_pwm_logic_resume_voltage(void){}
+__weak int  __sramfunc rk30_phonecall_lowerpower(void)
+{
+	return 0;
+}
 
 static int rk3188plus_soc = 0;
 
@@ -541,14 +548,46 @@ static void __sramfunc rk_pm_soc_sram_clk_gating(void)
 	for (i = 0; i < CRU_CLKGATES_CON_CNT; i++) {
 		clkgt_regs_sram[i] = cru_readl(CRU_CLKGATES_CON(i));
 	}
+#ifndef CONFIG_PHONE_INCALL_IS_SUSPEND
 	gate_save_soc_clk(0
-			  | (1 << CLK_GATE_CORE_PERIPH)
-			  | (1 << CLK_GATE_ACLK_CPU)
-			  | (1 << CLK_GATE_HCLK_CPU)
-			  | (1 << CLK_GATE_PCLK_CPU)
-			  | (1 << CLK_GATE_ACLK_CORE)
-			  , clkgt_regs_sram[0], CRU_CLKGATES_CON(0), CLK_GATE_W_MSK0);
+		| (1 << CLK_GATE_CORE_PERIPH)
+		| (1 << CLK_GATE_ACLK_CPU)
+		| (1 << CLK_GATE_HCLK_CPU)
+		| (1 << CLK_GATE_PCLK_CPU)
+		| (1 << CLK_GATE_ACLK_CORE)
+		, clkgt_regs_sram[0], CRU_CLKGATES_CON(0), CLK_GATE_W_MSK0);
 	
+#else	
+	if(rk30_phonecall_lowerpower() == 0){
+		gate_save_soc_clk(0
+			| (1 << CLK_GATE_CORE_PERIPH)
+			| (1 << CLK_GATE_ACLK_CPU)
+			| (1 << CLK_GATE_HCLK_CPU)
+			| (1 << CLK_GATE_PCLK_CPU)
+			| (1 << CLK_GATE_ACLK_CORE)
+			, clkgt_regs_sram[0], CRU_CLKGATES_CON(0), CLK_GATE_W_MSK0);
+	}else{
+		gate_save_soc_clk(0
+			| (1 << CLK_GATE_CORE_PERIPH)
+			| (1 << CLK_GATE_ACLK_CPU)
+			| (1 << CLK_GATE_HCLK_CPU)
+			| (1 << CLK_GATE_PCLK_CPU)
+			| (1 << CLK_GATE_ACLK_CORE)
+
+#if defined(CONFIG_ARCH_RK3066B) || defined(CONFIG_ARCH_RK3188)
+			| (1 << CLK_GATE_I2S0_SRC)
+			| (1 << CLK_GATE_I2S0_FRAC)
+#else
+			|(1<<CLK_GATE_I2S0_FRAC)
+			|(1<<CLK_GATE_I2S1)
+			|(1<<CLK_GATE_I2S1_FRAC)
+			|(1<<CLK_GATE_I2S2)
+			|(1<<CLK_GATE_I2S2_FRAC)
+#endif
+			, clkgt_regs_sram[0], CRU_CLKGATES_CON(0), CLK_GATE_W_MSK0);
+
+	}
+#endif
 	gate_save_soc_clk(0, clkgt_regs_sram[1], CRU_CLKGATES_CON(1), CLK_GATE_W_MSK1);
 	
 #if defined(CONFIG_ARCH_RK3066B) || defined(CONFIG_ARCH_RK3188)
@@ -586,9 +625,23 @@ static void __sramfunc rk_pm_soc_sram_clk_gating(void)
 		  | (1 << CLK_GATE_PCLK_GRF % 16)
 		  | (1 << CLK_GATE_PCLK_PMU % 16)
 		  , clkgt_regs_sram[5], CRU_CLKGATES_CON(5), CLK_GATE_W_MSK5);
-	
+#ifndef CONFIG_PHONE_INCALL_IS_SUSPEND
 	gate_save_soc_clk(0, clkgt_regs_sram[7], CRU_CLKGATES_CON(7), CLK_GATE_W_MSK7);
-	
+#else	
+	if(rk30_phonecall_lowerpower() == 0){
+		gate_save_soc_clk(0, clkgt_regs_sram[7], CRU_CLKGATES_CON(7), CLK_GATE_W_MSK7);
+	}else{
+		gate_save_soc_clk(0
+#if defined(CONFIG_ARCH_RK3066B) || defined(CONFIG_ARCH_RK3188)
+			| (1 << CLK_GATE_HCLK_I2S0_2CH % 16)
+#else
+			| (1 <<CLK_GATE_HCLK_I2S0_2CH)
+			| (1 <<CLK_GATE_HCLK_I2S1_2CH)
+			| (1 <<CLK_GATE_HCLK_I2S_8CH)
+#endif
+			, clkgt_regs_sram[7], CRU_CLKGATES_CON(7),CLK_GATE_W_MSK7);
+	}	
+#endif
 	gate_save_soc_clk(0
 			  | (1 << CLK_GATE_CLK_L2C % 16)
 			  | (1 << CLK_GATE_ACLK_INTMEM0 % 16)
@@ -693,18 +746,58 @@ static void rk_pm_soc_clk_gating_first(void)
 	for (i = 0; i < CRU_CLKGATES_CON_CNT; i++) {
 		clkgt_regs_first[i] = cru_readl(CRU_CLKGATES_CON(i));
 	}
-
+#ifndef CONFIG_PHONE_INCALL_IS_SUSPEND
 	gate_save_soc_clk(0
-			  | (1 << CLK_GATE_CORE_PERIPH)
+		| (1 << CLK_GATE_CORE_PERIPH)
 #if defined(CONFIG_ARCH_RK3066B) || defined(CONFIG_ARCH_RK3188)
-			  | (1 << CLK_GATE_CPU_GPLL_PATH)
-			  | (1 << CLK_GATE_ACLK_CORE)
+		| (1 << CLK_GATE_CPU_GPLL_PATH)
+		| (1 << CLK_GATE_ACLK_CORE)
 #endif
-			  | (1 << CLK_GATE_DDRPHY)
-			  | (1 << CLK_GATE_ACLK_CPU)
-			  | (1 << CLK_GATE_HCLK_CPU)
-			  | (1 << CLK_GATE_PCLK_CPU)
-			  , clkgt_regs_first[0], CRU_CLKGATES_CON(0), CLK_GATE_W_MSK0);
+		| (1 << CLK_GATE_DDRPHY)
+		| (1 << CLK_GATE_ACLK_CPU)
+		| (1 << CLK_GATE_HCLK_CPU)
+		| (1 << CLK_GATE_PCLK_CPU)
+		, clkgt_regs_first[0], CRU_CLKGATES_CON(0), CLK_GATE_W_MSK0);
+
+#else
+	if(rk30_phonecall_lowerpower() == 0){
+		gate_save_soc_clk(0
+			| (1 << CLK_GATE_CORE_PERIPH)
+#if defined(CONFIG_ARCH_RK3066B) || defined(CONFIG_ARCH_RK3188)
+			| (1 << CLK_GATE_CPU_GPLL_PATH)
+			| (1 << CLK_GATE_ACLK_CORE)
+#endif
+			| (1 << CLK_GATE_DDRPHY)
+			| (1 << CLK_GATE_ACLK_CPU)
+			| (1 << CLK_GATE_HCLK_CPU)
+			| (1 << CLK_GATE_PCLK_CPU)
+			, clkgt_regs_first[0], CRU_CLKGATES_CON(0), CLK_GATE_W_MSK0);
+	}else{
+		gate_save_soc_clk(0
+			| (1 << CLK_GATE_CORE_PERIPH)
+#if defined(CONFIG_ARCH_RK3066B) || defined(CONFIG_ARCH_RK3188)
+			| (1 << CLK_GATE_CPU_GPLL_PATH)
+			| (1 << CLK_GATE_ACLK_CORE)
+#endif
+			| (1 << CLK_GATE_DDRPHY)
+			| (1 << CLK_GATE_ACLK_CPU)
+			| (1 << CLK_GATE_HCLK_CPU)
+			| (1 << CLK_GATE_PCLK_CPU)
+
+#if defined(CONFIG_ARCH_RK3066B) || defined(CONFIG_ARCH_RK3188)
+			| (1 << CLK_GATE_I2S0_SRC)
+				| (1 << CLK_GATE_I2S0_FRAC)
+#else
+			|(1<<CLK_GATE_I2S0_FRAC)
+			|(1<<CLK_GATE_I2S1)
+			|(1<<CLK_GATE_I2S1_FRAC)
+			|(1<<CLK_GATE_I2S2)
+			|(1<<CLK_GATE_I2S2_FRAC)
+#endif
+			, clkgt_regs_first[0], CRU_CLKGATES_CON(0), CLK_GATE_W_MSK0);
+
+	}
+#endif
 	gate_save_soc_clk(0
 			  | (1 << CLK_GATE_DDR_GPLL % 16)
 			  , clkgt_regs_first[1], CRU_CLKGATES_CON(1), CLK_GATE_W_MSK1);
@@ -737,10 +830,31 @@ static void rk_pm_soc_clk_gating_first(void)
 			  | (1 << CLK_GATE_PCLK_DDRUPCTL % 16)
 			  , clkgt_regs_first[5], CRU_CLKGATES_CON(5), CLK_GATE_W_MSK5);
 	gate_save_soc_clk(0, clkgt_regs_first[6], CRU_CLKGATES_CON(6), CLK_GATE_W_MSK6);
+#ifndef CONFIG_PHONE_INCALL_IS_SUSPEND
 	gate_save_soc_clk(0
-			  | (1 << CLK_GATE_PCLK_PWM01 % 16)
-			  | (1 << CLK_GATE_PCLK_PWM23 % 16)
-			  , clkgt_regs_first[7], CRU_CLKGATES_CON(7),CLK_GATE_W_MSK7);
+		| (1 << CLK_GATE_PCLK_PWM01 % 16)
+		| (1 << CLK_GATE_PCLK_PWM23 % 16)
+		, clkgt_regs_first[7], CRU_CLKGATES_CON(7),CLK_GATE_W_MSK7);
+#else
+	if(rk30_phonecall_lowerpower() == 0){
+		gate_save_soc_clk(0
+			| (1 << CLK_GATE_PCLK_PWM01 % 16)
+			| (1 << CLK_GATE_PCLK_PWM23 % 16)
+			, clkgt_regs_first[7], CRU_CLKGATES_CON(7),CLK_GATE_W_MSK7);
+	}else{
+		gate_save_soc_clk(0
+			| (1 << CLK_GATE_PCLK_PWM01 % 16)
+			| (1 << CLK_GATE_PCLK_PWM23 % 16)
+#if defined(CONFIG_ARCH_RK3066B) || defined(CONFIG_ARCH_RK3188)
+			| (1 << CLK_GATE_HCLK_I2S0_2CH % 16)
+#else
+			| (1 <<CLK_GATE_HCLK_I2S0_2CH% 16)
+			| (1 <<CLK_GATE_HCLK_I2S1_2CH% 16)
+			| (1 <<CLK_GATE_HCLK_I2S_8CH% 16)
+#endif
+			, clkgt_regs_first[7], CRU_CLKGATES_CON(7),CLK_GATE_W_MSK7);
+	}
+#endif
 	gate_save_soc_clk(0 , clkgt_regs_first[8], CRU_CLKGATES_CON(8), CLK_GATE_W_MSK8);
 	gate_save_soc_clk(0
 			  | (1 << CLK_GATE_CLK_L2C % 16)
@@ -889,7 +1003,7 @@ struct rk_soc_pm_info_st rk_soc_pm_helps[]={
 	RK_SOC_PM_HELP_(WAKE_UP_KEY,"send a power key to wake up lcd"),
 };
 
-ssize_t rk_soc_pm_helps_print(char *buf)
+ssize_t rk_soc_pm_helps_sprintf(char *buf)
 {
 	char *s = buf;
 	int i;
@@ -902,6 +1016,17 @@ ssize_t rk_soc_pm_helps_print(char *buf)
 	return (s-buf);
 }	
 
+void rk_soc_pm_helps_printk(void)
+{
+	int i;
+	printk("**************rk_suspend_ctr_bits bits help***********:\n");
+	for(i=0;i<ARRAY_SIZE(rk_soc_pm_helps);i++)
+	{
+		printk("bit(%d): %s\n", rk_soc_pm_helps[i].offset,rk_soc_pm_helps[i].name);
+	}
+}	
+
+
 // pm enter return directly
 #define RK_SUSPEND_RET_DIRT_BITS ((1<<RK_PM_CTR_RET_DIRT))
 // not enter rk30_suspend
@@ -913,14 +1038,25 @@ ssize_t rk_soc_pm_helps_print(char *buf)
 static u32  __sramdata rk_soc_pm_ctr_flags_sram=0;
 static u32   rk_soc_pm_ctr_flags=0;
 
+static int arm_suspend_volt = 0;
+static int logic_suspend_volt = 0;
+
 static int __init early_param_rk_soc_pm_ctr(char *str)
 {
 	get_option(&str, &rk_soc_pm_ctr_flags);
-	printk("early_param_rk_soc_pm_ctr=%x\n",rk_soc_pm_ctr_flags);
+	
+	printk("********rk_suspend_ctr_bits information is following:*********\n");
+	printk("rk_suspend_ctr_bits=%x\n",rk_soc_pm_ctr_flags);
+	if(rk_soc_pm_ctr_flags)
+	{
+		rk_soc_pm_helps_printk();
+	}
+	printk("********rk_suspend_ctr_bits information end*********\n");
 	return 0;
 }
 
-early_param("rk_soc_pm_ctr", early_param_rk_soc_pm_ctr);
+early_param("rk_suspend_ctr_bits", early_param_rk_soc_pm_ctr);
+
 
 void  rk_soc_pm_ctr_bits_set(u32 flags)
 {	
@@ -960,6 +1096,57 @@ void rk_soc_pm_ctr_bits_prepare(void)
 	}
 		
 }	
+
+
+static int __init set_arm_suspend_volt(char *str)
+{
+	get_option(&str, &arm_suspend_volt);
+	printk("rk_suspend_arm_volt=%dmV\n", arm_suspend_volt);
+	return 0;
+}
+early_param("rk_suspend_arm_volt", set_arm_suspend_volt);
+
+static int __init set_logic_suspend_volt(char *str)
+{
+	get_option(&str, &logic_suspend_volt);
+	printk("rk_suspend_logic_volt=%dmV\n", logic_suspend_volt);
+	return 0;
+}
+early_param("rk_suspend_logic_volt", set_logic_suspend_volt);
+
+
+
+static int __init pm_suspend_volt_seting(void)
+{
+	struct regulator *regulator;	
+
+	printk("pmic set pm_suspend_volt:\n");
+	if (arm_suspend_volt){
+		regulator = regulator_get(NULL, "vdd_cpu");
+		if (IS_ERR(regulator)){
+			printk("%s:get vdd_cpu regulator err\n", __func__);
+			return 0;
+		}
+		regulator_set_suspend_voltage(regulator, arm_suspend_volt);
+		regulator_put(regulator);
+	}
+
+	if (logic_suspend_volt){
+		regulator = regulator_get(NULL, "vdd_core");
+		if (IS_ERR(regulator)){
+			printk("%s:get vdd_core regulator err\n", __func__);
+			return 0;
+		}
+		regulator_set_suspend_voltage(regulator, logic_suspend_volt);	
+		regulator_put(regulator);
+	}
+	return 0;
+}
+
+device_initcall_sync(pm_suspend_volt_seting);
+
+
+/*********************************pm main function******************************************/
 
 static void __sramfunc rk30_sram_suspend(void)
 {
@@ -1094,7 +1281,6 @@ static struct platform_suspend_ops rk30_pm_ops = {
 static int __init rk30_pm_init(void)
 {
 	suspend_set_ops(&rk30_pm_ops);
-
 #ifdef CONFIG_EARLYSUSPEND
 	pm_set_vt_switch(0); /* disable vt switch while suspend */
 #endif
@@ -1102,3 +1288,4 @@ static int __init rk30_pm_init(void)
 	return 0;
 }
 __initcall(rk30_pm_init);
+

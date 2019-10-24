@@ -3405,6 +3405,7 @@ static void cpu_axi_init(void)
 			break;
 
 		default:
+			cpu_div_rate = 150 * MHZ;
 			aclk_cpu_rate = 150 * MHZ;
 			hclk_cpu_rate = 150 * MHZ;
 			pclk_cpu_rate = 75 * MHZ;
@@ -3609,7 +3610,12 @@ static void __init rk30_clock_common_init(unsigned long gpll_rate, unsigned long
 	clk_set_parent_nolock(&aclk_gpu, &general_pll_clk);
 	clk_set_rate_nolock(&aclk_gpu, 700 * MHZ);
 
-	clk_set_rate_nolock(&clk_uart0, 48000000);
+//	clk_set_rate_nolock(&clk_uart0, 48000000);
+	if (0 == pll_flag) {
+		clk_set_rate_nolock(&clk_uart0, 48000000);
+	} else {
+		clk_set_rate_nolock(&clk_uart0, 49500000);
+	}
 	clk_set_rate_nolock(&clk_sdmmc, 24750000);
 	clk_set_rate_nolock(&clk_sdio, 24750000);
 }
@@ -3883,6 +3889,9 @@ static void dump_clock(struct seq_file *s, struct clk *clk, int deep, const stru
 
 	if (clk->parent)
 		seq_printf(s, " parent = %s", clk->parent->name);
+
+	if (clk->last_set_rate != 0)
+		seq_printf(s, " [set %lu Hz]", clk->last_set_rate);
 
 	seq_printf(s, "\n");
 

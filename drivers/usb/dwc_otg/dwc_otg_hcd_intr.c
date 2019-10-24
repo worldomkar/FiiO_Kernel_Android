@@ -827,7 +827,7 @@ void release_channel(dwc_otg_hcd_t *_hcd,
             DWC_PRINT("%s qtd %p, status %d\n", __func__, _qtd, _halt_status);
             goto cleanup;
         }
-        if(((uint32_t) _qtd & 0x80000000)==0){
+    if(((uint32_t) _qtd & 0xf0000000)==0xf0000000){
             DWC_PRINT("%s qtd %p, status %d 1\n", __func__, _qtd, _halt_status);
             goto cleanup;
         }
