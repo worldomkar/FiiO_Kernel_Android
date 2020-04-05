@@ -71,7 +71,8 @@ struct rk29_keys_drvdata {
 int ctrl_value = 0;
 static int lock_key_enable = 0;
 static int lock_key_status = 0;
-extern bool uac_enable_flag();
+// extern bool uac_enable_flag();
+static bool uac_enable_flag() { return false; }
 
 static struct input_dev *input_dev;
 struct rk29_keys_Arrary {

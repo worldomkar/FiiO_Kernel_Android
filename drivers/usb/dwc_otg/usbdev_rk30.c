@@ -34,6 +34,9 @@
     #if defined(CONFIG_LIDA_MACH_X7)
 #define RK3066B_HOST_DRV_VBUS RK30_PIN0_PC0
 #define RK3066B_OTG_DRV_VBUS  RK30_PIN3_PD5
+    #else
+#define RK3066B_HOST_DRV_VBUS RK30_PIN0_PA3
+#define RK3066B_OTG_DRV_VBUS  RK30_PIN3_PD5
     #endif
 #elif defined(CONFIG_SOC_RK3028)
 #define RK3066B_HOST_DRV_VBUS RK30_PIN1_PA4
@@ -286,7 +289,7 @@ int get_host_power_en(void)
     return val;
 }
 
-#if defined(CONFIG_LIDA_MACH_X7)
+#if defined(CONFIG_LIDA_MACH_X7) || defined(CONFIG_ARCH_RK3188)
 void usb20otg_power_enable(int enable)
 { 
     unsigned int usbgrf_status = *(unsigned int*)(USBGRF_SOC_STATUS0);

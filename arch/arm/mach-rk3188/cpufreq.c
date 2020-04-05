@@ -68,8 +68,8 @@ static struct cpufreq_frequency_table *freq_table = default_freq_table;
 #define CPUFREQ_PRIVATE                 0x100
 static int no_cpufreq_access;
 static unsigned int suspend_freq = 816 * 1000;
-#if defined(CONFIG_ARCH_RK3026)
-static unsigned int suspend_volt = 1100000; // 1.1V
+#if defined(CONFIG_ARCH_RK3026) || defined(CONFIG_ARCH_RK3188)
+static unsigned int suspend_volt = 1000000; // 1.1V
 #else
 static unsigned int suspend_volt = 875000; // 0.875V
 #endif
@@ -265,7 +265,7 @@ static void rk3188_cpufreq_temp_limit_work_func(struct work_struct *work)
 
 	if (sys_state == '1') {
 		in_perf = true;
-/*		if (gpu_is_mali400) {
+		if (gpu_is_mali400) {
 			unsigned int gpu_irqs[2];
 			gpu_irqs[0] = kstat_irqs(IRQ_GPU_GP);
 			msleep(40);
@@ -283,7 +283,7 @@ static void rk3188_cpufreq_temp_limit_work_func(struct work_struct *work)
 			limits_table = temp_limits_cpu_perf;
 			limits_size = ARRAY_SIZE(temp_limits_cpu_perf);
 		}
-*/	} else if (in_perf) {
+	} else if (in_perf) {
 		in_perf = false;
 	} else {
 		static u64 last_time_in_idle = 0;
@@ -408,8 +408,8 @@ static int test_tlb_rate[TEST_FRE_NUM] = { 504, 1008, 504, 1200, 252, 816, 1416,
 
 #define TEST_GPU_NUM 3
 
-//static int test_tlb_gpu[TEST_GPU_NUM] = { 360, 400, 180 };
-static int test_tlb_gpu[TEST_GPU_NUM] = { 600, 720, 480 };
+static int test_tlb_gpu[TEST_GPU_NUM] = { 360, 400, 180 };
+//static int test_tlb_gpu[TEST_GPU_NUM] = { 600, 720, 480 };
 static int test_tlb_ddr[TEST_GPU_NUM] = { 401, 200, 500 };
 
 static int gpu_ddr = 0;
@@ -473,7 +473,7 @@ static int rk3188_cpufreq_init_cpu0(struct cpufreq_policy *policy)
 
 	clk_enable_dvfs(gpu_clk);
 	if (gpu_is_mali400)
-		dvfs_clk_enable_limit(gpu_clk, 720000000, 999000000);
+		dvfs_clk_enable_limit(gpu_clk, 133000000, 700000000);
 
 	clk_enable_dvfs(ddr_clk);
 

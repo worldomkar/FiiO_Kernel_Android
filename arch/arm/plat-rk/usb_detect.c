@@ -9,6 +9,7 @@
 
 static irqreturn_t usb_detect_irq_handler(int irq, void *dev_id);
 static int detect_gpio = INVALID_GPIO;
+void rk28_send_wakeup_key(void);
 
 static void usb_detect_do_wakeup(struct work_struct *work)
 {

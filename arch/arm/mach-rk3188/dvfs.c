@@ -92,10 +92,15 @@ static struct lkg_maxvolt lkg_volt_table[] = {
 #else
 /* avdd_com & vdd_arm short circuit */
 static struct lkg_maxvolt lkg_volt_table[] = {
+
+	{.leakage_level = 3,	.maxvolt = 1350 * 1000},
+	{.leakage_level = 15,	.maxvolt = 1250 * 1000},
+};
+/*
 	{.leakage_level = 1000,		.maxvolt = 1500 * 1000},
 	{.leakage_level = 15000,	.maxvolt = 1500 * 1000},
 	{.leakage_level = 55000,	.maxvolt = 1500 * 1000},
-};
+};*/
 #endif
 #define LOW_LEAKAGE_BOUND	2
 #define VOLT_COMPENSATION	(25000)	// uV
@@ -127,7 +132,7 @@ void dvfs_adjust_table_lmtvolt(struct clk *clk, struct cpufreq_frequency_table *
 		 * about Freq nandc/Volt log.
 		 *
 		 */
-		return;
+		// return;
 
 		unsigned long delayline_val = 0;
 		unsigned long high_delayline = 0, low_delayline = 0;
@@ -298,14 +303,29 @@ static int g_logic_high_arm = 100 * 1000;
 
 #ifdef CONFIG_ARCH_RK3188
 static struct cpufreq_frequency_table arm_high_logic_table[] = {
+#ifdef OMEGAMOON_CHANGED
+		{.frequency =  504 * DVFS_KHZ, .index = 25 * DVFS_MV},
+		{.frequency = 1008 * DVFS_KHZ, .index = 25 * DVFS_MV},
         {.frequency = 1416 * DVFS_KHZ, .index = 25 * DVFS_MV},
         {.frequency = 1608 * DVFS_KHZ, .index = 25 * DVFS_MV},
+        {.frequency = 1800 * DVFS_KHZ, .index = 25 * DVFS_MV},
+#else
+        {.frequency = 1416 * DVFS_KHZ, .index = 25 * DVFS_MV},
+        {.frequency = 1608 * DVFS_KHZ, .index = 25 * DVFS_MV},
+#endif
         {.frequency = CPUFREQ_TABLE_END},
 };
 
 static struct cpufreq_frequency_table logic_high_arm_table[] = {
+#ifdef OMEGAMOON_CHANGED
+		{.frequency = 1008 * DVFS_KHZ, .index = 150 * DVFS_MV},
+        {.frequency = 1416 * DVFS_KHZ, .index = 125 * DVFS_MV},
+        {.frequency = 1608 * DVFS_KHZ, .index = 100 * DVFS_MV},
+        {.frequency = 1800 * DVFS_KHZ, .index =  75 * DVFS_MV},
+#else
         {.frequency = 1008 * DVFS_KHZ, .index = 150 * DVFS_MV},
         {.frequency = 1608 * DVFS_KHZ, .index = 75 * DVFS_MV},
+#endif
         {.frequency = CPUFREQ_TABLE_END},
 };
 #else
@@ -318,7 +338,9 @@ static struct cpufreq_frequency_table logic_high_arm_table[] = {
         {.frequency = 816 * DVFS_KHZ,  .index = 200 * DVFS_MV},
         {.frequency = 1416 * DVFS_KHZ, .index = 150 * DVFS_MV},
         {.frequency = 1608 * DVFS_KHZ, .index = 100 * DVFS_MV},
+#ifdef OMEGAMOON_CHANGED
 	{.frequency = CPUFREQ_TABLE_END},
+#endif
 };
 #endif
 
@@ -600,12 +622,29 @@ out:
  * rate must be raising sequence
  */
 static struct cpufreq_frequency_table cpu_dvfs_table[] = {
+#ifdef OMEGAMOON_CHANGED
+	{.frequency =  252 * DVFS_KHZ,	.index = 1025 * DVFS_MV},
+	{.frequency =  504 * DVFS_KHZ,	.index = 1025 * DVFS_MV},
+	{.frequency =  816 * DVFS_KHZ,	.index = 1050 * DVFS_MV},
+	{.frequency = 1008 * DVFS_KHZ,	.index = 1050 * DVFS_MV},
+
+	{.frequency = 1200 * DVFS_KHZ,	.index = 1050 * DVFS_MV},
+	{.frequency = 1272 * DVFS_KHZ,	.index = 1050 * DVFS_MV},//logic 1.050V
+	{.frequency = 1416 * DVFS_KHZ,	.index = 1100 * DVFS_MV},//logic 1.100V
+	{.frequency = 1512 * DVFS_KHZ,	.index = 1125 * DVFS_MV},//logic 1.125V
+	{.frequency = 1608 * DVFS_KHZ,	.index = 1175 * DVFS_MV},//logic 1.175V
+
+	{.frequency = 1704 * DVFS_KHZ,	.index = 1200 * DVFS_MV},
+	{.frequency = 1752 * DVFS_KHZ,	.index = 1255 * DVFS_MV},
+	{.frequency = 1800 * DVFS_KHZ,	.index = 1300 * DVFS_MV},
+#else
 	// {.frequency	= 48 * DVFS_KHZ, .index = 920*DVFS_MV},
 	// {.frequency	= 126 * DVFS_KHZ, .index	= 970 * DVFS_MV},
 	// {.frequency	= 252 * DVFS_KHZ, .index	= 1040 * DVFS_MV},
 	// {.frequency	= 504 * DVFS_KHZ, .index	= 1050 * DVFS_MV},
 	{.frequency	= 816 * DVFS_KHZ, .index	= 1050 * DVFS_MV},
 	// {.frequency	= 1008 * DVFS_KHZ, .index	= 1100 * DVFS_MV},
+#endif
 	{.frequency	= CPUFREQ_TABLE_END},
 };
 
@@ -616,15 +655,29 @@ static struct cpufreq_frequency_table ddr_dvfs_table[] = {
 	{.frequency = 400 * DVFS_KHZ, .index = 1100 * DVFS_MV},
 	{.frequency = 500 * DVFS_KHZ, .index = 1150 * DVFS_MV},
 	{.frequency = 600 * DVFS_KHZ, .index = 1200 * DVFS_MV},
+#ifdef OMEGAMOON_CHANGED
+	{.frequency = 720 * DVFS_KHZ, .index = 1200 * DVFS_MV},
+#endif
 	{.frequency = CPUFREQ_TABLE_END},
 };
 
 static struct cpufreq_frequency_table gpu_dvfs_table[] = {
+#ifdef OMEGAMOON_CHANGED
 	{.frequency = 90 * DVFS_KHZ, .index = 1100 * DVFS_MV},
 	{.frequency = 180 * DVFS_KHZ, .index = 1150 * DVFS_MV},
 	{.frequency = 300 * DVFS_KHZ, .index = 1100 * DVFS_MV},
 	{.frequency = 400 * DVFS_KHZ, .index = 1150 * DVFS_MV},
 	{.frequency = 500 * DVFS_KHZ, .index = 1200 * DVFS_MV},
+	{.frequency = 600 * DVFS_KHZ, .index = 1200 * DVFS_MV},
+	{.frequency = 666 * DVFS_KHZ, .index = 1250 * DVFS_MV},
+	{.frequency = 700 * DVFS_KHZ, .index = 1250 * DVFS_MV},
+#else
+	{.frequency = 90 * DVFS_KHZ, .index = 1100 * DVFS_MV},
+	{.frequency = 180 * DVFS_KHZ, .index = 1150 * DVFS_MV},
+	{.frequency = 300 * DVFS_KHZ, .index = 1100 * DVFS_MV},
+	{.frequency = 400 * DVFS_KHZ, .index = 1150 * DVFS_MV},
+	{.frequency = 500 * DVFS_KHZ, .index = 1200 * DVFS_MV},
+#endif
 	{.frequency = CPUFREQ_TABLE_END},
 };
 
@@ -637,6 +690,22 @@ static struct cpufreq_frequency_table peri_aclk_dvfs_table[] = {
 };
 
 static struct cpufreq_frequency_table dep_cpu2core_table[] = {
+#ifdef OMEGAMOON_CHANGED
+	{.frequency =  252 * DVFS_KHZ,	.index = 1025 * DVFS_MV},
+	{.frequency =  504 * DVFS_KHZ,	.index = 1025 * DVFS_MV},
+	{.frequency =  816 * DVFS_KHZ,	.index = 1050 * DVFS_MV},
+	{.frequency = 1008 * DVFS_KHZ,	.index = 1050 * DVFS_MV},
+
+	{.frequency = 1200 * DVFS_KHZ,	.index = 1050 * DVFS_MV},
+	{.frequency = 1272 * DVFS_KHZ,	.index = 1050 * DVFS_MV},//logic 1.050V
+	{.frequency = 1416 * DVFS_KHZ,	.index = 1100 * DVFS_MV},//logic 1.100V
+	{.frequency = 1512 * DVFS_KHZ,	.index = 1125 * DVFS_MV},//logic 1.125V
+	{.frequency = 1608 * DVFS_KHZ,	.index = 1175 * DVFS_MV},//logic 1.175V
+
+	{.frequency = 1704 * DVFS_KHZ,	.index = 1200 * DVFS_MV},
+	{.frequency = 1752 * DVFS_KHZ,	.index = 1255 * DVFS_MV},
+	{.frequency = 1800 * DVFS_KHZ,	.index = 1300 * DVFS_MV},
+#else
 	// {.frequency = 252 * DVFS_KHZ, .index    = 1025 * DVFS_MV},
 	// {.frequency = 504 * DVFS_KHZ, .index    = 1025 * DVFS_MV},
 	{.frequency = 816 * DVFS_KHZ, .index    = 1050 * DVFS_MV},//logic 1.050V
@@ -646,6 +715,7 @@ static struct cpufreq_frequency_table dep_cpu2core_table[] = {
 	// {.frequency = 1416 * DVFS_KHZ,.index    = 1100 * DVFS_MV},//logic 1.100V
 	// {.frequency = 1512 * DVFS_KHZ,.index    = 1125 * DVFS_MV},//logic 1.125V
 	// {.frequency = 1608 * DVFS_KHZ,.index    = 1175 * DVFS_MV},//logic 1.175V
+#endif
 	{.frequency	= CPUFREQ_TABLE_END},
 };
 

@@ -18,7 +18,6 @@ obj-$(CONFIG_CPU_IDLE) += ../mach-rk30/cpuidle.o
 obj-$(CONFIG_CPU_FREQ) += cpufreq.o
 obj-$(CONFIG_AUTOSMP) += autosmp.o
 obj-$(CONFIG_DVFS) += dvfs.o
-obj-y += board.o
 obj-y += delayline.o
 
 board-$(CONFIG_MACH_RK3188_FPGA) += board-rk3188-fpga.o
@@ -26,5 +25,5 @@ board-$(CONFIG_MACH_RK3188_TB) += ../mach-rk30/board-rk3168-tb.o
 board-$(CONFIG_MACH_RK3188_SDK) += board-rk3188-sdk.o
 board-$(CONFIG_MACH_RK3188_LR097) += ../mach-rk30/board-rk3168-LR097.o
 board-$(CONFIG_MACH_RK3188_DS1006H) += board-rk3188-ds1006h.o
-obj-$(CONFIG_SOC_RK3188) += board.o
 board-$(CONFIG_MACH_RK3188_FAC) += board-rk3188-fac.o
+obj-$(CONFIG_MACH_RK3188_BOX) += board-rk3188-box.o

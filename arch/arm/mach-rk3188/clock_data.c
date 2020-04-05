@@ -2733,7 +2733,7 @@ GATE_CLK(hclk_imem1,	hclk_cpu, 	HCLK_IMEM1);
 GATE_CLK(pclk_uart0,	ahb2apb_cpu, PCLK_UART0);
 GATE_CLK(pclk_uart1,	ahb2apb_cpu, PCLK_UART1);
 /*************************pclk_cpu***********************/
-GATE_CLK(pwm01,		pclk_cpu, 	PCLK_PWM01);//pwm 0¡¢1
+GATE_CLK(pwm01,		pclk_cpu, 	PCLK_PWM01);//pwm 0\A1\A21
 GATE_CLK(pclk_timer0,	pclk_cpu, 	PCLK_TIMER0);
 GATE_CLK(pclk_timer2,	pclk_cpu, 	PCLK_TIMER2);
 GATE_CLK(i2c0,	pclk_cpu, PCLK_I2C0);
@@ -3608,7 +3608,7 @@ static void __init rk30_clock_common_init(unsigned long gpll_rate, unsigned long
 	clk_set_rate_nolock(&aclk_vdpu, 300 * MHZ);
 	//gpu auto sel
 	clk_set_parent_nolock(&aclk_gpu, &general_pll_clk);
-	clk_set_rate_nolock(&aclk_gpu, 700 * MHZ);
+	clk_set_rate_nolock(&aclk_gpu, 200 * MHZ);
 
 //	clk_set_rate_nolock(&clk_uart0, 48000000);
 	if (0 == pll_flag) {
@@ -3649,7 +3649,7 @@ void __init _rk30_clock_data_init(unsigned long gpll, unsigned long cpll, int fl
 	printk("CLKDATA_MSG: pll_flag = 0x%02x\n", rk_pll_flag());
 //	pll_flag = rk_pll_flag();
 //	printk("CLKDATA_MSG: pll_flag = 0x%02x\n", pll_flag);
-/*
+
 	if (0 != pll_flag) {
 		CLKDATA_DBG("CPLL=%lu, GPLL=%lu;CPLL CAN NOT LOCK, SET CPLL BY PASS, USE GPLL REPLACE CPLL\n",
 				cpll, gpll);
@@ -3657,7 +3657,7 @@ void __init _rk30_clock_data_init(unsigned long gpll, unsigned long cpll, int fl
 		cpll = 24 * MHZ;
 		gpll = 891 * MHZ;
 	}
-*/
+
 #ifdef CONFIG_USE_XIN_FOR_I2S
 	codec_pll_clk.mode = NULL;
 	cpll = I2S_XIN_RATE;

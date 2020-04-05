@@ -32,6 +32,7 @@
 #include <linux/clk.h>
 #include <linux/uaccess.h>
 #include <linux/io.h>
+#include <linux/slab.h>
 
 #include <asm/mach/map.h>
 

@@ -18,6 +18,15 @@ if HDMI_RK2928
 source "drivers/video/rockchip/hdmi/chips/rk2928/Kconfig"
 endif
 
+config  HDMI_IT66121
+        bool "IT66121 HDMI support"
+        help
+           Support it66121 hdmi if you say y here
+
+if HDMI_IT66121
+source "drivers/video/rockchip/hdmi/chips/it66121/Kconfig"
+endif
+
 config  HDMI_CAT66121
         bool "CAT66121 HDMI support"
         help
