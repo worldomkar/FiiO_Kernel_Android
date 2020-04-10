@@ -19,7 +19,6 @@
 #endif
 
 #define HDMI_MAX_TRY_TIMES	1
-#define HDMI_MAX_ID 1
 
 static char *envp[] = {"INTERFACE=HDMI", NULL};
 

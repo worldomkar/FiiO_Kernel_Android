@@ -1,6 +1,5 @@
-
-#include <linux/rk_fb.h>
 #include "lcd.h"
+#include <linux/rk_fb.h>
 #if defined(CONFIG_RK_HDMI)
 #include "../hdmi/rk_hdmi.h"
 #endif
@@ -190,118 +189,118 @@ static int set_scaler_info(struct rk29fb_screen *screen, u8 hdmi_resolution)
 #define set_scaler_info  NULL
 #endif
 
-void set_lcd_info(struct rk29fb_screen *screen, struct rk29lcd_info *lcd_info )
-{
+// void set_lcd_info(struct rk29fb_screen *screen, struct rk29lcd_info *lcd_info )
+// {
 
-#if defined(RK_USE_SCREEN_ID)
-	set_lcd_info_by_id(screen,lcd_info);
-#else
-	#if defined(CONFIG_MACH_RK_FAC)
-	screen->type = lcd_param[OUT_TYPE_INDEX];
-	screen->face = lcd_param[OUT_FACE_INDEX];
-	screen->lvds_format = lcd_param[LVDS_FORMAT_INDEX];  //lvds data format
+// #if defined(RK_USE_SCREEN_ID)
+// 	set_lcd_info_by_id(screen,lcd_info);
+// #else
+// 	#if defined(CONFIG_MACH_RK_FAC)
+// 	screen->type = lcd_param[OUT_TYPE_INDEX];
+// 	screen->face = lcd_param[OUT_FACE_INDEX];
+// 	screen->lvds_format = lcd_param[LVDS_FORMAT_INDEX];  //lvds data format
 	
 		
-	screen->x_res = lcd_param[H_VD_INDEX];
-	screen->y_res = lcd_param[V_VD_INDEX];
+// 	screen->x_res = lcd_param[H_VD_INDEX];
+// 	screen->y_res = lcd_param[V_VD_INDEX];
 	
-	screen->width = lcd_param[LCD_WIDTH_INDEX];
-	screen->height = lcd_param[LCD_HEIGHT_INDEX];
+// 	screen->width = lcd_param[LCD_WIDTH_INDEX];
+// 	screen->height = lcd_param[LCD_HEIGHT_INDEX];
 	
 	    
-	screen->lcdc_aclk = lcd_param[LCDC_ACLK_INDEX];
-	screen->pixclock = lcd_param[OUT_CLK_INDEX];
-	screen->left_margin = lcd_param[H_BP_INDEX];
-	screen->right_margin = lcd_param[H_FP_INDEX];
-	screen->hsync_len = lcd_param[H_PW_INDEX];
-	screen->upper_margin = lcd_param[V_BP_INDEX];
-	screen->lower_margin = lcd_param[V_FP_INDEX];
-	screen->vsync_len = lcd_param[V_PW_INDEX];
+// 	screen->lcdc_aclk = lcd_param[LCDC_ACLK_INDEX];
+// 	screen->pixclock = lcd_param[OUT_CLK_INDEX];
+// 	screen->left_margin = lcd_param[H_BP_INDEX];
+// 	screen->right_margin = lcd_param[H_FP_INDEX];
+// 	screen->hsync_len = lcd_param[H_PW_INDEX];
+// 	screen->upper_margin = lcd_param[V_BP_INDEX];
+// 	screen->lower_margin = lcd_param[V_FP_INDEX];
+// 	screen->vsync_len = lcd_param[V_PW_INDEX];
 	
 		
-	screen->pin_hsync = HSYNC_POL; //Pin polarity 
-	screen->pin_vsync = VSYNC_POL;
-	screen->pin_den = DEN_POL;
-	screen->pin_dclk = lcd_param[DCLK_POL_INDEX];
+// 	screen->pin_hsync = HSYNC_POL; //Pin polarity 
+// 	screen->pin_vsync = VSYNC_POL;
+// 	screen->pin_den = DEN_POL;
+// 	screen->pin_dclk = lcd_param[DCLK_POL_INDEX];
 	
 		
-	screen->swap_rb = lcd_param[SWAP_RB_INDEX];
-	screen->swap_rg = SWAP_RG;
-	screen->swap_gb = SWAP_GB;
-	screen->swap_delta = 0;
-	screen->swap_dumy = 0;
-	#else
-	screen->type = SCREEN_TYPE;
-	screen->face = OUT_FACE;
-	screen->lvds_format = LVDS_FORMAT;  //lvds data format
+// 	screen->swap_rb = lcd_param[SWAP_RB_INDEX];
+// 	screen->swap_rg = SWAP_RG;
+// 	screen->swap_gb = SWAP_GB;
+// 	screen->swap_delta = 0;
+// 	screen->swap_dumy = 0;
+// 	#else
+// 	screen->type = SCREEN_TYPE;
+// 	screen->face = OUT_FACE;
+// 	screen->lvds_format = LVDS_FORMAT;  //lvds data format
 
 	
-	screen->x_res = H_VD;		//screen resolution
-	screen->y_res = V_VD;
+// 	screen->x_res = H_VD;		//screen resolution
+// 	screen->y_res = V_VD;
 
-	screen->width = LCD_WIDTH;
-	screen->height = LCD_HEIGHT;
+// 	screen->width = LCD_WIDTH;
+// 	screen->height = LCD_HEIGHT;
 
     
-	screen->lcdc_aclk = LCDC_ACLK; // Timing 
-	screen->pixclock = DCLK;
-	screen->left_margin = H_BP;
-	screen->right_margin = H_FP;
-	screen->hsync_len = H_PW;
-	screen->upper_margin = V_BP;
-	screen->lower_margin = V_FP;
-	screen->vsync_len = V_PW;
+// 	screen->lcdc_aclk = LCDC_ACLK; // Timing 
+// 	screen->pixclock = DCLK;
+// 	screen->left_margin = H_BP;
+// 	screen->right_margin = H_FP;
+// 	screen->hsync_len = H_PW;
+// 	screen->upper_margin = V_BP;
+// 	screen->lower_margin = V_FP;
+// 	screen->vsync_len = V_PW;
 
 	
-	screen->pin_hsync = HSYNC_POL; //Pin polarity 
-	screen->pin_vsync = VSYNC_POL;
-	screen->pin_den = DEN_POL;
-	screen->pin_dclk = DCLK_POL;
+// 	screen->pin_hsync = HSYNC_POL; //Pin polarity 
+// 	screen->pin_vsync = VSYNC_POL;
+// 	screen->pin_den = DEN_POL;
+// 	screen->pin_dclk = DCLK_POL;
 
 	
-	screen->swap_rb = SWAP_RB; // Swap rule 
-	screen->swap_rg = SWAP_RG;
-	screen->swap_gb = SWAP_GB;
-	screen->swap_delta = 0;
-	screen->swap_dumy = 0;
-	#endif
+// 	screen->swap_rb = SWAP_RB; // Swap rule 
+// 	screen->swap_rg = SWAP_RG;
+// 	screen->swap_gb = SWAP_GB;
+// 	screen->swap_delta = 0;
+// 	screen->swap_dumy = 0;
+// 	#endif
 	
-#if defined(CONFIG_MIPI_DSI)
-       /* MIPI DSI */
-#if defined(MIPI_DSI_LANE)       
-    screen->dsi_lane = MIPI_DSI_LANE;
-#else
-	screen->dsi_lane = 4;
-#endif
-    //screen->dsi_video_mode = MIPI_DSI_VIDEO_MODE;
-#if defined(MIPI_DSI_HS_CLK)    
-    screen->hs_tx_clk = MIPI_DSI_HS_CLK;
-#else    
-    screen->hs_tx_clk = 1000000000;        //1GHz
-#endif
+// #if defined(CONFIG_MIPI_DSI)
+//        /* MIPI DSI */
+// #if defined(MIPI_DSI_LANE)       
+//     screen->dsi_lane = MIPI_DSI_LANE;
+// #else
+// 	screen->dsi_lane = 4;
+// #endif
+//     //screen->dsi_video_mode = MIPI_DSI_VIDEO_MODE;
+// #if defined(MIPI_DSI_HS_CLK)    
+//     screen->hs_tx_clk = MIPI_DSI_HS_CLK;
+// #else    
+//     screen->hs_tx_clk = 1000000000;        //1GHz
+// #endif
 
-#endif
+// #endif
 
 
-	/* Operation function*/
-#if defined(RK_SCREEN_INIT)  //some screen need to init by spi or i2c
-	screen->init = rk_lcd_init;
-   	screen->standby = rk_lcd_standby;
-	if(lcd_info)
-       		gLcd_info = lcd_info;	
-#endif
+// 	/* Operation function*/
+// #if defined(RK_SCREEN_INIT)  //some screen need to init by spi or i2c
+// 	screen->init = rk_lcd_init;
+//    	screen->standby = rk_lcd_standby;
+// 	if(lcd_info)
+//        		gLcd_info = lcd_info;	
+// #endif
 
-#if defined(USE_RK_DSP_LUT)
-	screen->dsp_lut = dsp_lut;
-#endif
+// #if defined(USE_RK_DSP_LUT)
+// 	screen->dsp_lut = dsp_lut;
+// #endif
 	
-#if defined(CONFIG_ONE_LCDC_DUAL_OUTPUT_INF) 
-    	screen->sscreen_get = set_scaler_info;
-#endif
+// #if defined(CONFIG_ONE_LCDC_DUAL_OUTPUT_INF) 
+//     	screen->sscreen_get = set_scaler_info;
+// #endif
 
-#endif
+// #endif
 
-}
+// }
 
 #if defined(CONFIG_MACH_RK_FAC)
 size_t get_fb_size(void)
@@ -359,22 +358,22 @@ size_t get_fb_size(void)
 	return ALIGN(size,SZ_1M);
 }
 #else
-size_t get_fb_size(void)
-{
-	size_t size = 0;
-	#if defined(CONFIG_THREE_FB_BUFFER)
-        #if defined(CONFIG_LIDA_MACH_X5) || defined(CONFIG_LIDA_MACH_X7II)
-            size = ((480)*(800)<<2)* 3; //three buffer
-        #else
-            size = ((H_VD)*(V_VD)<<2)* 3; //three buffer
-        #endif
-	#else
-        #if defined(CONFIG_LIDA_MACH_X5)
-            size = ((480)*(800)<<2)<<1; //two buffer
-        #else
-            size = ((H_VD)*(V_VD)<<2)<<1; //two buffer
-        #endif
-	#endif
-	return ALIGN(size,SZ_1M);
-}
+// size_t get_fb_size(void)
+// {
+// 	size_t size = 0;
+// 	#if defined(CONFIG_THREE_FB_BUFFER)
+//         #if defined(CONFIG_LIDA_MACH_X5) || defined(CONFIG_LIDA_MACH_X7II)
+//             size = ((480)*(800)<<2)* 3; //three buffer
+//         #else
+//             size = ((H_VD)*(V_VD)<<2)* 3; //three buffer
+//         #endif
+// 	#else
+//         #if defined(CONFIG_LIDA_MACH_X5)
+//             size = ((480)*(800)<<2)<<1; //two buffer
+//         #else
+//             size = ((H_VD)*(V_VD)<<2)<<1; //two buffer
+//         #endif
+// 	#endif
+// 	return ALIGN(size,SZ_1M);
+// }
 #endif

@@ -66,7 +66,7 @@ void hdmi_init_lcdc(struct rk29fb_screen *screen, struct rk29lcd_info *lcd_info)
 	hdmi_set_info(screen, HDMI_VIDEO_DEFAULT_MODE);
 }
 
-int hdmi_set_info(struct rk29fb_screen *screen, unsigned int vic)
+static int hdmi_set_info(struct rk29fb_screen *screen, unsigned int vic)
 {
     int i;
     
@@ -500,7 +500,8 @@ const char *hdmi_get_video_mode_name(unsigned char vic)
  * NOTES:
  * 
  */
-int hdmi_switch_fb(struct hdmi *hdmi, int vic)
+struct hdmi* hdmi = NULL;
+int hdmi_switch_fb(struct hdmi *hdmi_fb, int vic)
 {
 	int rc = 0;
 	rk_screen *screen;
@@ -509,7 +510,7 @@ int hdmi_switch_fb(struct hdmi *hdmi, int vic)
 	screen =  kzalloc(sizeof(struct rk29fb_screen), GFP_KERNEL);
 	if(screen == NULL)
 		return -1;
-	
+	hdmi = hdmi_fb;
 	if(hdmi->vic == 0)
 		hdmi->vic = HDMI_VIDEO_DEFAULT_MODE;
 		
@@ -544,3 +545,49 @@ int hdmi_get_hotplug(void)
 	else
 		return HDMI_HPD_REMOVED;
 }
+/**
+ * hdmi_set_lcdc: switch lcdc mode to required video mode
+ * @hdmi: 
+ * 
+ * NOTES:
+ * 
+ */
+int hdmi_set_lcdc(struct hdmi *hdmi)
+{
+        int rc = 0;
+        struct rk29fb_screen screen;
+//      printk("%s vic is %d\n", __FUNCTION__, hdmi->vic);
+        if(hdmi->autoset)
+                hdmi->vic = hdmi_find_best_mode(hdmi, 0);
+        else
+        hdmi->vic = hdmi_find_best_mode(hdmi, hdmi->vic);
+//      printk("%s selected vic is %d\n", __FUNCTION__, hdmi->vic);
+        if(hdmi->vic == 0)
+                hdmi->vic = HDMI_VIDEO_DEFAULT_MODE;
+
+        rc = hdmi_set_info(&screen, hdmi->vic);
+
+        if(rc == 0) {
+                rk_fb_switch_screen(&screen, 1, hdmi->lcdc->id);
+        }
+        return rc;
+}
+
+/**
+ * hdmi_init_modelist: initial hdmi mode list
+ * @hdmi: 
+ * 
+ * NOTES:
+ * 
+ */
+void hdmi_init_modelist(struct hdmi *hdmi)
+{
+        int i;
+        struct list_head *head = &hdmi->edid.modelist;
+
+        INIT_LIST_HEAD(&hdmi->edid.modelist);
+        for(i = 0; i < ARRAY_SIZE(hdmi_mode); i++) {
+                hdmi_add_videomode(&(hdmi_mode[i].vmode), head);
+        }
+}
+

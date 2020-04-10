@@ -5,8 +5,8 @@
 ///*****************************************
 //   @file   <hdmitx_drv.h>
 //   @author Jau-Chih.Tseng@ite.com.tw
-//   @date   2012/12/20
-//   @fileversion: ITE_HDMITX_SAMPLE_3.14
+//   @date   2012/07/05
+//   @fileversion: ITE_HDMITX_SAMPLE_3.11
 //******************************************/
 
 #ifndef _HDMITX_DRV_H_
@@ -25,8 +25,6 @@
 #define _80MHz 80000000
 #define HDMI_TX_I2C_SLAVE_ADDR 0x98
 #define CEC_I2C_SLAVE_ADDR 0x9C
-
-//#define DISABLE_HDMITX_CSC
 ///////////////////////////////////////////////////////////////////////
 // Register offset
 ///////////////////////////////////////////////////////////////////////
@@ -373,7 +371,91 @@ typedef struct _HDMITXDEV_STRUCT {
     //~jau-chih.tseng@ite.com.tw 2009/11/11
 } HDMITXDEV ;
 
-
+// 2008/02/27 added by jj_tseng@chipadvanced.com
+typedef enum _mode_id {
+    UNKNOWN_MODE=0,
+    CEA_640x480p60,
+    CEA_720x480p60,
+    CEA_1280x720p60,
+    CEA_1920x1080i60,
+    CEA_720x480i60,
+    CEA_720x240p60,
+    CEA_1440x480i60,
+    CEA_1440x240p60,
+    CEA_2880x480i60,
+    CEA_2880x240p60,
+    CEA_1440x480p60,
+    CEA_1920x1080p60,
+    CEA_720x576p50,
+    CEA_1280x720p50,
+    CEA_1920x1080i50,
+    CEA_720x576i50,
+    CEA_1440x576i50,
+    CEA_720x288p50,
+    CEA_1440x288p50,
+    CEA_2880x576i50,
+    CEA_2880x288p50,
+    CEA_1440x576p50,
+    CEA_1920x1080p50,
+    CEA_1920x1080p24,
+    CEA_1920x1080p25,
+    CEA_1920x1080p30,
+    VESA_640x350p85,
+    VESA_640x400p85,
+    VESA_720x400p85,
+    VESA_640x480p60,
+    VESA_640x480p72,
+    VESA_640x480p75,
+    VESA_640x480p85,
+    VESA_800x600p56,
+    VESA_800x600p60,
+    VESA_800x600p72,
+    VESA_800x600p75,
+    VESA_800X600p85,
+    VESA_840X480p60,
+    VESA_1024x768p60,
+    VESA_1024x768p70,
+    VESA_1024x768p75,
+    VESA_1024x768p85,
+    VESA_1152x864p75,
+    VESA_1280x768p60R,
+    VESA_1280x768p60,
+    VESA_1280x768p75,
+    VESA_1280x768p85,
+    VESA_1280x960p60,
+    VESA_1280x960p85,
+    VESA_1280x1024p60,
+    VESA_1280x1024p75,
+    VESA_1280X1024p85,
+    VESA_1360X768p60,
+    VESA_1400x768p60R,
+    VESA_1400x768p60,
+    VESA_1400x1050p75,
+    VESA_1400x1050p85,
+    VESA_1440x900p60R,
+    VESA_1440x900p60,
+    VESA_1440x900p75,
+    VESA_1440x900p85,
+    VESA_1600x1200p60,
+    VESA_1600x1200p65,
+    VESA_1600x1200p70,
+    VESA_1600x1200p75,
+    VESA_1600x1200p85,
+    VESA_1680x1050p60R,
+    VESA_1680x1050p60,
+    VESA_1680x1050p75,
+    VESA_1680x1050p85,
+    VESA_1792x1344p60,
+    VESA_1792x1344p75,
+    VESA_1856x1392p60,
+    VESA_1856x1392p75,
+    VESA_1920x1200p60R,
+    VESA_1920x1200p60,
+    VESA_1920x1200p75,
+    VESA_1920x1200p85,
+    VESA_1920x1440p60,
+    VESA_1920x1440p75,
+} MODE_ID ;
 
 //~jj_tseng@chipadvanced.com
 
@@ -384,7 +466,7 @@ typedef struct structRegSetEntry {
 } RegSetEntry;
 
 #include "hdmitx_hdcp.h"
-#include "hdmitx_input.h"
+//#include "hdmitx_input.h"
 
 
 // Audio Channel Control
@@ -650,7 +732,6 @@ void InitHDMITX(void);
 void HDMITX_InitTxDev(HDMITXDEV *pInstance);
 BYTE CheckHDMITX(BYTE *pHPD,BYTE *pHPDChange);
 BOOL getHDMITX_LinkStatus(void);
-BOOL getHDMI_PowerStatus(void);
 void HDMITX_PowerOn(void);
 void HDMITX_PowerDown(void);
 
@@ -729,10 +810,9 @@ void hdmitx_AbortDDC(void);
 #if defined(Debug_message) && (Debug_message==1)
     void DumpHDMITXReg(void);
 #else
-    #define DumpHDMITXReg()
+    #define DumpHDMITXReg(void)
 #endif
 
-#define delay1ms(x)	mdelay(x)
 ////////////////////////////////////////////////////////////////////
 // Required Interfance
 ////////////////////////////////////////////////////////////////////

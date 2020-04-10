@@ -1412,8 +1412,8 @@ static int processcompl(struct async *as, void __user * __user *arg)
 
        if (as->userbuffer && (urb->actual_length==0) && usb_endpoint_xfer_isoc(&urb->ep->desc) && (urb->number_of_packets==1))//add by wangzhi
        {
-               i = 4;
                int x;
+               i = 4;
                char *ps,*pd;
                pd=(char *)(&x);
                ps=(char *)(urb->transfer_buffer);

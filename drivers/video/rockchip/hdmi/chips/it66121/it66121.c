@@ -3,14 +3,15 @@
 #include <linux/module.h>
 #include <linux/platform_device.h>
 #include <linux/interrupt.h>
+#include "../../rk_hdmi.h"
+// #include <linux/hdmi.h>
 #include <mach/board.h>
 #include <mach/gpio.h>
 #include <mach/iomux.h>
 #include <linux/i2c.h>
 #include "it66121.h"
-#include "../../rk_hdmi.h"
 
-static struct it66121 *it66121 = NULL;
+struct it66121 *it66121 = NULL;
 
 BOOL i2c_write_byte( BYTE address,BYTE offset,BYTE byteno,BYTE *p_data,BYTE device )
 {
@@ -28,7 +29,7 @@ BOOL i2c_read_byte( BYTE address,BYTE offset,BYTE byteno,BYTE *p_data,BYTE devic
 		return false;
 }
 
-static void it66121_irq_work_func(struct work_struct *work)
+void it66121_irq_work_func(struct work_struct *work)
 {
 	struct hdmi *hdmi = it66121->hdmi;
 
@@ -38,34 +39,34 @@ static void it66121_irq_work_func(struct work_struct *work)
 	}
 }
 
-static irqreturn_t it66121_detect_irq(int irq, void *dev_id)
+irqreturn_t it66121_detect_irq(int irq, void *dev_id)
 {
 	schedule_work(&it66121->irq_work);
     return IRQ_HANDLED;
 }
 
-static int it66121_enable(struct hdmi *hdmi)
+int it66121_enable(struct hdmi *hdmi)
 {
 	it66121->enable = 1;
 	queue_delayed_work(it66121->workqueue, &it66121->delay_work, msecs_to_jiffies(50));
 	return 0;
 }
 
-static int it66121_disable(struct hdmi *hdmi)
+int it66121_disable(struct hdmi *hdmi)
 {
 	it66121->enable = 0;
 	return 0;
 }
 
 #ifdef CONFIG_HAS_EARLYSUSPEND
-static void it66121_early_suspend(struct early_suspend *h)
+void it66121_early_suspend(struct early_suspend *h)
 {
 	struct hdmi *hdmi = it66121->hdmi;
 	hdmi_submit_work(hdmi, HDMI_SUSPEND_CTL, 0, NULL);
 	return;
 }
 
-static void it66121_early_resume(struct early_suspend *h)
+void it66121_early_resume(struct early_suspend *h)
 {
 	struct hdmi *hdmi = it66121->hdmi;		
 	hdmi_submit_work(hdmi, HDMI_RESUME_CTL, 0, NULL);
@@ -73,9 +74,9 @@ static void it66121_early_resume(struct early_suspend *h)
 }
 #endif
 
-static struct hdmi_property it66121_property;
+struct hdmi_property it66121_property;
 
-static struct hdmi_ops it66121_ops = {
+struct hdmi_ops it66121_ops = {
 	.enable = it66121_enable,
 	.disable = it66121_disable,
 	.getStatus = it66121_detect_hotplug,
@@ -89,7 +90,7 @@ static struct hdmi_ops it66121_ops = {
 //	.setCEC = it66121_config_cec,
 };
 
-static int it66121_i2c_probe(struct i2c_client *client,const struct i2c_device_id *id)
+int it66121_i2c_probe(struct i2c_client *client,const struct i2c_device_id *id)
 {
 	int rc = 0;
 	struct hdmi *hdmi = NULL;
@@ -98,9 +99,9 @@ static int it66121_i2c_probe(struct i2c_client *client,const struct i2c_device_i
 	it66121 = kzalloc(sizeof(struct it66121), GFP_KERNEL);
 	if(!it66121)
 	{
-        dev_err(&client->dev, "no memory for state\n");
-        goto err_kzalloc_it66121;
-    }
+        	dev_err(&client->dev, "no memory for state\n");
+        	goto err_kzalloc_it66121;
+    	}
 	it66121->client = client;
 	it66121->io_irq_pin = client->irq;
 	it66121->enable = 1;
@@ -203,18 +204,18 @@ err_kzalloc_it66121:
 	return rc;
 }
 
-static int __devexit it66121_i2c_remove(struct i2c_client *client)
+int __devexit it66121_i2c_remove(struct i2c_client *client)
 {
 	
     return 0;
 }
 
-static const struct i2c_device_id it66121_id[] = {
+const struct i2c_device_id it66121_id[] = {
 	{ "it66121", 0 },
 	{ }
 };
 
-static struct i2c_driver it66121_i2c_driver = {
+struct i2c_driver it66121_i2c_driver = {
     .driver = {
         .name  = "it66121",
         .owner = THIS_MODULE,
@@ -224,12 +225,12 @@ static struct i2c_driver it66121_i2c_driver = {
     .id_table	= it66121_id,
 };
 
-static int __init it66121_init(void)
+int __init it66121_init(void)
 {
     return i2c_add_driver(&it66121_i2c_driver);
 }
 
-static void __exit it66121_exit(void)
+void __exit it66121_exit(void)
 {
     i2c_del_driver(&it66121_i2c_driver);
 }

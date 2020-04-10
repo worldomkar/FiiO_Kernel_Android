@@ -420,6 +420,7 @@ extern int rk_fb_register(struct rk_lcdc_device_driver *dev_drv,
 	struct rk_lcdc_device_driver *def_drv,int id);
 extern int rk_fb_unregister(struct rk_lcdc_device_driver *dev_drv);
 extern int get_fb_layer_id(struct fb_fix_screeninfo *fix);
+extern size_t get_fb_size(void);
 extern struct rk_lcdc_device_driver * rk_get_lcdc_drv(char *name);
 extern rk_screen * rk_fb_get_prmry_screen(void);
 u32 rk_fb_get_prmry_screen_pixclock(void);

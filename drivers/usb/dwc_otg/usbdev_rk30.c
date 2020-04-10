@@ -49,9 +49,8 @@
 #define USBGRF_UOC1_CON2	(GRF_REG_BASE+0x190)
 #endif
 
-bool is_otg_enable = false;
 
-extern void bq2589x_set_otg(int enable);
+extern void rk28_send_wakeup_key(void);
 int dwc_otg_check_dpdm(void)
 {
 	static uint8_t * reg_base = 0;
@@ -132,7 +131,8 @@ void usb20otg_hw_init(void)
 #endif
 #endif
         // usb phy config init
-#ifdef CONFIG_ARCH_RK3188
+#if 0
+def CONFIG_ARCH_RK3188
         //usb phy enter usb mode
         unsigned int * otg_phy_con3 = (unsigned int*)(USBGRF_UOC0_CON0);
         *otg_phy_con3 = (0x0300 << 16);
@@ -142,10 +142,10 @@ void usb20otg_hw_init(void)
         // other haredware init
 #if defined(CONFIG_ARCH_RK3066B) || defined(CONFIG_ARCH_RK3188)
         //GPIO init
-    #if defined(CONFIG_LIDA_MACH_X7)
+    // #if defined(CONFIG_LIDA_MACH_X7)
         gpio_request(RK3066B_OTG_DRV_VBUS, NULL);
         gpio_direction_output(RK3066B_OTG_DRV_VBUS, GPIO_LOW);
-    #endif
+    //#endif
 #else
         rk30_mux_api_set(GPIO0A5_OTGDRVVBUS_NAME, GPIO0A_OTG_DRV_VBUS);
 #endif
@@ -273,69 +273,23 @@ void dwc_otg_uart_mode(void* pdata, int enter_usb_uart_mode)
 #endif
 
 #if defined(CONFIG_ARCH_RK3066B) || defined(CONFIG_ARCH_RK3188)
-#define HOST_POWER_EN    RK30_PIN0_PA3
-#define ES9018_POWER_EN  RK30_PIN0_PA1
-extern void rk28_send_wakeup_key(void);
-
-int get_host_power_en(void)
-{
-    int val;
-
-    gpio_request(ES9018_POWER_EN, NULL);
-    //gpio_direction_output(HOST_POWER_EN, 0);
-    val = gpio_get_value(ES9018_POWER_EN);
-    gpio_free(ES9018_POWER_EN);
-    
-    return val;
-}
-
-#if defined(CONFIG_LIDA_MACH_X7) || defined(CONFIG_ARCH_RK3188)
 void usb20otg_power_enable(int enable)
 { 
     unsigned int usbgrf_status = *(unsigned int*)(USBGRF_SOC_STATUS0);
     if(0 == enable)//disable
     {
-        printk("%s: get_host_power_en  is   %d \n", __func__, get_host_power_en());
-        if (0 == get_host_power_en()) {
-            printk("%s: disable HOST_POWER_EN !\n", __func__);
-            gpio_set_value(HOST_POWER_EN, GPIO_LOW);
-        }
-
-        gpio_set_value(RK3066B_OTG_DRV_VBUS, GPIO_LOW); 
-        is_otg_enable = false;
+        gpio_set_value(RK3066B_OTG_DRV_VBUS, GPIO_LOW);
     }
     if(1 == enable)//enable
     {
         //enable HOST_POWER_EN
-        if (0 == get_host_power_en())
-            gpio_set_value(HOST_POWER_EN, GPIO_HIGH);
+        //if (0 == get_host_power_en())
+        //    gpio_set_value(HOST_POWER_EN, GPIO_HIGH);
 
         gpio_set_value(RK3066B_OTG_DRV_VBUS, GPIO_HIGH);
-        is_otg_enable = true; 
     }
 
     rk28_send_wakeup_key(); 
-}
-#elif defined(CONFIG_LIDA_MACH_X5)|| defined(CONFIG_LIDA_MACH_X7II)
-void usb20otg_power_enable(int enable)
-{ 
-    unsigned int usbgrf_status = *(unsigned int*)(USBGRF_SOC_STATUS0);
-    if(enable){//enable 
-        bq2589x_set_otg(1);
-        is_otg_enable = true; 
-    }else{
-
-        bq2589x_set_otg(0);
-        is_otg_enable = false;
-    }
-      
-}
-
-#endif
-
-bool is_otg_mode(void)
-{
-    return is_otg_enable;
 }
 #endif
 struct dwc_otg_platform_data usb20otg_pdata = {
@@ -384,7 +338,7 @@ static struct resource usb20_host_resource[] = {
 void usb20host_hw_init(void)
 {
     // usb phy config init
-#ifdef CONFIG_ARCH_RK3188
+#if 0 //def CONFIG_ARCH_RK3188
     //Disconnect Threshold Adjustment
     unsigned int * otg_phy_con1 = (unsigned int*)(USBGRF_UOC1_CON0);
     *otg_phy_con1 = (0x07<<1)|((0x07<<1)<<16);
@@ -392,8 +346,8 @@ void usb20host_hw_init(void)
 
     // other haredware init
 #if defined(CONFIG_ARCH_RK3066B) || defined(CONFIG_ARCH_RK3188)
-    //gpio_request(RK3066B_HOST_DRV_VBUS, NULL);
-    //gpio_direction_output(RK3066B_HOST_DRV_VBUS, GPIO_HIGH);
+    gpio_request(RK3066B_HOST_DRV_VBUS, NULL);
+    gpio_direction_output(RK3066B_HOST_DRV_VBUS, GPIO_HIGH);
 #else
     rk30_mux_api_set(GPIO0A6_HOSTDRVVBUS_NAME, GPIO0A_HOST_DRV_VBUS);
 #endif
@@ -520,7 +474,7 @@ void usb20host_power_enable(int enable)
 
     if(1 == enable)//enable
     {
-        //gpio_set_value(RK3066B_HOST_DRV_VBUS, GPIO_HIGH);
+        gpio_set_value(RK3066B_HOST_DRV_VBUS, GPIO_HIGH);
         //printk("!!!!!!!!!!!!!!!!!!!!!enable host power!!!!!!!!!!!!!!!!!!\n");
     }   
 }
@@ -551,100 +505,7 @@ struct platform_device device_usb20_host = {
 	},
 };
 #endif
-#ifdef CONFIG_USB_EHCI_RK
-void rkehci_hw_init(void)
-{
-	unsigned int * phy_con0 = (unsigned int*)(USBGRF_UOC2_CON0);
-	unsigned int * phy_con1 = (unsigned int*)(USBGRF_UOC1_CON0);
-	unsigned int * phy_con2 = (unsigned int*)(USBGRF_UOC0_CON0);
-	unsigned int * phy_con3 = (unsigned int*)(USBGRF_UOC3_CON0);
-	// usb phy config init
-	// hsic phy config init, set hsicphy_txsrtune
-	*phy_con0 = ((0xf<<6)<<16)|(0xf<<6);
 
-	// other haredware init
-	// set common_on, in suspend mode, otg/host PLL blocks remain powered
-#ifdef CONFIG_ARCH_RK3188
-	*phy_con1 = (1<<16)|0;
-#else
-	*phy_con2 = (1<<16)|0;
-#endif
-	/* change INCR to INCR16 or INCR8(beats less than 16)
-	 * or INCR4(beats less than 8) or SINGLE(beats less than 4)
-	 */
-	*phy_con3 = 0x00ff00bc;
-}
-
-void rkehci_clock_init(void* pdata)
-{
-	struct rkehci_platform_data *usbpdata=pdata;
-
-#ifdef CONFIG_ARCH_RK3188  
-	struct clk *clk_otg, *clk_hs;
-
-	/* By default, hsicphy_480m's parent is otg phy 480MHz clk
-	 * rk3188 must use host phy 480MHz clk
-	 */
-	clk_hs = clk_get(NULL, "hsicphy_480m");
-	clk_otg = clk_get(NULL, "otgphy1_480m");
-	clk_set_parent(clk_hs, clk_otg);
-#endif
-
-	usbpdata->hclk_hsic = clk_get(NULL, "hclk_hsic");
-	usbpdata->hsic_phy_480m = clk_get(NULL, "hsicphy_480m");
-	usbpdata->hsic_phy_12m = clk_get(NULL, "hsicphy_12m");
-}
-
-void rkehci_clock_enable(void* pdata, int enable)
-{
-	struct rkehci_platform_data *usbpdata=pdata;
-
-	if(enable == usbpdata->clk_status)
-		return;
-
-	if(enable){
-		clk_enable(usbpdata->hclk_hsic);
-		clk_enable(usbpdata->hsic_phy_480m);
-		clk_enable(usbpdata->hsic_phy_12m);
-		usbpdata->clk_status = 1;
-	}else{
-		clk_disable(usbpdata->hsic_phy_12m);
-		clk_disable(usbpdata->hsic_phy_480m);
-		clk_disable(usbpdata->hclk_hsic);
-		usbpdata->clk_status = 0;
-	}
-}
-
-void rkehci_soft_reset(void)
-{
-	unsigned int * phy_con0 = (unsigned int*)(USBGRF_UOC2_CON0);
-
-	cru_set_soft_reset(SOFT_RST_HSICPHY, true);
-	udelay(12);
-	cru_set_soft_reset(SOFT_RST_HSICPHY, false);
-	mdelay(2);
-
-	*phy_con0 = ((1<<10)<<16)|(1<<10);
-	udelay(2);
-	*phy_con0 = ((1<<10)<<16)|(0<<10);
-	udelay(2);
-
-	cru_set_soft_reset(SOFT_RST_HSIC_AHB, true);
-	udelay(2);
-	cru_set_soft_reset(SOFT_RST_HSIC_AHB, false);
-	udelay(2);
-}
-
-struct rkehci_platform_data rkehci_pdata = {
-	.hclk_hsic = NULL,
-	.hsic_phy_12m = NULL,
-	.hsic_phy_480m = NULL,
-	.clk_status = -1,
-	.hw_init = rkehci_hw_init,
-	.clock_init = rkehci_clock_init,
-	.clock_enable = rkehci_clock_enable,
-	.soft_reset = rkehci_soft_reset,
-};
 
 static struct resource resources_hsusb_host[] = {
     {
@@ -666,10 +527,8 @@ struct platform_device device_hsusb_host = {
     .resource       = resources_hsusb_host,
     .dev            = {
         .coherent_dma_mask      = 0xffffffff,
-        .platform_data  = &rkehci_pdata,
     },
 };
-#endif
 
 static int __init usbdev_init_devices(void)
 {

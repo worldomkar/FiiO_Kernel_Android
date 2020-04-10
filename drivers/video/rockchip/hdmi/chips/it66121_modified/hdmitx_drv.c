@@ -5,16 +5,18 @@
 ///*****************************************
 //   @file   <hdmitx_drv.c>
 //   @author Jau-Chih.Tseng@ite.com.tw
-//   @date   2012/12/20
-//   @fileversion: ITE_HDMITX_SAMPLE_3.14
+//   @date   2012/07/05
+//   @fileversion: ITE_HDMITX_SAMPLE_3.11
 //******************************************/
 
 /////////////////////////////////////////////////////////////////////
 // HDMITX.C
 // Driver code for platform independent
 /////////////////////////////////////////////////////////////////////
+#include "it66121.h"
 #include "hdmitx.h"
 #include "hdmitx_drv.h"
+
 #define FALLING_EDGE_TRIGGER
 
 #define MSCOUNT 1000
@@ -45,7 +47,7 @@ HDMITXDEV hdmiTxDev[HDMITX_MAX_DEV_COUNT] ;
 #define INIT_CLK_HIGH
 // #define INIT_CLK_LOW
 
-_CODE RegSetEntry HDMITX_Init_Table[] = {
+static RegSetEntry HDMITX_Init_Table[] = {
 
     {0x0F, 0x40, 0x00},
 
@@ -98,7 +100,7 @@ _CODE RegSetEntry HDMITX_Init_Table[] = {
     {0,0,0}
 };
 
-_CODE RegSetEntry HDMITX_DefaultVideo_Table[] = {
+static RegSetEntry HDMITX_DefaultVideo_Table[] = {
 
     ////////////////////////////////////////////////////
     // Config default output format.
@@ -161,7 +163,7 @@ _CODE RegSetEntry HDMITX_DefaultVideo_Table[] = {
     {0x04, 0x08, 0x00},
     {0,0,0}
 };
-_CODE RegSetEntry HDMITX_SetHDMI_Table[] = {
+static RegSetEntry HDMITX_SetHDMI_Table[] = {
 
     ////////////////////////////////////////////////////
     // Config default HDMI Mode
@@ -172,7 +174,7 @@ _CODE RegSetEntry HDMITX_SetHDMI_Table[] = {
     {0,0,0}
 };
 
-_CODE RegSetEntry HDMITX_SetDVI_Table[] = {
+static RegSetEntry HDMITX_SetDVI_Table[] = {
 
     ////////////////////////////////////////////////////
     // Config default HDMI Mode
@@ -186,7 +188,7 @@ _CODE RegSetEntry HDMITX_SetDVI_Table[] = {
     {0,0,0}
 };
 
-_CODE RegSetEntry HDMITX_DefaultAVIInfo_Table[] = {
+static RegSetEntry HDMITX_DefaultAVIInfo_Table[] = {
 
     ////////////////////////////////////////////////////
     // Config default avi infoframe
@@ -210,7 +212,7 @@ _CODE RegSetEntry HDMITX_DefaultAVIInfo_Table[] = {
     {0xCD, 0x03, 0x03},
     {0,0,0}
 };
-_CODE RegSetEntry HDMITX_DeaultAudioInfo_Table[] = {
+static RegSetEntry HDMITX_DeaultAudioInfo_Table[] = {
 
     ////////////////////////////////////////////////////
     // Config default audio infoframe
@@ -228,7 +230,7 @@ _CODE RegSetEntry HDMITX_DeaultAudioInfo_Table[] = {
     {0,0,0}
 };
 
-_CODE RegSetEntry HDMITX_Aud_CHStatus_LPCM_20bit_48Khz[] =
+static RegSetEntry HDMITX_Aud_CHStatus_LPCM_20bit_48Khz[] =
 {
     {0x0F, 0x01, 0x01},
     {0x33, 0xFF, 0x00},
@@ -244,7 +246,7 @@ _CODE RegSetEntry HDMITX_Aud_CHStatus_LPCM_20bit_48Khz[] =
     {0,0,0}//end of table
 } ;
 
-_CODE RegSetEntry HDMITX_AUD_SPDIF_2ch_24bit[] =
+static RegSetEntry HDMITX_AUD_SPDIF_2ch_24bit[] =
 {
     {0x0F, 0x11, 0x00},
     {0x04, 0x14, 0x04},
@@ -258,7 +260,7 @@ _CODE RegSetEntry HDMITX_AUD_SPDIF_2ch_24bit[] =
     {0,0,0}//end of table
 } ;
 
-_CODE RegSetEntry HDMITX_AUD_I2S_2ch_24bit[] =
+static RegSetEntry HDMITX_AUD_I2S_2ch_24bit[] =
 {
     {0x0F, 0x11, 0x00},
     {0x04, 0x14, 0x04},
@@ -272,7 +274,7 @@ _CODE RegSetEntry HDMITX_AUD_I2S_2ch_24bit[] =
     {0,0,0}//end of table
 } ;
 
-_CODE RegSetEntry HDMITX_DefaultAudio_Table[] = {
+static RegSetEntry HDMITX_DefaultAudio_Table[] = {
 
     ////////////////////////////////////////////////////
     // Config default audio output format.
@@ -301,7 +303,7 @@ _CODE RegSetEntry HDMITX_DefaultAudio_Table[] = {
     {0x00, 0x00, 0x00} // End of Table.
 } ;
 
-_CODE RegSetEntry HDMITX_PwrDown_Table[] = {
+static RegSetEntry HDMITX_PwrDown_Table[] = {
      // Enable GRCLK
      {0x0F, 0x40, 0x00},
      // PLL Reset
@@ -321,7 +323,7 @@ _CODE RegSetEntry HDMITX_PwrDown_Table[] = {
      {0x00, 0x00, 0x00} // End of Table.
 };
 
-_CODE RegSetEntry HDMITX_PwrOn_Table[] = {
+static RegSetEntry HDMITX_PwrOn_Table[] = {
     {0x0F, 0x78, 0x38},   // PwrOn GRCLK
     {0x05, 0x01, 0x00},   // PwrOn PCLK
 
@@ -341,7 +343,6 @@ _CODE RegSetEntry HDMITX_PwrOn_Table[] = {
 #ifdef DETECT_VSYNC_CHG_IN_SAV
 BOOL EnSavVSync = FALSE ;
 #endif
-static bool PowerStatus=FALSE;
 
 //////////////////////////////////////////////////////////////////////
 // Function Prototype
@@ -358,6 +359,7 @@ void HDMITX_InitTxDev(HDMITXDEV *pInstance)
 
 void InitHDMITX()
 {
+
     hdmitx_LoadRegSetting(HDMITX_Init_Table);
     HDMITX_WriteI2C_Byte(REG_TX_PLL_CTRL,0xff);
     hdmiTxDev[0].bIntPOL = (hdmiTxDev[0].bIntType&B_TX_INTPOL_ACTH)?TRUE:FALSE ;
@@ -400,7 +402,6 @@ BOOL getHDMITX_LinkStatus()
     return FALSE;
 }
 
-#if 1
 BYTE CheckHDMITX(BYTE *pHPD,BYTE *pHPDChange)
 {
     BYTE intdata1,intdata2,intdata3,sysstat;
@@ -506,9 +507,8 @@ BYTE CheckHDMITX(BYTE *pHPD,BYTE *pHPDChange)
         }
         #endif // SUPPORT_HDCP
 
-#if 0
+		/*
 		intdata3 = HDMITX_ReadI2C_Byte(REG_TX_INT_STAT3);
-        HDMITX_DEBUG_PRINTF(("INT_Handler: reg%X = %X\n",(int)REG_TX_INT_STAT3,(int)intdata3));
 		if(intdata3 & B_TX_INT_VIDSTABLE)
 		{
 			sysstat = HDMITX_ReadI2C_Byte(REG_TX_SYS_STATUS);
@@ -517,27 +517,26 @@ BYTE CheckHDMITX(BYTE *pHPD,BYTE *pHPDChange)
 				hdmitx_FireAFE();
 			}
 		}
-#endif
+		*/
         intdata3= HDMITX_ReadI2C_Byte(0xEE);
         if( intdata3 )
         {
             HDMITX_WriteI2C_Byte(0xEE,intdata3); // clear ext interrupt ;
             HDMITX_DEBUG_PRINTF(("%s%s%s%s%s%s%s\n",
-                (intdata3&0x40)?"video parameter change \n":"",
-                (intdata3&0x20)?"HDCP Pj check done \n":"",
-                (intdata3&0x10)?"HDCP Ri check done \n":"",
-                (intdata3&0x8)? "DDC bus hang \n":"",
-                (intdata3&0x4)? "Video input FIFO auto reset \n":"",
-                (intdata3&0x2)? "No audio input interrupt  \n":"",
-                (intdata3&0x1)? "Audio decode error interrupt \n":""));
+                (intdata3&0x40)?"video parameter change ":"",
+                (intdata3&0x20)?"HDCP Pj check done ":"",
+                (intdata3&0x10)?"HDCP Ri check done ":"",
+                (intdata3&0x8)? "DDC bus hang ":"",
+                (intdata3&0x4)? "Video input FIFO auto reset ":"",
+                (intdata3&0x2)? "No audio input interrupt  ":"",
+                (intdata3&0x1)? "Audio decode error interrupt ":""));
         }
-	    HDMITX_WriteI2C_Byte(REG_TX_INT_CLR0,0xFF);
-	    HDMITX_WriteI2C_Byte(REG_TX_INT_CLR1,0xFF);
-	    intclr3 = (HDMITX_ReadI2C_Byte(REG_TX_SYS_STATUS))|B_TX_CLR_AUD_CTS | B_TX_INTACTDONE ;
-	    HDMITX_WriteI2C_Byte(REG_TX_SYS_STATUS,intclr3); // clear interrupt.
-
-	    intclr3 &= ~(B_TX_INTACTDONE);
-	    HDMITX_WriteI2C_Byte(REG_TX_SYS_STATUS,intclr3); // INTACTDONE reset to zero.
+        HDMITX_WriteI2C_Byte(REG_TX_INT_CLR0,0xFF);
+        HDMITX_WriteI2C_Byte(REG_TX_INT_CLR1,0xFF);
+        intclr3 = (HDMITX_ReadI2C_Byte(REG_TX_SYS_STATUS))|B_TX_CLR_AUD_CTS | B_TX_INTACTDONE ;
+        HDMITX_WriteI2C_Byte(REG_TX_SYS_STATUS,intclr3); // clear interrupt.
+        intclr3 &= ~(B_TX_INTACTDONE);
+        HDMITX_WriteI2C_Byte(REG_TX_SYS_STATUS,intclr3); // INTACTDONE reset to zero.
     }
     //
     // else
@@ -568,21 +567,16 @@ BYTE CheckHDMITX(BYTE *pHPD,BYTE *pHPDChange)
     hdmiTxDev[0].bHPD = HPD ;
     return HPD ;
 }
-#endif
+
 void HDMITX_PowerOn()
 {
-	PowerStatus = TRUE;
     hdmitx_LoadRegSetting(HDMITX_PwrOn_Table);
 }
 
 void HDMITX_PowerDown()
 {
-	PowerStatus = FALSE;
     hdmitx_LoadRegSetting(HDMITX_PwrDown_Table);
-}
-BOOL getHDMI_PowerStatus()
-{
-	return PowerStatus;
+    hdmiTxDev[0].bHPD = 0;
 }
 
 void setHDMITX_AVMute(BYTE bEnable)
@@ -641,16 +635,6 @@ BOOL getHDMITX_EDIDBlock(int EDIDBlockID,BYTE *pEDIDData)
     {
         return FALSE ;
     }
-#if Debug_message
-    {
-	    int j=0;
-	    EDID_DEBUG_PRINTF(("------BlockID=%d------\n",EDIDBlockID));
-	    for( j = 0 ; j < 128 ; j++ )
-	    {
-		    EDID_DEBUG_PRINTF(("%02X%c",(int)pEDIDData[j],(7 == (j&7))?'\n':' '));
-	    }
-    }
-#endif
     return TRUE ;
 }
 
@@ -745,7 +729,7 @@ SYS_STATUS getHDMITX_EDIDBytes(BYTE *pData,BYTE bSegment,BYTE offset,SHORT Count
         }
         if(TimeOut == 0)
         {
-            HDMITX_DEBUG_PRINTF(("getHDMITX_EDIDBytes(): DDC TimeOut %d . \n",(int)ucdata));
+            HDMITX_DEBUG_PRINTF(("getHDMITX_EDIDBytes(): DDC TimeOut. \n"));
             // HDMITX_AndReg_Byte(REG_TX_INT_CTRL,~(1<<1));
             return ER_FAIL ;
         }
@@ -836,11 +820,11 @@ void hdmitx_AbortDDC()
 
 extern HDMITXDEV hdmiTxDev[HDMITX_MAX_DEV_COUNT] ;
 
-void WaitTxVidStable(void);
-void hdmitx_SetInputMode(BYTE InputMode,BYTE bInputSignalType);
-void hdmitx_SetCSCScale(BYTE bInputMode,BYTE bOutputMode);
-void hdmitx_SetupAFE(VIDEOPCLKLEVEL PCLKLevel);
-void hdmitx_FireAFE(void);
+static void WaitTxVidStable(void);
+static void hdmitx_SetInputMode(BYTE InputMode,BYTE bInputSignalType);
+static void hdmitx_SetCSCScale(BYTE bInputMode,BYTE bOutputMode);
+static void hdmitx_SetupAFE(VIDEOPCLKLEVEL PCLKLevel);
+static void hdmitx_FireAFE(void);
 
 //////////////////////////////////////////////////////////////////////
 // utility function for main..
@@ -935,17 +919,7 @@ BOOL HDMITX_EnableVideoOutput(VIDEOPCLKLEVEL level,BYTE inputColorMode,BYTE outp
     // bInputVideoMode,bOutputVideoMode,hdmiTxDev[0].bInputVideoSignalType,bAudioInputType,should be configured by upper F/W or loaded from EEPROM.
     // should be configured by initsys.c
     // VIDEOPCLKLEVEL level ;
-#if 0
-    switch(level)
-    {
-	    case PCLK_HIGH:
-		    HDMITX_WriteI2C_Byte(REG_TX_PLL_CTRL,0x30 /*0xff*/);
-		    break ;
-	    default:
-		    HDMITX_WriteI2C_Byte(REG_TX_PLL_CTRL,0x00);
-            break ;
-    }
-#endif
+
     HDMITX_WriteI2C_Byte(REG_TX_SW_RST,B_HDMITX_VID_RST|B_HDMITX_AUD_RST|B_TX_AREF_RST|B_TX_HDCP_RST_HDMITX);
 
     hdmiTxDev[0].bHDMIMode = (BYTE)bHDMI ;
@@ -995,7 +969,7 @@ BOOL setHDMITX_VideoSignalType(BYTE inputSignalType)
     return TRUE ;
 }
 
-void WaitTxVidStable()
+static void WaitTxVidStable()
 {
 #if 0
     BYTE i ;
@@ -1323,7 +1297,7 @@ BOOL setHDMITX_SyncEmbeddedByVIC(BYTE VIC,BYTE bInputType)
 // Side-Effect: Reg70.
 //////////////////////////////////////////////////////////////////////
 
-void hdmitx_SetInputMode(BYTE InputColorMode,BYTE bInputSignalType)
+static void hdmitx_SetInputMode(BYTE InputColorMode,BYTE bInputSignalType)
 {
     BYTE ucData ;
 
@@ -1382,9 +1356,9 @@ void hdmitx_SetInputMode(BYTE InputColorMode,BYTE bInputSignalType)
 // Side-Effect:
 //////////////////////////////////////////////////////////////////////
 
-void hdmitx_SetCSCScale(BYTE bInputMode,BYTE bOutputMode)
+static void hdmitx_SetCSCScale(BYTE bInputMode,BYTE bOutputMode)
 {
-    BYTE ucData = 0,csc = B_HDMITX_CSC_BYPASS ;
+    BYTE ucData,csc ;
     BYTE i ;
     BYTE filter = 0 ; // filter is for Video CTRL DN_FREE_GO,EN_DITHER,and ENUDFILT
 
@@ -1591,7 +1565,7 @@ void hdmitx_SetCSCScale(BYTE bInputMode,BYTE bOutputMode)
 // Side-Effect:
 //////////////////////////////////////////////////////////////////////
 
-void hdmitx_SetupAFE(VIDEOPCLKLEVEL level)
+static void hdmitx_SetupAFE(VIDEOPCLKLEVEL level)
 {
 
     HDMITX_WriteI2C_Byte(REG_TX_AFE_DRV_CTRL,B_TX_AFE_DRV_RST);/* 0x10 */
@@ -1624,7 +1598,7 @@ void hdmitx_SetupAFE(VIDEOPCLKLEVEL level)
 // Side-Effect: N/A
 //////////////////////////////////////////////////////////////////////
 
-void hdmitx_FireAFE()
+static void hdmitx_FireAFE()
 {
     Switch_HDMITX_Bank(0);
     HDMITX_WriteI2C_Byte(REG_TX_AFE_DRV_CTRL,0);
@@ -1987,7 +1961,7 @@ void HDMITX_EnableAudioOutput(BYTE AudioType, BOOL bSPDIF,  ULONG SampleFreq,  B
                 ucIEC60958ChStat[2] = 4 ;
             }
             ucIEC60958ChStat[3] = Fs ;
-            ucIEC60958ChStat[4] = (((~Fs)<<4) & 0xF0) | CHTSTS_SWCODE ; // Fs | 24bit word length
+            ucIEC60958ChStat[4] = ((~Fs)<<4) & 0xF0 | CHTSTS_SWCODE ; // Fs | 24bit word length
             pIEC60958ChStat = ucIEC60958ChStat ;
         }
     }
@@ -2174,7 +2148,7 @@ void setHDMITX_AudioChannelEnable(BOOL EnableAudio_b)
                 //HDMITX_OrREG_Byte(0x59,(1<<2));  //for test
                 HDMITX_AndReg_Byte(REG_TX_PKT_SINGLE_CTRL,(~0x3C));
                 HDMITX_AndReg_Byte(REG_TX_PKT_SINGLE_CTRL,(~(1<<5)));
-                printk("Audio Out Enable\n");
+                DBG("Audio Out Enable\n");
         #ifndef SUPPORT_AUDIO_MONITOR
                 AudioOutStatus=TRUE;
         #endif
@@ -2547,7 +2521,8 @@ SYS_STATUS hdmitx_SetMPEGInfoFrame(MPEG_InfoFrame *pMPGInfoFrame)
 
 SYS_STATUS hdmitx_SetVSIInfoFrame(VendorSpecific_InfoFrame *pVSIInfoFrame)
 {
-    BYTE ucData=0 ;
+    int i ;
+    byte ucData=0 ;
 
     if(!pVSIInfoFrame)
     {
@@ -2608,13 +2583,12 @@ SYS_STATUS hdmitx_Set_GeneralPurpose_PKT(BYTE *pData)
 // Side-Effect: N/A
 //////////////////////////////////////////////////////////////////////
 
-#if Debug_message
+#if defined(Debug_message) && Debug_message
 void DumpHDMITXReg()
 {
     int i,j ;
     BYTE ucData ;
 
-	printk( "[%s]\n", __FUNCTION__);
     HDMITX_DEBUG_PRINTF(("       "));
     for(j = 0 ; j < 16 ; j++)
     {
@@ -2640,7 +2614,7 @@ void DumpHDMITXReg()
             }
             else
             {
-                HDMITX_DEBUG_PRINTF((" XX")); // for DDC FIFO
+                HDMITX_DEBUG_PRINTF((" XX",(int)ucData)); // for DDC FIFO
             }
             if((j == 3)||(j==7)||(j==11))
             {

@@ -7,6 +7,9 @@
 #include <mach/iomux.h>
 #include "hdmitx.h"
 
+// CAT66121_I2C_RATE -- 3.0.72+
+#define CAT66121_I2C_RATE        100 * 1000
+
 extern HDMITXDEV hdmiTxDev[HDMITX_MAX_DEV_COUNT] ;
 #define HDMITX_INPUT_SIGNAL_TYPE 0  // for default(Sync Sep Mode)
 #define INPUT_SPDIF_ENABLE	0
@@ -63,16 +66,16 @@ BYTE HDMITX_ReadI2C_Byte(BYTE RegAddr)
 
 	/* Write device addr fisrt */
 	msgs[0].addr	= cat66121_hdmi->client->addr;
-	msgs[0].flags	= !I2C_M_RD;
+	msgs[0].flags	= cat66121_hdmi->client->flags & !I2C_M_RD;
 	msgs[0].len		= 1;
 	msgs[0].buf		= &buf[0];
-	msgs[0].scl_rate= 100*1000;
+	msgs[0].scl_rate= CAT66121_I2C_RATE;
 	/* Then, begin to read data */
 	msgs[1].addr	= cat66121_hdmi->client->addr;
-	msgs[1].flags	= I2C_M_RD;
+	msgs[1].flags	= cat66121_hdmi->client->flags | I2C_M_RD;
 	msgs[1].len		= 1;
 	msgs[1].buf		= &buf[0];
-	msgs[1].scl_rate= 100*1000;
+	msgs[1].scl_rate= CAT66121_I2C_RATE;
 
 	ret = i2c_transfer(cat66121_hdmi->client->adapter, msgs, 2);
 	if(ret != 2)
@@ -92,10 +95,10 @@ SYS_STATUS HDMITX_WriteI2C_Byte(BYTE RegAddr, BYTE data)
 	buf[1] = data;
 
 	msg.addr	= cat66121_hdmi->client->addr;
-	msg.flags	= !I2C_M_RD;
+	msg.flags	= cat66121_hdmi->client->addr & !I2C_M_RD;
 	msg.len		= 2;
 	msg.buf		= buf;		
-	msg.scl_rate= 100*1000;
+	msg.scl_rate= CAT66121_I2C_RATE;
 
 	ret = i2c_transfer(cat66121_hdmi->client->adapter, &msg, 1);
 	if(ret != 1)
@@ -115,13 +118,13 @@ SYS_STATUS HDMITX_ReadI2C_ByteN(BYTE RegAddr, BYTE *pData, int N)
 	msgs[0].flags	= !I2C_M_RD;
 	msgs[0].len		= 1;
 	msgs[0].buf		= &pData[0];
-	msgs[0].scl_rate= 100*1000;
+	msgs[0].scl_rate= CAT66121_I2C_RATE;
 
 	msgs[1].addr	= cat66121_hdmi->client->addr;
 	msgs[1].flags	= I2C_M_RD;
 	msgs[1].len		= N;
 	msgs[1].buf		= pData;
-	msgs[1].scl_rate= 100*1000;
+	msgs[1].scl_rate= CAT66121_I2C_RATE;
 
 	ret = i2c_transfer(cat66121_hdmi->client->adapter, msgs, 2);
 	if(ret != 2)
@@ -140,10 +143,10 @@ SYS_STATUS HDMITX_WriteI2C_ByteN(BYTE RegAddr, BYTE *pData, int N)
 	memcpy(&buf[1], pData, N);
 
 	msg.addr	= cat66121_hdmi->client->addr;
-	msg.flags	= !I2C_M_RD;
+	msg.flags	= cat66121_hdmi->client->addr & !I2C_M_RD;
 	msg.len		= N + 1;
 	msg.buf		= buf;		// gModify.Exp."Include RegAddr"
-	msg.scl_rate= 100*1000;
+	msg.scl_rate= CAT66121_I2C_RATE;
 
 	ret = i2c_transfer(cat66121_hdmi->client->adapter, &msg, 1);
 	if(ret != 1)
@@ -232,6 +235,7 @@ void cat66121_InterruptClr(void)
 	intclr3 &= ~(B_TX_INTACTDONE);
 	HDMITX_WriteI2C_Byte(REG_TX_SYS_STATUS,intclr3); // INTACTDONE reset to zero.
 }
+void hdmitx_FireAFE(void);
 void cat66121_hdmi_interrupt(void)
 {
 	char sysstat = 0; 

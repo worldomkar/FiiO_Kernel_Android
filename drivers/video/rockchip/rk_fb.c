@@ -382,6 +382,7 @@ static int rk_fb_open(struct fb_info *info,int user)
     else
     {
     	dev_drv->open(dev_drv,layer_id,1);
+	dev_drv->load_screen(dev_drv,1);
     }
     
     return 0;
@@ -1664,8 +1665,8 @@ static int rk_fb_wait_for_vsync_thread(void *data)
 	while (!kthread_should_stop()) {
 		ktime_t timestamp = dev_drv->vsync_info.timestamp;
 		int ret = wait_event_interruptible(dev_drv->vsync_info.wait,
-			!ktime_equal(timestamp, dev_drv->vsync_info.timestamp) &&
-			dev_drv->vsync_info.active || dev_drv->vsync_info.irq_stop);
+			(!ktime_equal(timestamp, dev_drv->vsync_info.timestamp) &&
+			dev_drv->vsync_info.active) || dev_drv->vsync_info.irq_stop);
 
 		if (!ret) {
 			sysfs_notify(&fbi->dev->kobj, NULL, "vsync");
@@ -1988,8 +1989,8 @@ int rk_fb_disp_scale_all(u8 left, u8 right, u8 top, u8 bottom, u8 lcdc_id)
 	}
 
 	var = &info->var;
-	screen_x = dev_drv->cur_screen->x_res;
-	screen_y = dev_drv->cur_screen->y_res;
+	xsize = screen_x = dev_drv->cur_screen->x_res;
+	ysize = screen_y = dev_drv->cur_screen->y_res;
 	
 	if (left)
 		dev_drv->overscan.left = left;

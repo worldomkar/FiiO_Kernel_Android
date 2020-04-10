@@ -86,7 +86,6 @@
 #include "dwc_otg_regs.h"
 
 #include "usbdev_rk.h"
-extern void usb_path_selecter(char );
 /**
  * Static PCD pointer for use in usb_gadget_register_driver and
  * usb_gadget_unregister_driver.  Initialized in dwc_otg_pcd_init.
@@ -569,14 +568,11 @@ static int dwc_otg_pcd_ep_queue(struct usb_ep *_ep,
 	/* 20091226,HSL@RK */
 	if ( !list_empty(&req->queue) ) 
 	{
-		list_del_init(&req->queue);
-		ep = container_of(_ep, dwc_otg_pcd_ep_t, ep);
-		DWC_PRINT("%s::ep %s req not empty,done it error!\n" , __func__, _ep->name);
-		ep->pcd->vbus_status = 0;
-		if(ep->pcd->conn_status)
-		{
-			ep->pcd->conn_status = 0;
-		}
+        while(!list_empty(&req->queue) ) {
+                ep = container_of(_ep, dwc_otg_pcd_ep_t, ep);
+                request_done(ep, req, -ECONNABORTED);
+        DWC_PRINT("%s::ep %s req not empty,done it error!\n" , __func__, _ep->name);
+        }
 		return -EINVAL;
 	}
 	
@@ -666,13 +662,7 @@ static int dwc_otg_pcd_ep_queue(struct usb_ep *_ep,
 					pcd->ep0state = EP0_STATUS;
 				}
 				break;
-				
-			case EP0_STATUS:
- 				DWC_DEBUGPL(DBG_PCD,
- 					    "%s ep0: EP0_IN_STATUS_PHASE\n",
- 					    __func__);
- 				break;
- 				
+						
 			default:
 				DWC_DEBUGPL(DBG_ANY, "ep0: odd state %d\n", 
 											pcd->ep0state);
@@ -1783,8 +1773,7 @@ static void dwc_otg_pcd_check_vbus_timer( unsigned long data )
         { 
             pldata->clock_enable( pldata, 1);		
             pldata->phy_suspend(pldata, USB_PHY_ENABLED);
-        }
-        dwc_otg_enable_global_interrupts(otg_dev->core_if);
+        } 
     }
 	else if(pldata->get_status(USB_STATUS_BVABLID))
 	{  // bvalid
@@ -1794,10 +1783,7 @@ static void dwc_otg_pcd_check_vbus_timer( unsigned long data )
             DWC_PRINT("********vbus detect*********************************************\n");
     	    _pcd->vbus_status = 1;
             if(_pcd->conn_en)
-            {        
-                otg_dev->core_if->pcd_cb->stop(otg_dev->core_if->pcd_cb->p);
                 goto connect;
-            }
             else if( pldata->phy_status == USB_PHY_ENABLED )
             {
                 // not connect, suspend phy
@@ -1813,12 +1799,8 @@ static void dwc_otg_pcd_check_vbus_timer( unsigned long data )
         }
         else if(_pcd->conn_status ==3)
         {
-			//*\C1\AC\BD硬\BB\C9\CF时\CA头\C5\CB\F8\A3\AC\D4\CA\D0\ED系统\BD\F8\C8\EB\B6\FE\BC\B6睡\C3撸\ACyk@rk,20100331*//
-            DWC_PRINT("********dc connect******************************************\n");
-
-            /* usb_path_selecter(1);// connected to charge die */
-
-            dwc_otg_msc_lock(_pcd);//dwc_otg_msc_unlock(_pcd);
+			//*连接不上时释放锁，允许系统进入二级睡眠，yk@rk,20100331*//
+            dwc_otg_msc_unlock(_pcd);
             _pcd->conn_status++;
             if((dwc_read_reg32((uint32_t*)((uint8_t *)_pcd->otg_dev->base + DWC_OTG_HOST_PORT_REGS_OFFSET))&0xc00) == 0xc00)
                 _pcd->vbus_status = 2;
@@ -1834,7 +1816,6 @@ static void dwc_otg_pcd_check_vbus_timer( unsigned long data )
 	}
     else 
     {
-        //DWC_PRINT("********usb or dc disconnect******************************************1111\n");
         _pcd->vbus_status = 0;
         if(_pcd->conn_status)
         {
@@ -1850,10 +1831,8 @@ static void dwc_otg_pcd_check_vbus_timer( unsigned long data )
             if( pldata->dwc_otg_uart_mode != NULL )
                 pldata->dwc_otg_uart_mode( pldata, PHY_UART_MODE);    
             /* release wake lock */
-            //dwc_otg_msc_unlock(_pcd);
-        }
-        /* release wake lock */
-        dwc_otg_msc_unlock(_pcd);  
+            dwc_otg_msc_unlock(_pcd);
+        }  
     }
     add_timer(&_pcd->check_vbus_timer); 
 	local_irq_restore(flags);

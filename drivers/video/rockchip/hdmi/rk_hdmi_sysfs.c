@@ -172,9 +172,10 @@ static struct rk_display_driver display_hdmi = {
 
 static struct rk_display_device *display_device_hdmi = NULL;
 
-void hdmi_register_display_sysfs(struct hdmi *hdmi, struct device *parent)
+struct rk_display_device* hdmi_register_display_sysfs(struct hdmi *hdmi, struct device *parent)
 {
 	display_device_hdmi = rk_display_device_register(&display_hdmi, parent, hdmi);
+	return display_device_hdmi;
 }
 
 void hdmi_unregister_display_sysfs(struct hdmi *hdmi)

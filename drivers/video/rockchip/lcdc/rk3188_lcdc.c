@@ -581,7 +581,7 @@ static int rk3188_load_screen(struct rk_lcdc_device_driver *dev_drv, bool initsc
 	{
 		if(screen->type==SCREEN_MCU)
 		{
-	    		printk("MUC\A1\A1screen not supported now!\n");
+	    		printk("MUC screen not supported now!\n");
 			return -EINVAL;
 		}
 

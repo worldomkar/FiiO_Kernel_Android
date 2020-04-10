@@ -752,7 +752,7 @@ static struct ion_platform_data rk30_ion_pdata = {
 			.type = ION_HEAP_TYPE_CARVEOUT,
 			.id = ION_NOR_HEAP_ID,
 			.name = "norheap",
-//			.size = ION_RESERVE_SIZE,
+			.size = ION_RESERVE_SIZE,
 		}
 	},
 };
@@ -1595,8 +1595,13 @@ static struct pmu_info  act8846_dcdc_info[] = {
 	},
 	{
 		.name          = "act_dcdc4",   //vccio
+#ifdef CONFIG_ACT8846_DCDC4_30V
 		.min_uv          = 3000000,
 		.max_uv         = 3000000,
+#else
+		.min_uv         = 3300000,
+		.max_uv         = 3300000,
+#endif
 		#ifdef CONFIG_ACT8846_SUPPORT_RESET
 		.suspend_vol  =  3000000,
 		#else
@@ -2129,12 +2134,12 @@ static void rk30_pm_power_off(void)
 
 static void __init machine_rk30_board_init(void)
 {
+	int pwm_gpio;
 	avs_init();
 	gpio_request(POWER_ON_PIN, "poweronpin");
 	gpio_direction_output(POWER_ON_PIN, GPIO_HIGH);
 	
 #ifdef CONFIG_POWERON_LED_ENABLE
-	int pwm_gpio;
 	pwm_gpio = iomux_mode_to_gpio(PWM0);
 	if (gpio_request(pwm_gpio, NULL)) {
 		printk("func %s, line %d: request gpio fail\n", __FUNCTION__, __LINE__);

@@ -85,7 +85,7 @@ static int hdmi_edid_parse_dtd(unsigned char *block, struct fb_videomode *mode)
 	return E_HDMI_EDID_SUCCESS;
 }
 
-static int hdmi_edid_parse_base(unsigned char *buf, int *extend_num, struct hdmi_edid *pedid)
+int hdmi_edid_parse_base(unsigned char *buf, int *extend_num, struct hdmi_edid *pedid)
 {
 	int rc, i;
 	
@@ -308,7 +308,7 @@ static int hdmi_edid_parse_extensions_cea(unsigned char *buf, struct hdmi_edid *
 	return E_HDMI_EDID_SUCCESS;
 }
 
-static int hdmi_edid_parse_extensions(unsigned char *buf, struct hdmi_edid *pedid)
+int hdmi_edid_parse_extensions(unsigned char *buf, struct hdmi_edid *pedid)
 {
 	int rc;
 	
